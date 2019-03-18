@@ -133,7 +133,7 @@ rm -rf pyano-git
 <a name="5"></a>
 ## GANNT Chart
 
-![Alt text](pyano/docs/gannt-charts/week7.jpg?raw=true "Week 7 GANNT Chart")
+![Alt text](docs/gannt-charts/week7.jpg?raw=true "Week 7 GANNT Chart")
 
 <a name="6"></a>
 ## License
