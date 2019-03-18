@@ -1,6 +1,6 @@
 # Pyano Project
 
-The Pyano is a 25-key self-playing piano powered by a Raspberry Pi using python and the MIDI file format. There are currently three modes of operation. The *player* mode is used to playback any files in the midi-files folder on the miniature piano using a series of push-pull solenoids. The *maker* mode is used to create custom MIDI files using a standard qwerty keyboard and save them to the midi-files folder. The *live* mode removes the need for MIDI files altogether and allows for a direct connection between qwerty keyboard inputs and solenoid ouputs on the miniature piano.
+The Pyano is a 25-key self-playing piano powered by a Raspberry Pi using python and the MIDI file format. There are currently three modes of operation. The *player* mode is used to playback MIDI files on the miniature piano using a series of push-pull solenoids. The *maker* mode is used to create custom MIDI files using a standard qwerty keyboard. The *live* mode removes the need for MIDI files altogether and allows for a direct connection between qwerty keyboard inputs and solenoid activations on the piano.
 
 > Created for: <br />
 > Texas Tech University <br />
@@ -8,7 +8,7 @@ The Pyano is a 25-key self-playing piano powered by a Raspberry Pi using python 
 > Project Lab II <br />
 > Spring 2019 <br />
 
-![Alt text](docs/for-readme/temp.jpg?raw=true "Week 7 GANNT Chart")
+![Alt text](docs/for-readme/temp.jpg?raw=true "where do you see this text")
 
 ## Table of Contents
 - [Built With](#1)
