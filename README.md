@@ -135,6 +135,8 @@ For more git information such as branching and merging watch [this video](https:
 <a name="5"></a>
 ## GANNT Chart
 
+### Week 7 of 13
+
 ![Alt text](docs/gannt-charts/week7.jpg?raw=true "Week 7 GANNT Chart")
 
 <a name="6"></a>
