@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>recording_large.png</file>
+    <file>img2.jpg</file>
+  </qresource>
+</RCC>
