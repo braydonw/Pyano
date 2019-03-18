@@ -1,10 +1,14 @@
 # Pyano Project
 
-Created for Texas Tech University Electrical & Computer Engineering Project Lab II - Spring 2019 <br />
 The Pyano is a 25-key self-playing piano powered by a Raspberry Pi using python and the MIDI file format. There are currently three modes of operation. The *player* mode is used to playback any files in the midi-files folder on the miniature piano using a series of push-pull solenoids. The *maker* mode is used to create custom MIDI files using a standard qwerty keyboard and save them to the midi-files folder. The *live* mode removes the need for MIDI files altogether and allows for a direct connection between qwerty keyboard inputs and solenoid ouputs on the miniature piano.
 
-(Add gif of quick demo using maker and how it appears in player)
+> Created for: <br />
+> Texas Tech University <br />
+> Dept. of Electrical & Computer Engineering <br />
+> Project Lab II <br />
+> Spring 2019 <br />
 
+![Alt text](docs/for-readme/temp.jpg?raw=true "Week 7 GANNT Chart")
 
 ## Table of Contents
 - [Built With](#1)
@@ -40,11 +44,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
-
-```
-Give examples: install/update python 3.5, pip, git, i2c enabled on Pi (link to IO Pi setup)
-```
+Must use a Raspberry Pi running Raspbian. Install python 3 and git. Make sure everything is up-to-date including pip. Enable i2c for the IO Pi Plus expansion board by following [this guide](https://www.abelectronics.co.uk/kb/article/1/i2c--smbus-and-raspbian-linux).
 
 ### Installing
 
@@ -121,6 +121,8 @@ Always make a pull before a push to ensure your local project has the most up-to
 cd /home/pi
 rm -rf pyano-git
 ```
+
+For more git information such as branching and merging watch [this video](https://www.youtube.com/watch?v=HVsySz-h9r4&frags=pl%2Cwn).
 
 <a name="4"></a>
 ## Project Team
