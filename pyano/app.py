@@ -3,6 +3,7 @@ import sys
 import glob
 import time
 import string
+import logging
 from PyQt4 import QtGui, QtCore, uic
 from mido import MidiFile, MidiTrack, Message, MetaMessage, second2tick, bpm2tempo # MetaMessage?
 from pynput import keyboard
@@ -10,8 +11,26 @@ from pynput.keyboard import Key, Controller
 
 def main():
     
+    # setup simultaneous logging to log file and terminal window
+    # this for loop  is required because PyQt4 uses DEBUG logging level for uic
+    for handler in logging.root.handlers[:]:
+        logging.root.removeHandler(handler)
+    # add error check for pyano-git vs pyano vs else/finally if directory name is completely wrong
+    fileFormatter = logging.Formatter('%(levelname)s | %(asctime)s | T:%(thread)d | %(message)s')
+    consoleFormatter = logging.Formatter('%(levelname)s | %(message)s')
+    rootLogger = logging.getLogger()
+    rootLogger.setLevel(logging.INFO)
+    fileHandler = logging.FileHandler('/home/pi/pyano-git/logs.log')
+    fileHandler.setFormatter(fileFormatter)
+    rootLogger.addHandler(fileHandler)
+    consoleHandler = logging.StreamHandler()
+    consoleHandler.setFormatter(consoleFormatter)
+    rootLogger.addHandler(consoleHandler)
+    
     # SETUP IO PI BUSSES HERE ??
     
+    # setup and launch GUI
+    logging.info('launching GUI')
     app = QtGui.QApplication(sys.argv)
     GUI = MainWindow()
     GUI.show()
@@ -72,18 +91,26 @@ class MainWindow(QtGui.QWidget):
 #---SHARED PAGE ELEMENTS------------------------------------------------
 
     def on_home_click(self):
+        logging.info('home btn pressed')
+        
         self.stackedWidget.setCurrentIndex(0)
         self.label_title.setText('P Y A N O')
         
     def on_exit_click(self):
+        logging.info('exit btn pressed')
+        
         choice = QtGui.QMessageBox.question(self, 'Exit',
                                             "Are you sure you want to exit?",
                                             QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
         if choice == QtGui.QMessageBox.Yes:
-            print("EXIT PRESSED: CLEANUP IO HERE")
+            logging.info("EXIT PRESSED: CLEANUP IO HERE")
+            logging.info('\n\n\n')
             sys.exit()
+        logging.info('user selected not to exit')
         
     def closeEvent(self, event):
+        logging.info('exiting from menu bar close btn')
+        
         # this enables the exit button on the window bar to work as well
         # don't really need this when running fullscreen but it's handy anyway
         event.ignore()
@@ -93,6 +120,8 @@ class MainWindow(QtGui.QWidget):
 #---HOME PAGE ELEMENTS--------------------------------------------------
 
     def on_player_click(self):
+        logging.info('player btn clicked')
+        
         # setup page elements
         self.stackedWidget.setCurrentIndex(1)
         self.stackedWidget_player.setCurrentIndex(0)
@@ -108,11 +137,14 @@ class MainWindow(QtGui.QWidget):
             os.chdir("/home/pi/pyano-git/midi-files")
         except FileNotFoundError:
             os.chdir("/home/pi/pyano/midi-files")
+                        
         for midi_file in sorted(glob.glob("*.mid")): # alphabetical sort since glob uses random order
             #~ self.midi_file_list.append(midi_file)
             self.comboBox_player_file.addItem(midi_file)
 
     def on_maker_click(self):
+        logging.info('maker btn clicked')
+        
         # setup page elements
         self.stackedWidget.setCurrentIndex(2)
         self.label_title.setText('M A K E R')
@@ -131,6 +163,7 @@ class MainWindow(QtGui.QWidget):
         while os.path.exists("custom_song_%s.mid" % i):
             i += 1
         self.lineEdit_maker_name.setText("custom_song_%s.mid" % i)
+        logging.info('setting default song name to: custom_song_{}.mid'.format(i))
         
         # setup maker thread (doesn't start until btn_maker_start is pressed
         self.makerThread = MakerThread(None)
@@ -140,14 +173,20 @@ class MainWindow(QtGui.QWidget):
         self.connect(self.makerThread, QtCore.SIGNAL("updateMakerGUI(QString)"), self.update_maker_gui)
         
     def on_live_click(self):
+        logging.info('live btn clicked')
+        
         self.stackedWidget.setCurrentIndex(3)
         self.label_title.setText('L I V E')
         
     def on_guide_click(self):
+        logging.info('guide btn clicked')
+        
         self.stackedWidget.setCurrentIndex(4)
         self.label_title.setText('G U I D E')
         
     def on_credits_click(self):
+        logging.info('credits btn clicked')
+        
         self.stackedWidget.setCurrentIndex(5)
         self.label_title.setText('C R E D I T S')
         
@@ -155,6 +194,7 @@ class MainWindow(QtGui.QWidget):
 #---PLAYER PAGE ELEMENTS------------------------------------------------
 
     def on_player_play_click(self):
+        logging.info('player-play btn clicked')
         self.stackedWidget_player.setCurrentIndex(1)
         self.btn_player_play.setVisible(False)
         self.btn_player_pause.setVisible(True)
@@ -166,9 +206,11 @@ class MainWindow(QtGui.QWidget):
         self.btn_player_eject.setVisible(False)
         
     def on_player_pause_click(self):
+        logging.info('player-pause btn clicked')
         pass
         
     def on_player_stop_click(self):
+        logging.info('player-stop btn clicked')
         self.stackedWidget_player.setCurrentIndex(0)
         self.btn_player_play.setVisible(True)
         self.btn_player_pause.setVisible(False)
@@ -180,12 +222,15 @@ class MainWindow(QtGui.QWidget):
         self.btn_player_eject.setVisible(True)
         
     def on_player_restart_click(self):
+        logging.info('player-restart btn clicked')
         pass
 
 
 #---MAKER PAGE ELEMENTS-------------------------------------------------
         
     def on_maker_start_click(self):
+        logging.info('maker-start btn clicked')
+        
         # check to see if self.makerThread.maker_song_name is valid (5 checks)
         # pull name from gui
         self.makerThread.maker_song_name = self.lineEdit_maker_name.text()
@@ -233,10 +278,13 @@ class MainWindow(QtGui.QWidget):
         # update bpm variable from gui combobox for midi file creation
         self.makerThread.maker_song_BPM = str(self.comboBox_maker_BPM.currentText())
         
+        logging.info('song name: {}'.format(self.makerThread.maker_song_name))
+        logging.info('bpm: {}'.format(self.makerThread.maker_song_BPM))
+        
         # start maker thread by calling its run() method
         self.makerThread.start()
  
-    def on_maker_done_click(self):
+    def on_maker_done_click(self):        
         # simulate keypress to stop keywatcher code in maker thread (save file)
         # simulating keypress calls update_maker_gui
         # THIS IS STILL CALLING 2x (ON PRESS AND RELEASE)
@@ -250,8 +298,9 @@ class MainWindow(QtGui.QWidget):
         while os.path.exists("custom_song_%s.mid" % i):
             i += 1
         self.lineEdit_maker_name.setText("custom_song_%s.mid" % i)
+        logging.info('setting default song name to: custom_song_{}.mid'.format(i))
         
-    def on_maker_cancel_click(self):
+    def on_maker_cancel_click(self):        
         # simulate keypress to stop keywatcher code in maker thread (discard file)
         # simulating keypress calls update_maker_gui
         # THIS IS STILL CALLING 2x (ON PRESS AND RELEASE)
@@ -288,7 +337,7 @@ class MakerThread(QtCore.QThread):
         self.maker_song_BPM = ""
     
     def run(self):       
-        print(self.maker_song_name) # to show that it is updating from gui thread
+        #~ print(self.maker_song_name) # to show that it is updating from gui thread
         
         self.key2midi = {'z': '60', 's': '61', 'x': '62', 'd': '63', 'c': '64', 'v': '65',
                         'g': '66', 'b': '67', 'h': '68', 'n': '69', 'j': '70', 'm': '71',
@@ -335,13 +384,14 @@ class MakerThread(QtCore.QThread):
             if key == keyboard.Key.backspace:
                 # discard file
                 self.emit(QtCore.SIGNAL("updateMakerGUI(QString)"), "Canceled... Discarding song...")
+                logging.info('maker-cancel btn clicked')
                 return False # returning False stops the key listener
                 
             elif key == keyboard.Key.enter:
                 # save file
                 mid.save(self.maker_song_name)
-                print("File saved as: ", self.maker_song_name)
                 self.emit(QtCore.SIGNAL("updateMakerGUI(QString)"), "File saved successfully")
+                logging.info('maker-done btn clicked')
                 return False
                 
             try:
@@ -362,17 +412,18 @@ class MakerThread(QtCore.QThread):
                 # build and emit gui text output
                 gui_output = (" " + key.char.upper() + "    " + self.kb_note + "   " + str((round(self.adj_time, 3))))
                 self.emit(QtCore.SIGNAL("updateMakerText(QString)"), gui_output)
+                logging.info(gui_output)
                 
                 # for testing
-                print(round(self.adj_time, 3))
-                print(int(self.ticks))
+                #~ print(round(self.adj_time, 3))
+                #~ print(int(self.ticks))
                 
                 # didn't throw exception so key is valid; set for next btn press
                 # this allows adj_time to ignore the time of any invalid keys
                 self.prev_time = self.time_since_start
                 
             except (KeyError, AttributeError) as e:
-                print("Invalid Key: ", e)
+                logging.debug('invalid key {}'.format(e))
                 
                 
         # starts a key listener; use return False to stop
@@ -380,7 +431,7 @@ class MakerThread(QtCore.QThread):
         with keyboard.Listener(on_press=on_press) as listener:
             listener.join()
 
-        print("Done with makerThread") # for terminal output
+        logging.info('Exiting makerThread')
 
 
 if __name__ == '__main__':
