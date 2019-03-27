@@ -118,6 +118,7 @@ Always make a pull before a push to ensure your local project has the most up-to
 
 ```
 cd /home/pi
+
 rm -rf pyano-git
 ```
 
