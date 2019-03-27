@@ -103,14 +103,13 @@ git status
 **Step 2.** Make a commit:
 
 ```
-git commit -a
-- Enter your commit message, then ctrl+X, then Enter
+git add .
+
+git commit -a -m "write commit message here"
 
 git pull origin master
-- If everything is up-to-date press ctrl+X, then Enter
 
 git push origin master
-- Enter your username and password
 ```
 
 Always make a pull before a push to ensure your local project has the most up-to-date git repo files. 
