@@ -76,7 +76,7 @@ color: rgb(193, 193, 193);</string>
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>3</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page_home">
        <widget class="QWidget" name="layoutWidget">
@@ -106,6 +106,9 @@ color: rgb(193, 193, 193);</string>
              <pointsize>30</pointsize>
             </font>
            </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
            <property name="styleSheet">
             <string notr="true"/>
            </property>
@@ -134,6 +137,9 @@ color: rgb(193, 193, 193);</string>
              <pointsize>30</pointsize>
             </font>
            </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
            <property name="text">
             <string>Maker</string>
            </property>
@@ -155,6 +161,9 @@ color: rgb(193, 193, 193);</string>
              <family>Piboto Condensed</family>
              <pointsize>30</pointsize>
             </font>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
            </property>
            <property name="autoFillBackground">
             <bool>false</bool>
@@ -202,6 +211,9 @@ color: rgb(193, 193, 193);</string>
                <pointsize>30</pointsize>
               </font>
              </property>
+             <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
+             </property>
              <property name="text">
               <string>Guide</string>
              </property>
@@ -223,6 +235,9 @@ color: rgb(193, 193, 193);</string>
                <family>Piboto Condensed</family>
                <pointsize>30</pointsize>
               </font>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
              </property>
              <property name="text">
               <string>Credits</string>
@@ -247,6 +262,9 @@ color: rgb(193, 193, 193);</string>
                <stylestrategy>PreferDefault</stylestrategy>
               </font>
              </property>
+             <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
+             </property>
              <property name="text">
               <string>Exit</string>
              </property>
@@ -261,24 +279,50 @@ color: rgb(193, 193, 193);</string>
        </widget>
       </widget>
       <widget class="QWidget" name="page_player">
-       <widget class="QWidget" name="layoutWidget_6">
+       <widget class="QListWidget" name="listWidget_player_files">
         <property name="geometry">
          <rect>
-          <x>20</x>
+          <x>30</x>
+          <y>60</y>
+          <width>301</width>
+          <height>301</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>18</pointsize>
+         </font>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+        <item>
+         <property name="text">
+          <string>custom_song_0.mid</string>
+         </property>
+        </item>
+       </widget>
+       <widget class="QWidget" name="layoutWidget_4">
+        <property name="geometry">
+         <rect>
+          <x>350</x>
           <y>380</y>
-          <width>971</width>
+          <width>631</width>
           <height>91</height>
          </rect>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_12">
+        <layout class="QHBoxLayout" name="horizontalLayout_33">
          <property name="spacing">
           <number>5</number>
          </property>
+         <property name="sizeConstraint">
+          <enum>QLayout::SetDefaultConstraint</enum>
+         </property>
          <property name="margin">
-          <number>5</number>
+          <number>0</number>
          </property>
          <item>
-          <widget class="QPushButton" name="btn_player_usb">
+          <widget class="QPushButton" name="btn_player_back">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
              <horstretch>0</horstretch>
@@ -291,27 +335,27 @@ color: rgb(193, 193, 193);</string>
              <pointsize>30</pointsize>
             </font>
            </property>
-           <property name="text">
-            <string>Add Files</string>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
            </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btn_player_eject">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="font">
-            <font>
-             <family>Piboto Condensed</family>
-             <pointsize>30</pointsize>
-            </font>
+           <property name="toolTip">
+            <string>Back/Restart (&lt;)</string>
            </property>
            <property name="text">
-            <string>Eject</string>
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../resources/resources.qrc">
+             <normaloff>:/newPrefix/player-back.png</normaloff>:/newPrefix/player-back.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>50</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="shortcut">
+            <string>,</string>
            </property>
           </widget>
          </item>
@@ -329,46 +373,30 @@ color: rgb(193, 193, 193);</string>
              <pointsize>30</pointsize>
             </font>
            </property>
-           <property name="text">
-            <string>Play</string>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
            </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btn_player_stop">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+           <property name="toolTip">
+            <string>Play (Spacebar)</string>
            </property>
-           <property name="font">
-            <font>
-             <family>Piboto Condensed</family>
-             <pointsize>30</pointsize>
-            </font>
+           <property name="styleSheet">
+            <string notr="true"/>
            </property>
            <property name="text">
-            <string>Stop</string>
+            <string/>
            </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btn_player_restart">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+           <property name="icon">
+            <iconset resource="../resources/resources.qrc">
+             <normaloff>:/newPrefix/player-play.png</normaloff>:/newPrefix/player-play.png</iconset>
            </property>
-           <property name="font">
-            <font>
-             <family>Piboto Condensed</family>
-             <pointsize>30</pointsize>
-            </font>
+           <property name="iconSize">
+            <size>
+             <width>50</width>
+             <height>50</height>
+            </size>
            </property>
-           <property name="text">
-            <string>Restart</string>
+           <property name="shortcut">
+            <string>Space</string>
            </property>
           </widget>
          </item>
@@ -386,11 +414,316 @@ color: rgb(193, 193, 193);</string>
              <pointsize>30</pointsize>
             </font>
            </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
+           <property name="toolTip">
+            <string>Pause (Spacebar)</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
            <property name="text">
-            <string>Pause</string>
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../resources/resources.qrc">
+             <normaloff>:/newPrefix/player-pause.png</normaloff>:/newPrefix/player-pause.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>50</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="shortcut">
+            <string>Space</string>
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QPushButton" name="btn_player_stop">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <family>Piboto Condensed</family>
+             <pointsize>30</pointsize>
+            </font>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
+           <property name="toolTip">
+            <string>Stop (Backspace)</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../resources/resources.qrc">
+             <normaloff>:/newPrefix/player-stop.png</normaloff>:/newPrefix/player-stop.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>50</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="shortcut">
+            <string>Backspace</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_player_next">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <family>Piboto Condensed</family>
+             <pointsize>30</pointsize>
+            </font>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
+           <property name="toolTip">
+            <string>Next (&gt;)</string>
+           </property>
+           <property name="autoFillBackground">
+            <bool>false</bool>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../resources/resources.qrc">
+             <normaloff>:/newPrefix/player-next.png</normaloff>:/newPrefix/player-next.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>50</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="shortcut">
+            <string>.</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QTextEdit" name="textEdit_player">
+        <property name="geometry">
+         <rect>
+          <x>350</x>
+          <y>110</y>
+          <width>631</width>
+          <height>251</height>
+         </rect>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="html">
+         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'PibotoLt'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btn_player_shuffle">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>30</y>
+          <width>31</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="toolTip">
+         <string>Shuffle</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../resources/resources.qrc">
+          <normaloff>:/newPrefix/player-shuffle.png</normaloff>:/newPrefix/player-shuffle.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>25</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btn_player_alpha">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>30</y>
+          <width>31</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="toolTip">
+         <string>Alphabetical</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../resources/resources.qrc">
+          <normaloff>:/newPrefix/player-alpha.png</normaloff>:/newPrefix/player-alpha.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>25</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btn_player_add_files">
+        <property name="geometry">
+         <rect>
+          <x>300</x>
+          <y>30</y>
+          <width>31</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="toolTip">
+         <string>Add files from USB drives</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../resources/resources.qrc">
+          <normaloff>:/newPrefix/player-add.png</normaloff>:/newPrefix/player-add.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>25</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_player_2">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>30</y>
+          <width>301</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>20</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_player">
+        <property name="geometry">
+         <rect>
+          <x>358</x>
+          <y>30</y>
+          <width>611</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>20</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Playing: twinkle_twinkle.mid</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QProgressBar" name="progressBar_player">
+        <property name="geometry">
+         <rect>
+          <x>350</x>
+          <y>70</y>
+          <width>631</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="value">
+         <number>24</number>
+        </property>
+       </widget>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>381</y>
+          <width>301</width>
+          <height>91</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <property name="spacing">
+          <number>5</number>
+         </property>
+         <property name="margin">
+          <number>0</number>
+         </property>
          <item>
           <widget class="QPushButton" name="btn_player_home">
            <property name="sizePolicy">
@@ -405,190 +738,49 @@ color: rgb(193, 193, 193);</string>
              <pointsize>30</pointsize>
             </font>
            </property>
-           <property name="text">
-            <string>Home</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btn_player_exit">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="font">
-            <font>
-             <family>Piboto Condensed</family>
-             <pointsize>30</pointsize>
-             <stylestrategy>PreferDefault</stylestrategy>
-            </font>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
            </property>
            <property name="text">
-            <string>Exit</string>
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../resources/resources.qrc">
+             <normaloff>:/newPrefix/home.png</normaloff>:/newPrefix/home.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>50</width>
+             <height>50</height>
+            </size>
            </property>
           </widget>
          </item>
         </layout>
        </widget>
-       <widget class="QStackedWidget" name="stackedWidget_player">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>991</width>
-          <height>491</height>
-         </rect>
-        </property>
-        <property name="currentIndex">
-         <number>1</number>
-        </property>
-        <widget class="QWidget" name="page">
-         <widget class="QWidget" name="layoutWidget_2">
-          <property name="geometry">
-           <rect>
-            <x>90</x>
-            <y>140</y>
-            <width>831</width>
-            <height>111</height>
-           </rect>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_8">
-           <item>
-            <widget class="QLabel" name="label_player_file">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>35</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Select File:</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="comboBox_player_file">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>35</pointsize>
-              </font>
-             </property>
-             <property name="currentIndex">
-              <number>-1</number>
-             </property>
-             <property name="maxVisibleItems">
-              <number>3</number>
-             </property>
-             <property name="insertPolicy">
-              <enum>QComboBox::InsertAlphabetically</enum>
-             </property>
-             <property name="frame">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QTextEdit" name="textEdit_4">
-          <property name="geometry">
-           <rect>
-            <x>210</x>
-            <y>60</y>
-            <width>591</width>
-            <height>61</height>
-           </rect>
-          </property>
-          <property name="html">
-           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'PibotoLt'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Make Play and add files be on 2nd page on stackedWidget_player&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-        </widget>
-        <widget class="QWidget" name="page_2">
-         <widget class="QWidget" name="layoutWidget_7">
-          <property name="geometry">
-           <rect>
-            <x>270</x>
-            <y>30</y>
-            <width>481</width>
-            <height>81</height>
-           </rect>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_3">
-           <item>
-            <widget class="QLabel" name="label_player_nowplaying">
-             <property name="font">
-              <font>
-               <pointsize>20</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Playing: twinkle_twinkle.mid</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QProgressBar" name="progressBar_player">
-             <property name="value">
-              <number>24</number>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QTextEdit" name="textEdit_5">
-          <property name="geometry">
-           <rect>
-            <x>350</x>
-            <y>140</y>
-            <width>321</width>
-            <height>91</height>
-           </rect>
-          </property>
-          <property name="html">
-           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'PibotoLt'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Remove home and exit from this page???&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-        </widget>
-       </widget>
-       <zorder>stackedWidget_player</zorder>
-       <zorder>layoutWidget_6</zorder>
+       <zorder>layoutWidget</zorder>
+       <zorder>listWidget_player_files</zorder>
+       <zorder>layoutWidget_4</zorder>
+       <zorder>textEdit_player</zorder>
+       <zorder>label_player_2</zorder>
+       <zorder>btn_player_alpha</zorder>
+       <zorder>btn_player_add_files</zorder>
+       <zorder>btn_player_shuffle</zorder>
+       <zorder>label_player</zorder>
+       <zorder>progressBar_player</zorder>
       </widget>
       <widget class="QWidget" name="page_maker">
        <widget class="QLabel" name="label_maker_recording_indicator">
         <property name="geometry">
          <rect>
-          <x>912</x>
+          <x>902</x>
           <y>16</y>
           <width>81</width>
           <height>81</height>
          </rect>
         </property>
         <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/newPrefix/recording-large.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/newPrefix/maker-recording.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -597,7 +789,7 @@ p, li { white-space: pre-wrap; }
        <widget class="QLabel" name="kb_piano_img">
         <property name="geometry">
          <rect>
-          <x>50</x>
+          <x>40</x>
           <y>90</y>
           <width>441</width>
           <height>271</height>
@@ -613,15 +805,15 @@ p, li { white-space: pre-wrap; }
          <enum>QFrame::NoFrame</enum>
         </property>
         <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/newPrefix/keyboard-layout.jpg&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/newPrefix/maker-keyboard.jpg&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
        <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
-          <x>21</x>
+          <x>530</x>
           <y>380</y>
-          <width>511</width>
+          <width>451</width>
           <height>91</height>
          </rect>
         </property>
@@ -633,7 +825,7 @@ p, li { white-space: pre-wrap; }
           <enum>QLayout::SetDefaultConstraint</enum>
          </property>
          <property name="margin">
-          <number>5</number>
+          <number>0</number>
          </property>
          <item>
           <widget class="QPushButton" name="btn_maker_start">
@@ -648,6 +840,9 @@ p, li { white-space: pre-wrap; }
              <family>Piboto Condensed</family>
              <pointsize>30</pointsize>
             </font>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
            </property>
            <property name="text">
             <string>Start</string>
@@ -668,6 +863,9 @@ p, li { white-space: pre-wrap; }
              <pointsize>30</pointsize>
             </font>
            </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
            <property name="text">
             <string>Cancel</string>
            </property>
@@ -687,6 +885,9 @@ p, li { white-space: pre-wrap; }
              <pointsize>30</pointsize>
             </font>
            </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
            <property name="text">
             <string>Done</string>
            </property>
@@ -697,72 +898,15 @@ p, li { white-space: pre-wrap; }
        <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
-          <x>540</x>
-          <y>380</y>
-          <width>451</width>
-          <height>91</height>
-         </rect>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_5">
-         <property name="spacing">
-          <number>5</number>
-         </property>
-         <property name="margin">
-          <number>5</number>
-         </property>
-         <item>
-          <widget class="QPushButton" name="btn_maker_home">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="font">
-            <font>
-             <family>Piboto Condensed</family>
-             <pointsize>30</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Home</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btn_maker_exit">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="font">
-            <font>
-             <family>Piboto Condensed</family>
-             <pointsize>30</pointsize>
-             <stylestrategy>PreferDefault</stylestrategy>
-            </font>
-           </property>
-           <property name="text">
-            <string>Exit</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="layoutWidget">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
+          <x>10</x>
           <y>30</y>
-          <width>321</width>
+          <width>331</width>
           <height>51</height>
          </rect>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_6">
          <item>
-          <widget class="QLabel" name="label">
+          <widget class="QLabel" name="label_maker_2">
            <property name="font">
             <font>
              <pointsize>20</pointsize>
@@ -783,6 +927,9 @@ p, li { white-space: pre-wrap; }
              <pointsize>15</pointsize>
             </font>
            </property>
+           <property name="focusPolicy">
+            <enum>Qt::ClickFocus</enum>
+           </property>
            <property name="text">
             <string>custom_song_1.mid</string>
            </property>
@@ -793,10 +940,10 @@ p, li { white-space: pre-wrap; }
        <widget class="QTextEdit" name="textEdit_maker">
         <property name="geometry">
          <rect>
-          <x>540</x>
-          <y>70</y>
+          <x>530</x>
+          <y>80</y>
           <width>451</width>
-          <height>301</height>
+          <height>281</height>
          </rect>
         </property>
         <property name="font">
@@ -804,6 +951,9 @@ p, li { white-space: pre-wrap; }
           <family>DejaVu Sans Mono</family>
           <pointsize>26</pointsize>
          </font>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::ClickFocus</enum>
         </property>
         <property name="verticalScrollBarPolicy">
          <enum>Qt::ScrollBarAsNeeded</enum>
@@ -813,7 +963,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans Mono'; font-size:26pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:28pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="textInteractionFlags">
          <set>Qt::TextSelectableByMouse</set>
@@ -822,7 +972,7 @@ p, li { white-space: pre-wrap; }
        <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
-          <x>350</x>
+          <x>340</x>
           <y>30</y>
           <width>151</width>
           <height>51</height>
@@ -850,6 +1000,9 @@ p, li { white-space: pre-wrap; }
             <font>
              <pointsize>15</pointsize>
             </font>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
            </property>
            <property name="currentIndex">
             <number>1</number>
@@ -891,7 +1044,7 @@ p, li { white-space: pre-wrap; }
        <widget class="QLabel" name="label_maker">
         <property name="geometry">
          <rect>
-          <x>540</x>
+          <x>530</x>
           <y>30</y>
           <width>451</width>
           <height>51</height>
@@ -918,167 +1071,27 @@ p, li { white-space: pre-wrap; }
          <set>Qt::AlignCenter</set>
         </property>
        </widget>
-       <zorder>layoutWidget</zorder>
-       <zorder>kb_piano_img</zorder>
-       <zorder>layoutWidget</zorder>
-       <zorder>layoutWidget</zorder>
-       <zorder>textEdit_maker</zorder>
-       <zorder>layoutWidget</zorder>
-       <zorder>label_maker</zorder>
-       <zorder>label_maker_recording_indicator</zorder>
-      </widget>
-      <widget class="QWidget" name="page_live">
-       <widget class="QWidget" name="layoutWidget_5">
+       <widget class="QWidget" name="layoutWidget_2">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>390</y>
-          <width>971</width>
+          <x>30</x>
+          <y>380</y>
+          <width>451</width>
           <height>91</height>
          </rect>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_14">
+        <layout class="QHBoxLayout" name="horizontalLayout_34">
+         <property name="spacing">
+          <number>5</number>
+         </property>
          <property name="sizeConstraint">
           <enum>QLayout::SetDefaultConstraint</enum>
          </property>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_30">
-           <property name="spacing">
-            <number>5</number>
-           </property>
-           <property name="sizeConstraint">
-            <enum>QLayout::SetDefaultConstraint</enum>
-           </property>
-           <property name="margin">
-            <number>5</number>
-           </property>
-           <item>
-            <widget class="QPushButton" name="btn_live_start">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <family>Piboto Condensed</family>
-               <pointsize>30</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Start</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="btn_live_done">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <family>Piboto Condensed</family>
-               <pointsize>30</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Done</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_31">
-           <property name="spacing">
-            <number>5</number>
-           </property>
-           <property name="sizeConstraint">
-            <enum>QLayout::SetDefaultConstraint</enum>
-           </property>
-           <property name="margin">
-            <number>5</number>
-           </property>
-           <item>
-            <widget class="QPushButton" name="btn_live_home">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <family>Piboto Condensed</family>
-               <pointsize>30</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Home</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="btn_live_exit">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <family>Piboto Condensed</family>
-               <pointsize>30</pointsize>
-               <stylestrategy>PreferDefault</stylestrategy>
-              </font>
-             </property>
-             <property name="text">
-              <string>Exit</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QLabel" name="kb_piano_img_2">
-        <property name="geometry">
-         <rect>
-          <x>270</x>
-          <y>70</y>
-          <width>521</width>
-          <height>281</height>
-         </rect>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/newPrefix/keyboard-layout.jpg&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QWidget" name="page_guide">
-       <widget class="QWidget" name="layoutWidget_3">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>350</y>
-          <width>971</width>
-          <height>121</height>
-         </rect>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_10">
-         <property name="sizeConstraint">
-          <enum>QLayout::SetDefaultConstraint</enum>
+         <property name="margin">
+          <number>0</number>
          </property>
          <item>
-          <widget class="QPushButton" name="btn_guide_home">
+          <widget class="QPushButton" name="btn_maker_home">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
              <horstretch>0</horstretch>
@@ -1091,26 +1104,152 @@ p, li { white-space: pre-wrap; }
              <pointsize>30</pointsize>
             </font>
            </property>
-           <property name="text">
-            <string>Home</string>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
            </property>
-           <property name="shortcut">
-            <string>H</string>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../resources/resources.qrc">
+             <normaloff>:/newPrefix/home.png</normaloff>:/newPrefix/home.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>50</width>
+             <height>50</height>
+            </size>
            </property>
           </widget>
          </item>
         </layout>
        </widget>
+       <zorder>textEdit_maker</zorder>
+       <zorder>label_maker</zorder>
+       <zorder>layoutWidget</zorder>
+       <zorder>kb_piano_img</zorder>
+       <zorder>layoutWidget</zorder>
+       <zorder>layoutWidget</zorder>
+       <zorder>label_maker_recording_indicator</zorder>
+       <zorder>layoutWidget_2</zorder>
+      </widget>
+      <widget class="QWidget" name="page_live">
+       <widget class="QLabel" name="kb_piano_img_2">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>90</y>
+          <width>441</width>
+          <height>271</height>
+         </rect>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/newPrefix/maker-keyboard.jpg&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+       <widget class="QTextEdit" name="textEdit_maker_2">
+        <property name="geometry">
+         <rect>
+          <x>530</x>
+          <y>80</y>
+          <width>451</width>
+          <height>281</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>DejaVu Sans Mono</family>
+          <pointsize>26</pointsize>
+         </font>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::ClickFocus</enum>
+        </property>
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAsNeeded</enum>
+        </property>
+        <property name="html">
+         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans Mono'; font-size:26pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="textInteractionFlags">
+         <set>Qt::TextSelectableByMouse</set>
+        </property>
+       </widget>
+       <widget class="QWidget" name="layoutWidget_6">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>380</y>
+          <width>451</width>
+          <height>91</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_35">
+         <property name="spacing">
+          <number>5</number>
+         </property>
+         <property name="sizeConstraint">
+          <enum>QLayout::SetDefaultConstraint</enum>
+         </property>
+         <property name="margin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QPushButton" name="btn_live_home">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <family>Piboto Condensed</family>
+             <pointsize>30</pointsize>
+            </font>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../resources/resources.qrc">
+             <normaloff>:/newPrefix/home.png</normaloff>:/newPrefix/home.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>50</width>
+             <height>50</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="page_guide">
        <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>30</y>
-          <width>971</width>
-          <height>331</height>
+          <x>31</x>
+          <y>31</y>
+          <width>961</width>
+          <height>441</height>
          </rect>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_11">
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <property name="spacing">
+          <number>10</number>
+         </property>
          <item>
           <widget class="QTextEdit" name="textEdit">
            <property name="html">
@@ -1118,9 +1257,48 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'PibotoLt'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:22pt;&quot;&gt;ADD GUIDE HERE&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:22pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:22pt;&quot;&gt;Include link to source code: https://github.com/braydonw/Pyano&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_guide_home">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>89</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Piboto Condensed</family>
+             <pointsize>30</pointsize>
+            </font>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../resources/resources.qrc">
+             <normaloff>:/newPrefix/home.png</normaloff>:/newPrefix/home.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>50</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="shortcut">
+            <string>H</string>
            </property>
           </widget>
          </item>
@@ -1212,6 +1390,9 @@ p, li { white-space: pre-wrap; }
              <family>Piboto Condensed</family>
              <pointsize>30</pointsize>
             </font>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
            </property>
            <property name="text">
             <string>Home</string>
