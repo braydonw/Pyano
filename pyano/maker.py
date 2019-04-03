@@ -43,25 +43,24 @@ class MakerThread(QtCore.QThread):
         start_time = time.time()
         self.prev_time = 0 # self since we are modifying it in the on_press sub-method
         
-        # method call built into key listener
+        self.hold_times = []
+        
+        # method call from key listener
         def on_press(key):
+            '''
+            IDEA: figure out a way to only save the time of the 1st on message and the 1st corresponding
+            off message - then discard all duplicate on messages in-between - or add all repeating on delays
+            to the Off message?
+            
+            on_press needs to add all intermidate timings to a list
+            on_release needs to add all those times to the Off message then clear the list
+            
+            will this work if holding one key and you press another? or does that mess up the hold_times[]
+            
+            probably need to change adj_time and prev_time... rethink logic completely
+            '''
             # get the time that has passed since this thread started
             time_since_start = time.time() - start_time
-            
-            # check for cancel/done keypress (backspace/enter)
-            # remember gui btns simulate key presses
-            if key == keyboard.Key.backspace:
-                # discard file
-                self.emit(QtCore.SIGNAL("updateMakerGUI(QString)"), "Canceled... Discarding song...")
-                logging.info('maker-cancel btn clicked')
-                return False # returning False stops the key listener
-                
-            elif key == keyboard.Key.enter:
-                # save file
-                mid.save(self.maker_song_name)
-                self.emit(QtCore.SIGNAL("updateMakerGUI(QString)"), "File saved successfully")
-                logging.info('maker-done btn clicked')
-                return False
                 
             try:
                 # see if the key pressed is in dictionary of valid keys
@@ -74,6 +73,7 @@ class MakerThread(QtCore.QThread):
                 
                 # convert time since last valid keypress to ticks (PPQN)
                 ticks = second2tick(adj_time, ticks_per_beat, tempo)
+                #~ print(ticks)
                 
                 # for testing
                 #~ logging.info('adj_time: {}'.format(round(adj_time, 3)))
@@ -81,20 +81,81 @@ class MakerThread(QtCore.QThread):
                 
                 # add the note on/off data to the midi file
                 track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
-                track.append(Message('note_off', note=int(midi_note), time=0))
+                #~ track.append(Message('note_off', note=int(midi_note), time=0))
                 
                 # build and emit gui text output
                 gui_output = (" " + key.char.upper() + "    " + kb_note + "   " + str((round(adj_time, 3))))
+                #~ self.emit(QtCore.SIGNAL("updateMakerText(QString)"), gui_output)
+                logging.info('ON  ' + gui_output)
+                
+                
+                self.hold_times.append(ticks)
+                
+            except (KeyError, AttributeError) as e:
+                logging.debug('invalid key {}'.format(e))
+                
+        # method call from key listener
+        def on_release(key):
+            # get the time that has passed since this thread started
+            time_since_start = time.time() - start_time
+
+            # check for cancel/done keypress (backspace/enter)
+            # remember gui btns simulate key presses
+            if key == keyboard.Key.backspace:
+                # discard file
+                self.emit(QtCore.SIGNAL("updateMakerGUI(QString)"), "Canceled... Discarding song...")
+                logging.info('maker-cancel btn clicked')
+                return False # returning False stops the key listener
+
+            elif key == keyboard.Key.enter:
+                # save file
+                mid.save(self.maker_song_name)
+                self.emit(QtCore.SIGNAL("updateMakerGUI(QString)"), "File saved successfully")
+                self.emit(QtCore.SIGNAL("updateMakerName()"))
+                logging.info('maker-done btn clicked')
+                return False
+
+            try:
+                # see if the key pressed is in dictionary of valid keys
+                midi_note = key2midi[key.char]
+                kb_note = key2note[key.char]
+                
+                # remove first element in hold_time list since it is already saved with the On Message
+                # add the rest of the elements up and add them to the Off Message
+                self.hold_times = self.hold_times[1:]
+
+                # if the key is valid find the time since last keypress
+                adj_time = time_since_start - self.prev_time
+                self.prev_time = time_since_start # ignore the time of any invalid keys
+
+                # convert time since last valid keypress to ticks (PPQN)
+                ticks = second2tick(adj_time, ticks_per_beat, tempo)
+                print(*self.hold_times)
+                print(sum(self.hold_times))
+                #~ ticks = ticks + sum(self.hold_times)
+                #~ self.hold_times.clear()
+
+                # for testing
+                #~ logging.info('adj_time: {}'.format(round(adj_time, 3)))
+                #~ logging.info('ticks: {}'.format(int(ticks)))
+
+                # add the note on/off data to the midi file
+                #~ track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                track.append(Message('note_off', note=int(midi_note), time=int(ticks)))
+
+                # build and emit gui text output
+                gui_output = (" " + key.char.upper() + "    " + kb_note + "   " + str((round(adj_time, 3))))
                 self.emit(QtCore.SIGNAL("updateMakerText(QString)"), gui_output)
-                logging.info(gui_output)
+                logging.info('OFF ' + gui_output)
                 
             except (KeyError, AttributeError) as e:
                 logging.debug('invalid key {}'.format(e))
         
         # starts a key listener (return False to stop)
         # this is actually starting a 3rd thread
-        with keyboard.Listener(on_press=on_press) as listener:
+        with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
             listener.join()
+            
 
         logging.info('Exiting makerThread')
 

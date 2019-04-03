@@ -46,6 +46,8 @@ def main():
     
 class MainWindow(QtGui.QWidget):
     
+    # put proj_path here and remove self?
+    
     def __init__(self, parent = None):
         super(MainWindow, self).__init__(parent) # super returns parent obj (QWidget obj)
         uic.loadUi('pyano/layout.ui', self) # load ui file from Qt Designer
@@ -74,34 +76,34 @@ class MainWindow(QtGui.QWidget):
         self.btn_player_alpha.clicked.connect(self.on_player_alpha_click)
         self.btn_player_add_files.clicked.connect(self.on_player_add_files_click)
         # icons not working with Qt Designer Resources. solution is setting them like this:
-        self.btn_player_back.setIcon(QtGui.QIcon('/home/pi/pyano-git/resources/player-back.png'))
-        self.btn_player_play.setIcon(QtGui.QIcon('/home/pi/pyano-git/resources/player-play.png'))
-        self.btn_player_pause.setIcon(QtGui.QIcon('/home/pi/pyano-git/resources/player-pause.png'))
-        self.btn_player_next.setIcon(QtGui.QIcon('/home/pi/pyano-git/resources/player-next.png'))
-        self.btn_player_stop.setIcon(QtGui.QIcon('/home/pi/pyano-git/resources/player-stop.png'))
-        self.btn_player_shuffle.setIcon(QtGui.QIcon('/home/pi/pyano-git/resources/player-shuffle.png'))
-        self.btn_player_alpha.setIcon(QtGui.QIcon('/home/pi/pyano-git/resources/player-alpha.png'))
-        self.btn_player_add_files.setIcon(QtGui.QIcon('/home/pi/pyano-git/resources/player-add.png'))
-        self.btn_player_home.setIcon(QtGui.QIcon('/home/pi/pyano-git/resources/home.png'))
+        self.btn_player_back.setIcon(QtGui.QIcon(self.proj_path + '/resources/player-back.png'))
+        self.btn_player_play.setIcon(QtGui.QIcon(self.proj_path + '/resources/player-play.png'))
+        self.btn_player_pause.setIcon(QtGui.QIcon(self.proj_path + '/resources/player-pause.png'))
+        self.btn_player_next.setIcon(QtGui.QIcon(self.proj_path + '/resources/player-next.png'))
+        self.btn_player_stop.setIcon(QtGui.QIcon(self.proj_path + '/resources/player-stop.png'))
+        self.btn_player_shuffle.setIcon(QtGui.QIcon(self.proj_path + '/resources/player-shuffle.png'))
+        self.btn_player_alpha.setIcon(QtGui.QIcon(self.proj_path + '/resources/player-alpha.png'))
+        self.btn_player_add_files.setIcon(QtGui.QIcon(self.proj_path + '/resources/player-add.png'))
+        self.btn_player_home.setIcon(QtGui.QIcon(self.proj_path + '/resources/home.png'))
         
         # maker page setup
         self.btn_maker_home.clicked.connect(self.on_home_click)
         self.btn_maker_start.clicked.connect(self.on_maker_start_click)
         self.btn_maker_done.clicked.connect(self.on_maker_done_click)
         self.btn_maker_cancel.clicked.connect(self.on_maker_cancel_click)
-        self.btn_maker_home.setIcon(QtGui.QIcon('/home/pi/pyano-git/resources/home.png'))
+        self.btn_maker_home.setIcon(QtGui.QIcon(self.proj_path + '/resources/home.png'))
         
         # live page setup
         self.btn_live_home.clicked.connect(self.on_home_click)
-        self.btn_live_home.setIcon(QtGui.QIcon('/home/pi/pyano-git/resources/home.png'))
+        self.btn_live_home.setIcon(QtGui.QIcon(self.proj_path + '/resources/home.png'))
         
         # guide page setup
         self.btn_guide_home.clicked.connect(self.on_home_click)
-        self.btn_guide_home.setIcon(QtGui.QIcon('/home/pi/pyano-git/resources/home.png'))
+        self.btn_guide_home.setIcon(QtGui.QIcon(self.proj_path + '/resources/home.png'))
         
         # credits page setup
         self.btn_credits_home.clicked.connect(self.on_home_click)
-        self.btn_credits_home.setIcon(QtGui.QIcon('/home/pi/pyano-git/resources/home.png'))
+        self.btn_credits_home.setIcon(QtGui.QIcon(self.proj_path + '/resources/home.png'))
         
         # always last things in __init__
         # stackedWidget 0-5 are the various GUI pages (home, p, m, l, guide, credits)
@@ -142,6 +144,10 @@ class MainWindow(QtGui.QWidget):
         self.connect(self.playerThread, QtCore.SIGNAL("updatePlayerText(QString)"), self.update_player_text)
         self.connect(self.playerThread, QtCore.SIGNAL("playerNextFile()"), self.player_next_file)
         self.connect(self.playerThread, QtCore.SIGNAL("updatePlayerProgress(int)"), self.update_player_progress)
+        self.connect(self.playerThread, QtCore.SIGNAL("playerSkipEnabled(bool)"), self.player_skip_enabled)
+        #~ self.connect(self.playerThread, QtCore.SIGNAL("playerEnableSkip()"), self.enable_player_skip)
+        
+        
         
         # fill in a file listWidget with all .mid files in directory
         self.listWidget_player_files.clear()
@@ -177,6 +183,7 @@ class MainWindow(QtGui.QWidget):
         # connect function calls in this thread to emits from makerThread
         self.connect(self.makerThread, QtCore.SIGNAL("updateMakerText(QString)"), self.update_maker_text)
         self.connect(self.makerThread, QtCore.SIGNAL("updateMakerGUI(QString)"), self.update_maker_gui)
+        self.connect(self.makerThread, QtCore.SIGNAL("updateMakerName()"), self.update_maker_filename)
         
     def on_live_click(self):
         logging.info('L I V E  btn clicked')
@@ -205,8 +212,7 @@ class MainWindow(QtGui.QWidget):
                                             "Are you sure you want to exit?",
                                             QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
         if choice == QtGui.QMessageBox.Yes:
-            logging.info("EXIT PRESSED: CLEANUP IO HERE")
-            logging.info('\n\n\n')
+            logging.info("EXIT PRESSED: CLEANUP IO HERE \n\n\n")
             sys.exit()
         logging.info('user selected not to exit')
 
@@ -230,7 +236,6 @@ class MainWindow(QtGui.QWidget):
             self.listWidget_player_files.setCurrentRow(0)
 
         # set the current song so playerThread can find its index in midi_file_list & knows where to start playing
-        #~ self.playerThread.current_song = self.listWidget_player_files.currentItem().text()
         self.playerThread.current_song = self.listWidget_player_files.currentRow()
         
         # display which file is highlighted/playing
@@ -238,16 +243,18 @@ class MainWindow(QtGui.QWidget):
         
         # play button has 2 uses: start playing when no song is playing & resume when a song is paused
         if self.btn_player_stop.isEnabled():
-            print ("Resume Playing")
+            logging.info("*Resume Playing*")
             self.playerThread.pause_check = False # un-pause song in playerThread
         else:
-            print ("Start Playing")
+            logging.info("*Start Playing*")
             self.btn_player_stop.setEnabled(True) 
             self.textEdit_player.clear() # move this to on_player_stop_click?
-            self.playerThread.start() # calls the run() method in playerThread
-            
             self.playerThread.stop_check = False
             self.playerThread.pause_check = False
+            self.playerThread.next_check = False
+            self.playerThread.back_check = False
+            self.playerThread.start() # calls the run() method in playerThread
+            self.progressBar_player.setValue(0)
 
     def on_player_pause_click(self):
         logging.info('player-pause btn clicked')
@@ -259,13 +266,17 @@ class MainWindow(QtGui.QWidget):
     def on_player_back_click(self):
         logging.info('player-back btn clicked')
         
+        self.playerThread.back_check = True
+        
         # when no file is highlighted, pressing back highlights the last file
         if self.listWidget_player_files.currentRow() == -1:
             self.listWidget_player_files.setCurrentRow(len(self.playerThread.midi_file_list)-1)
+            logging.info(self.listWidget_player_files.currentItem().text() + ' is selected')
         
         # update highlighted list item (don't let the user go back to before the first file)
         elif self.listWidget_player_files.currentRow() != 0:
             self.listWidget_player_files.setCurrentRow(self.listWidget_player_files.currentRow()-1)
+            logging.info(self.listWidget_player_files.currentItem().text() + ' is selected')
         
         #~ logging.info(self.listWidget_player_files.currentItem().text() + ' is selected')
         
@@ -278,26 +289,17 @@ class MainWindow(QtGui.QWidget):
     def on_player_next_click(self):
         logging.info('player-next btn clicked')
         
+        # when a song is paused clicking next automatically starts playing next file
+        
+        # update GUI (only if song is already playing/paused)
+        if not self.btn_player_home.isEnabled():
+            print("!")
+            self.btn_player_play.setVisible(False)
+            self.btn_player_pause.setVisible(True)
+        
         self.playerThread.next_check = True
         self.player_next_file()
         
-        #~ # update highlighted list item (don't let the user skip past the last file)
-        #~ if self.listWidget_player_files.currentRow() != len(self.playerThread.midi_file_list)-1:
-            #~ self.listWidget_player_files.setCurrentRow(self.listWidget_player_files.currentRow()+1)
-            #~ logging.info(self.listWidget_player_files.currentItem().text() + ' is selected')
-        #~ else:
-            #~ # clear highlighted file since going past index size
-            #~ self.listWidget_player_files.setCurrentRow(self.listWidget_player_files.currentRow()+1)
-            #~ # stop playback when last file ends or user skips past last file
-            #~ self.on_player_stop_click()
-        
-        #~ # update Now Playing text (only if song is playing, not when stopped)
-        #~ if not self.btn_player_home.isEnabled(): # home btn not enabled = song is playing or paused
-            #~ self.label_player.setText("Playing: {}".format(self.listWidget_player_files.currentItem().text()))
-            #~ if self.btn_player_play.isVisible():
-                #~ self.label_player.setText("Paused: {}".format(self.listWidget_player_files.currentItem().text()))
-        pass
-                
     def player_next_file(self):
         # linked to playerThread function call
         # updates GUI elements when player automatically finishes a file and moves to the next one
@@ -306,7 +308,7 @@ class MainWindow(QtGui.QWidget):
         if self.listWidget_player_files.currentRow() != len(self.playerThread.midi_file_list)-1:
             self.listWidget_player_files.setCurrentRow(self.listWidget_player_files.currentRow()+1)
             logging.info(self.listWidget_player_files.currentItem().text() + ' is selected')
-            print("!")
+            #~ print("!")
         else:
             # clear highlighted file since going past index size
             self.listWidget_player_files.setCurrentRow(self.listWidget_player_files.currentRow()+1)
@@ -315,12 +317,16 @@ class MainWindow(QtGui.QWidget):
         
         # update Now Playing text (only if song is playing, not when stopped)
         if not self.btn_player_home.isEnabled(): # home btn not enabled = song is playing or paused
-            self.label_player.setText("Playing: {}".format(self.listWidget_player_files.currentItem().text()))
-            if self.btn_player_play.isVisible():
-                self.label_player.setText("Paused: {}".format(self.listWidget_player_files.currentItem().text()))
+                self.label_player.setText("Playing: {}".format(self.listWidget_player_files.currentItem().text()))
+                self.progressBar_player.setValue(0)
         
     def on_player_stop_click(self):
         logging.info('player-stop btn clicked')
+        
+        # stop playback in the playerThread
+        self.playerThread.stop_check = True
+        
+        # update gui elements
         self.listWidget_player_files.setEnabled(True)
         self.btn_player_home.setEnabled(True)
         self.btn_player_add_files.setEnabled(True)
@@ -331,9 +337,8 @@ class MainWindow(QtGui.QWidget):
         self.btn_player_pause.setVisible(False)
         self.label_player.setText("Press play to begin")
         self.listWidget_player_files.setFocus()
+        self.progressBar_player.setValue(0)
         
-        # stop playback in the playerThread
-        self.playerThread.stop_check = True
         
     def on_player_shuffle_click(self):
         logging.info('player-shuffle btn clicked')
@@ -366,22 +371,21 @@ class MainWindow(QtGui.QWidget):
         logging.info('player-add-files btn clicked')
         
         new_files = []
-        dest_dir = "/home/pi/pyano-git/midi-files"
-        usb_list = os.listdir("/media/pi")
-        usb_list.remove("SETTINGS")
+        dest_dir = self.proj_path + '/midi-files'
+        usb_list = os.listdir('/media/pi')
+        usb_list.remove('SETTINGS')
         if not usb_list:
-            logging.info("There are no USB drives inserted.")
-            QtGui.QMessageBox.warning(self, 'Error', "No USB Drives Inserted", QtGui.QMessageBox.Close)
+            logging.info('There are no USB drives inserted.')
+            QtGui.QMessageBox.warning(self, 'Error', 'No USB Drives Inserted', QtGui.QMessageBox.Close)
         else:
             for drive in usb_list:
-                source_dir = ("/media/pi/%s" %drive)
-                files = glob.iglob(os.path.join(source_dir, "*.mid"))
-                for path2file in files: # f is the full path to midi file on USB
-                    f = os.path.basename(path2file)
-                    if os.path.isfile(path2file):
-                        shutil.copy2(path2file, dest_dir) # copy2 saves metadata
-                        logging.info("Added {}".format(path2file))
-                        if f not in self.playerThread.midi_file_list:
+                source_dir = ('/media/pi/{}'.format(drive))
+                for root, dirs, files in os.walk(source_dir):
+                    for f in files: # f would be something like "twinkle_twinkle.mid"
+                        if f not in self.playerThread.midi_file_list and f.endswith('.mid'):
+                            path2file = os.path.join(root, f)
+                            shutil.copy2(path2file, dest_dir) # copy2 saves metadata
+                            logging.info('Added {}'.format(f))
                             self.playerThread.midi_file_list.append(f)
                             new_files.append(f)
                         
@@ -392,9 +396,18 @@ class MainWindow(QtGui.QWidget):
                 self.on_player_shuffle_click()
             
             if new_files: # if the new file list is not empty execute this
-                QtGui.QMessageBox.warning(self, 'Success', "Files imported successfully", QtGui.QMessageBox.Close)
+                if len(new_files) < 10: # maximum number of new file names to show before just showing a number instead
+                    QtGui.QMessageBox.warning(self, 'Success', 
+                    'Files imported successfully: \n{}'.format('\n'.join(new_files)), 
+                    QtGui.QMessageBox.Close)
+                else: 
+                    QtGui.QMessageBox.warning(self, 'Success', 
+                    'Files imported successfully ({})'.format(len(new_files)), 
+                    QtGui.QMessageBox.Close)
             else:
-                QtGui.QMessageBox.warning(self, 'Error', "All .mid files have already been imported", QtGui.QMessageBox.Close)
+                QtGui.QMessageBox.warning(self, 'Error', 
+                'All .mid files have already been imported', 
+                QtGui.QMessageBox.Close)
 
     def update_player_text(self, text):
         self.textEdit_player.append(text)
@@ -403,7 +416,12 @@ class MainWindow(QtGui.QWidget):
 
     def update_player_progress(self, percentage):
         self.progressBar_player.setValue(percentage)
-        
+    
+    def player_skip_enabled(self, b):
+        if b:
+            self.btn_player_next.setEnabled(True)
+        else:
+            self.btn_player_next.setEnabled(False)
     
 #---MAKER PAGE ELEMENTS-------------------------------------------------
         
@@ -475,14 +493,11 @@ class MainWindow(QtGui.QWidget):
  
     def on_maker_done_click(self):        
         # simulate keypress to stop keywatcher code in makerThread (save file)
-        # simulating keypress calls update_maker_gui
+        # simulating keypress calls update_maker_gui & update_maker_filename
         # THIS IS STILL CALLING 2x (KNOWN THREADING ISSUE)
         kb = Controller()
         kb.press(Key.enter)
         kb.release(Key.enter)
-        
-        # update lineEdit_maker_name with first available file name
-        self.update_maker_filename()
         
     def on_maker_cancel_click(self):        
         # simulate keypress to stop keywatcher code in makerThread (discard file)

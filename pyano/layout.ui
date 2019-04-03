@@ -76,7 +76,7 @@ color: rgb(193, 193, 193);</string>
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="page_home">
        <widget class="QWidget" name="layoutWidget">
@@ -1005,7 +1005,7 @@ p, li { white-space: pre-wrap; }
             <enum>Qt::NoFocus</enum>
            </property>
            <property name="currentIndex">
-            <number>1</number>
+            <number>0</number>
            </property>
            <item>
             <property name="text">
@@ -1030,11 +1030,6 @@ p, li { white-space: pre-wrap; }
            <item>
             <property name="text">
              <string>150</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>160</string>
             </property>
            </item>
           </widget>
