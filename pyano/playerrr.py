@@ -3,9 +3,6 @@ import logging
 from PyQt4 import QtGui, QtCore, uic
 from mido import MidiFile, MidiTrack, Message, MetaMessage, second2tick, bpm2tempo, tempo2bpm
 import os # REMOVE?
-from pyano.IOPi import IOPi #Library for IOPI Plus expansion board
-
-
 
 #---WORKER THREAD: MIDI PLAYER------------------------------------------
 
@@ -20,24 +17,6 @@ class PlayerThread(QtCore.QThread):
         self.pause_check = False
         self.stop_check = False
         self.current_song = 0 # current_song is the index of the highlighted_file that is set when play btn is presed
-        
-        #IO setup
-        bus1 = IOPi(0x20) #address for first bus
-        bus2 = IOPi(0x21) #address for second bus
-
-        bus1.set_port_direction(0, 0x00) #set channels 1-8 on bus 1 to output
-                                         #first variable is the port (0 or1)
-                                         #second variable is bit by bit assignment (0 = out, 1 = in)
-        bus1.set_port_direction(1, 0x00) #set channes 9-16 on bus 1 to output
-        bus2.set_port_direction(0, 0x00) #set channels 1-8 on bus 2 to output
-        bus2.set_port_direction(1, 0xC0) #set channels 9-15 on bus 2 to output
-                                         #pin 16 is set to input for hardware control
-                                         
-        #Initialize all outputs to 0
-        bus1.write_port(0, 0x00)
-        bus1.write_port(1, 0x00)
-        bus2.write_port(0, 0x00)
-        bus2.write_port(1, 0x00)
     
     # this gets ran when the thread is activated (when play btn is clicked on player page)
     def run(self):  
@@ -45,21 +24,24 @@ class PlayerThread(QtCore.QThread):
         # play each file in midi_file_list starting from the index position of the highlighted file
         file_count = len(self.midi_file_list) # remember to -1 for index
         
-        # WHILE CURRENT FILE < FILE COUNT CALL PLAY FILE
-        while self.current_song < file_count:
-            print("calling play_file()")
-            self.play_file()
-            
-            # TRY ADDING THIS STUFF BACK HERE OR AT TOP OF PLAY_FILE
-        
+        #~ for midi_file in self.midi_file_list: # midi_file is a string of the current MIDI file name
+        for midi_file in self.midi_file_list[self.current_song:]: # slice midi_file_list playback
             if self.stop_check:
                 return # exit if stop btn is pressed
+                
+            # disable skip (& back) btns until the song starts playing
+            self.emit(QtCore.SIGNAL("playerSkipEnabled(bool)"), False)
+            
+            mid = MidiFile(midi_file)  # mid is the current mido MIDI file playing
+            logging.info("Playing file: {}".format(midi_file))
+            self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "")
+            self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "Playing: {}".format(midi_file))
+            #~ time.sleep(1)
+            self.play_file(mid)
             
             # update GUI elements to show new song after each song ends
             if not self.stop_check and not self.back_check and not self.next_check:
                 self.emit(QtCore.SIGNAL("playerNextFile()"))
-            
-            self.current_song += 1
                 
             # reset GUI btn-click checks after each file
             self.pause_check = False
@@ -68,24 +50,8 @@ class PlayerThread(QtCore.QThread):
             off_check = False
             #~ self.progress = 0 # DOES THIS GET TAKEN CARE OF BY ADAN'S CODE???
             
-            #make sure all outputs are low before playing the next song
-            #~ bus1.write_port(0, 0x00)
-            #~ bus1.write_port(1, 0x00)
-            #~ bus2.write_port(0, 0x00)
-            #~ bus2.write_port(1, 0x00)
             
-            
-    def play_file(self):
-        
-        # REORDER BEGGINING OF THIS
-        
-        # disable skip (& back) btns until the song starts playing
-        self.emit(QtCore.SIGNAL("playerSkipEnabled(bool)"), False)
-        midi_file = self.midi_file_list[self.current_song]
-        mid = MidiFile(midi_file)  # mid is the current mido MIDI file playing
-        logging.info("Playing file: {}".format(midi_file))
-        self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "")
-        self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "Playing: {}".format(midi_file))
+    def play_file(self, mid):
         
         progress = 0
         message_count = 0 #used to keep track of progress of a song
@@ -159,12 +125,6 @@ class PlayerThread(QtCore.QThread):
                 
                 while self.pause_check: # do not continue while pause variable is true
                     
-                    #turn off solenoids while song is paused
-                    #~ bus1.write_port(0, 0x00)
-                    #~ bus1.write_port(1, 0x00)
-                    #~ bus2.write_port(0, 0x00)
-                    #~ bus2.write_port(1, 0x00)
-                    
                     if self.stop_check:
                         print('***** STOP TEST 1 *****')
                         return
@@ -175,13 +135,13 @@ class PlayerThread(QtCore.QThread):
                         #~ time.sleep(2) # short delay before playing next song
                         return
                         
-                    if self.back_check:
-                        logging.info("*B A C K*")
-                        if progress > 5: #only decrement by 1 if progress is greater than 5%
-                            pass
-                        else: #decrement by 2 if progress is 5% or less
-                            self.current_song = self.current_song - 1
-                        return
+                    #~ if self.back_check:
+                        #~ logging.info("*B A C K*")
+                        #~ if progress > 5: #only decrement by 1 if progress is greater than 5%
+                             #~ current_song = current_song - 1
+                        #~ else: #decrement by 2 if progress is 5% or less
+                            #~ current_song = current_song - 2
+                        #~ return
                         
                     time.sleep(0.2)
                     
@@ -195,14 +155,13 @@ class PlayerThread(QtCore.QThread):
                 #~ time.sleep(2) # short delay before playing next song
                 return
                 
-            if self.back_check:
-                logging.info("*B A C K*")
-                if progress > 5: #only decrement by 1 if progress is greater than 5%
-                    pass
-                else: #decrement by 2 if progress is 5% or less
-                    self.current_song = self.current_song - 1
-                    print("!!!! {}".format(self.current_song))
-                return
+            #~ if self.back_check:
+                #~ logging.info("*B A C K*")
+                #~ if progress > 5: #only decrement by 1 if progress is greater than 5%
+                     #~ current_song = current_song - 1
+                #~ else: #decrement by 2 if progress is 5% or less
+                    #~ current_song = current_song - 2
+                #~ return
      
             if not msg.is_meta:
                 if msg.type != 'program_change' and msg.type != 'control_change':
@@ -263,114 +222,11 @@ class PlayerThread(QtCore.QThread):
         # google easier way? use dictionaries??
         #Output to solenoids
         if status == 'off ':
-            print("Note {} {}".format(note, status))
-            #~ self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "Note {} {}".format(note, status)) 
-            
-            if note == 1:
-                bus1.write_pin(1, 0)
-            elif note == 2:
-                bus1.write_pin(2, 0)
-            elif note == 3:
-                bus1.write_pin(3, 0)
-            elif note == 4:
-                bus1.write_pin(4, 0)
-            elif note == 5:
-                bus1.write_pin(5, 0)
-            elif note == 6:
-                bus1.write_pin(6, 0)
-            elif note == 7:
-                bus1.write_pin(7, 0)
-            elif note == 8:
-                bus1.write_pin(8, 0)
-            elif note == 9:
-                bus1.write_pin(9, 0)
-            elif note == 10:
-                bus1.write_pin(10, 0)
-            elif note == 11:
-                bus1.write_pin(11, 0)
-            elif note == 12:
-                bus1.write_pin(12, 0)
-            elif note == 13:
-                bus1.write_pin(13, 0)
-            elif note == 14:
-                bus1.write_pin(14, 0)
-            elif note == 15:
-                bus1.write_pin(15, 0)
-            elif note == 16:
-                bus1.write_pin(16, 0)
-            elif note == 17:
-                bus2.write_pin(1, 0)
-            elif note == 18:
-                bus2.write_pin(2, 0)
-            elif note == 19:
-                bus2.write_pin(3, 0)
-            elif note == 20:
-                bus2.write_pin(4, 0)
-            elif note == 21:
-                bus2.write_pin(5, 0)
-            elif note == 22:
-                bus2.write_pin(6, 0)
-            elif note == 23:
-                bus2.write_pin(7, 0)
-            elif note == 24:
-                bus2.write_pin(8, 0)
-            elif note == 25:
-                bus2.write_pin(9, 0)
+            pass
                 
         if status == 'on ':
             print("Note {} {}".format(note, status))
             self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "Note {} {}".format(note, status)) 
-            
-            if note == 1:
-                bus1.write_pin(1, 1)
-            elif note == 2:
-                bus1.write_pin(2, 1)
-            elif note == 3:
-                bus1.write_pin(3, 1)
-            elif note == 4:
-                bus1.write_pin(4, 1)
-            elif note == 5:
-                bus1.write_pin(5, 1)
-            elif note == 6:
-                bus1.write_pin(6, 1)
-            elif note == 7:
-                bus1.write_pin(7, 1)
-            elif note == 8:
-                bus1.write_pin(8, 1)
-            elif note == 9:
-                bus1.write_pin(9, 1)
-            elif note == 10:
-                bus1.write_pin(10, 1)
-            elif note == 11:
-                bus1.write_pin(11, 1)
-            elif note == 12:
-                bus1.write_pin(12, 1)
-            elif note == 13:
-                bus1.write_pin(13, 1)
-            elif note == 14:
-                bus1.write_pin(14, 1)
-            elif note == 15:
-                bus1.write_pin(15, 1)
-            elif note == 16:
-                bus1.write_pin(16, 1)
-            elif note == 17:
-                bus2.write_pin(1, 1)
-            elif note == 18:
-                bus2.write_pin(2, 1)
-            elif note == 19:
-                bus2.write_pin(3, 1)
-            elif note == 20:
-                bus2.write_pin(4, 1)
-            elif note == 21:
-                bus2.write_pin(5, 1)
-            elif note == 22:
-                bus2.write_pin(6, 1)
-            elif note == 23:
-                bus2.write_pin(7, 1)
-            elif note == 24:
-                bus2.write_pin(8, 1)
-            elif note == 25:
-                bus2.write_pin(9, 1)
          
         return
             

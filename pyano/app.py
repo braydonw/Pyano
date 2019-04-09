@@ -339,7 +339,6 @@ class MainWindow(QtGui.QWidget):
         self.listWidget_player_files.setFocus()
         self.progressBar_player.setValue(0)
         
-        
     def on_player_shuffle_click(self):
         logging.info('player-shuffle btn clicked')
         self.btn_player_alpha.setVisible(True)
