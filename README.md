@@ -79,7 +79,7 @@ pip install -r requirements.txt
 Update requirements after installing new packages:
 
 ```
-$ pip freeze > requirements.txt
+pip freeze > requirements.txt
 ```
 
 ### Running
