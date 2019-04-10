@@ -3,7 +3,7 @@ pkg-resources==0.0.0
 pynput==1.4
 python-xlib==0.25
 RPi.GPIO==0.6.5
-ruamel.yaml==0.15.89
+ruamel.yaml==0.15.91
 six==1.12.0
 smbus2==0.2.3
 vext==0.7.3
