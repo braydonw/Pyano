@@ -1,6 +1,7 @@
+# cleanup imports and only keep what is used / needed in this file
 import time
 import logging
-from PyQt4 import QtGui, QtCore, uic
+from PyQt4 import QtCore
 from mido import MidiFile, MidiTrack, Message, MetaMessage, second2tick, bpm2tempo, tempo2bpm
 import os # REMOVE?
 from pyano.IOPi import IOPi #Library for IOPI Plus expansion board
@@ -280,6 +281,7 @@ class PlayerThread(QtCore.QThread):
             print("Note {} {}".format(note, status))
             #~ self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "Note {} {}".format(note, status)) 
             
+            # CHANGE TO DICTIONARIES LIKE LIVE MODE!!!
             #~ if note == 1:
                 #~ bus1.write_pin(1, 0)
             #~ elif note == 2:

@@ -1,0 +1,373 @@
+INFO | 2019-04-10 01:30:57,611 | T:1996428864 | launching GUI
+INFO | 2019-04-10 01:30:58,928 | T:1996428864 | PATH: /home/pi/pyano-git
+INFO | 2019-04-10 01:30:59,622 | T:1996428864 | E X I T  btn pressed
+INFO | 2019-04-10 01:31:00,639 | T:1996428864 | EXIT PRESSED: CLEANUP IO HERE 
+
+
+
+INFO | 2019-04-10 01:32:49,476 | T:1996392000 | launching GUI
+INFO | 2019-04-10 01:32:50,062 | T:1996392000 | PATH: /home/pi/pyano-git
+INFO | 2019-04-10 01:32:50,566 | T:1996392000 | P L A Y E R  btn clicked
+INFO | 2019-04-10 01:32:53,556 | T:1996392000 | chopin_fantasie_imp.mid is selected
+INFO | 2019-04-10 01:32:57,845 | T:1996392000 | player-play btn clicked
+INFO | 2019-04-10 01:32:57,851 | T:1996392000 | *Start Playing*
+INFO | 2019-04-10 01:33:00,365 | T:1996392000 | custom_song_02.mid is selected
+INFO | 2019-04-10 01:33:02,134 | T:1996392000 | custom_song_03.mid is selected
+INFO | 2019-04-10 01:33:03,045 | T:1996392000 | player-stop btn clicked
+INFO | 2019-04-10 01:33:03,669 | T:1996392000 | H O M E  btn pressed
+INFO | 2019-04-10 01:33:04,504 | T:1996392000 | P L A Y E R  btn clicked
+INFO | 2019-04-10 01:33:04,517 | T:1996392000 | chopin_fantasie_imp.mid is selected
+INFO | 2019-04-10 01:33:08,917 | T:1996392000 | H O M E  btn pressed
+INFO | 2019-04-10 01:33:09,719 | T:1996392000 | P L A Y E R  btn clicked
+INFO | 2019-04-10 01:33:09,730 | T:1996392000 | chopin_fantasie_imp.mid is selected
+INFO | 2019-04-10 01:33:10,821 | T:1996392000 | H O M E  btn pressed
+INFO | 2019-04-10 01:33:12,055 | T:1996392000 | P L A Y E R  btn clicked
+INFO | 2019-04-10 01:33:12,066 | T:1996392000 | chopin_fantasie_imp.mid is selected
+INFO | 2019-04-10 01:33:12,613 | T:1996392000 | player-back btn clicked
+INFO | 2019-04-10 01:33:12,981 | T:1996392000 | player-play btn clicked
+INFO | 2019-04-10 01:33:12,985 | T:1996392000 | *Start Playing*
+INFO | 2019-04-10 01:33:14,398 | T:1996392000 | player-stop btn clicked
+INFO | 2019-04-10 01:33:15,582 | T:1996392000 | player-back btn clicked
+INFO | 2019-04-10 01:33:16,958 | T:1996392000 | player-back btn clicked
+INFO | 2019-04-10 01:33:17,502 | T:1996392000 | player-back btn clicked
+INFO | 2019-04-10 01:33:17,678 | T:1996392000 | player-back btn clicked
+INFO | 2019-04-10 01:33:17,886 | T:1996392000 | player-back btn clicked
+INFO | 2019-04-10 01:33:18,046 | T:1996392000 | player-back btn clicked
+INFO | 2019-04-10 01:33:18,233 | T:1996392000 | player-back btn clicked
+INFO | 2019-04-10 01:33:18,446 | T:1996392000 | player-back btn clicked
+INFO | 2019-04-10 01:33:20,686 | T:1996392000 | player-back btn clicked
+INFO | 2019-04-10 01:33:21,353 | T:1996392000 | player-play btn clicked
+INFO | 2019-04-10 01:33:21,373 | T:1996392000 | *Start Playing*
+INFO | 2019-04-10 01:33:22,229 | T:1996392000 | chpn_op66.mid is selected
+INFO | 2019-04-10 01:33:33,645 | T:1996392000 | custom_song_01.mid is selected
+INFO | 2019-04-10 01:33:35,509 | T:1996392000 | player-back btn clicked
+INFO | 2019-04-10 01:33:36,300 | T:1996392000 | chpn_op66.mid is selected
+INFO | 2019-04-10 01:33:46,927 | T:1996392000 | player-stop btn clicked
+INFO | 2019-04-10 01:33:47,354 | T:1996392000 | custom_song_01.mid is selected
+INFO | 2019-04-10 01:33:58,164 | T:1996392000 | H O M E  btn pressed
+INFO | 2019-04-10 01:33:58,711 | T:1996392000 | P L A Y E R  btn clicked
+INFO | 2019-04-10 01:33:58,722 | T:1996392000 | custom_song_01.mid is selected
+INFO | 2019-04-10 01:33:59,508 | T:1996392000 | player-play btn clicked
+INFO | 2019-04-10 01:33:59,512 | T:1996392000 | *Start Playing*
+INFO | 2019-04-10 01:34:01,108 | T:1996392000 | player-back btn clicked
+INFO | 2019-04-10 01:34:01,755 | T:1996392000 | twinkle_twinkle.mid is selected
+INFO | 2019-04-10 01:34:04,276 | T:1996392000 | player-pause btn clicked
+INFO | 2019-04-10 01:34:05,300 | T:1996392000 | player-stop btn clicked
+INFO | 2019-04-10 01:34:07,572 | T:1996392000 | player-back btn clicked
+INFO | 2019-04-10 01:34:07,764 | T:1996392000 | player-back btn clicked
+INFO | 2019-04-10 01:34:08,180 | T:1996392000 | player-back btn clicked
+INFO | 2019-04-10 01:34:08,884 | T:1996392000 | player-back btn clicked
+INFO | 2019-04-10 01:34:12,180 | T:1996392000 | player-back btn clicked
+INFO | 2019-04-10 01:36:17,715 | T:1996392000 | player-next btn clicked
+INFO | 2019-04-10 01:36:17,719 | T:1996392000 | custom_song_02.mid is selected
+INFO | 2019-04-10 01:36:18,180 | T:1996392000 | H O M E  btn pressed
+INFO | 2019-04-10 01:36:18,611 | T:1996392000 | E X I T  btn pressed
+INFO | 2019-04-10 01:36:19,307 | T:1996392000 | EXIT PRESSED: CLEANUP IO HERE 
+
+
+
+INFO | 2019-04-10 01:36:21,728 | T:1996338752 | launching GUI
+INFO | 2019-04-10 01:36:22,310 | T:1996338752 | PATH: /home/pi/pyano-git
+INFO | 2019-04-10 01:36:24,358 | T:1996338752 | P L A Y E R  btn clicked
+INFO | 2019-04-10 01:36:24,401 | T:1996338752 | custom_song_01.mid is selected
+INFO | 2019-04-10 01:36:25,987 | T:1996338752 | player-back btn clicked
+INFO | 2019-04-10 01:36:26,787 | T:1996338752 | player-back btn clicked
+INFO | 2019-04-10 01:36:27,379 | T:1996338752 | player-back btn clicked
+INFO | 2019-04-10 01:36:28,516 | T:1996338752 | H O M E  btn pressed
+INFO | 2019-04-10 01:36:29,156 | T:1996338752 | E X I T  btn pressed
+INFO | 2019-04-10 01:36:30,219 | T:1996338752 | EXIT PRESSED: CLEANUP IO HERE 
+
+
+
+INFO | 2019-04-10 01:38:30,968 | T:1995675200 | launching GUI
+INFO | 2019-04-10 01:38:31,544 | T:1995675200 | PATH: /home/pi/pyano-git
+INFO | 2019-04-10 01:38:31,939 | T:1995675200 | P L A Y E R  btn clicked
+INFO | 2019-04-10 01:38:31,985 | T:1995675200 | custom_song_01.mid is selected
+INFO | 2019-04-10 01:38:32,803 | T:1995675200 | player-back btn clicked
+INFO | 2019-04-10 01:38:34,787 | T:1995675200 | player-back btn clicked
+INFO | 2019-04-10 01:38:35,218 | T:1995675200 | player-back btn clicked
+INFO | 2019-04-10 01:38:35,490 | T:1995675200 | player-back btn clicked
+INFO | 2019-04-10 01:38:35,682 | T:1995675200 | player-back btn clicked
+INFO | 2019-04-10 01:38:35,874 | T:1995675200 | player-back btn clicked
+INFO | 2019-04-10 01:38:36,066 | T:1995675200 | player-back btn clicked
+INFO | 2019-04-10 01:38:36,243 | T:1995675200 | player-back btn clicked
+INFO | 2019-04-10 01:38:36,419 | T:1995675200 | player-back btn clicked
+INFO | 2019-04-10 01:38:37,042 | T:1995675200 | player-back btn clicked
+INFO | 2019-04-10 01:38:37,218 | T:1995675200 | player-back btn clicked
+INFO | 2019-04-10 01:38:37,426 | T:1995675200 | player-back btn clicked
+INFO | 2019-04-10 01:38:37,634 | T:1995675200 | player-back btn clicked
+INFO | 2019-04-10 01:38:37,890 | T:1995675200 | player-back btn clicked
+INFO | 2019-04-10 01:38:38,290 | T:1995675200 | player-back btn clicked
+INFO | 2019-04-10 01:38:39,651 | T:1995675200 | H O M E  btn pressed
+INFO | 2019-04-10 01:38:40,163 | T:1995675200 | E X I T  btn pressed
+INFO | 2019-04-10 01:38:40,879 | T:1995675200 | EXIT PRESSED: CLEANUP IO HERE 
+
+
+
+INFO | 2019-04-10 01:38:52,682 | T:1996076608 | launching GUI
+INFO | 2019-04-10 01:38:53,292 | T:1996076608 | PATH: /home/pi/pyano-git
+INFO | 2019-04-10 01:38:54,419 | T:1996076608 | P L A Y E R  btn clicked
+INFO | 2019-04-10 01:38:54,465 | T:1996076608 | custom_song_01.mid is selected
+INFO | 2019-04-10 01:38:55,298 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:38:56,162 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:38:56,323 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:38:56,498 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:38:56,674 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:38:56,882 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:38:57,090 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:38:57,346 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:38:57,714 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:38:58,082 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:38:58,306 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:38:58,482 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:38:58,642 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:38:58,818 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:38:58,994 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:38:59,170 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:38:59,346 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:38:59,538 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:38:59,714 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:38:59,906 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:00,082 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:00,242 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:00,434 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:00,962 | T:1996076608 | player-play btn clicked
+INFO | 2019-04-10 01:39:00,968 | T:1996076608 | *Start Playing*
+INFO | 2019-04-10 01:39:01,777 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:02,025 | T:1996076608 | custom_song_01.mid is selected
+INFO | 2019-04-10 01:39:02,834 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:03,395 | T:1996076608 | twinkle_twinkle.mid is selected
+INFO | 2019-04-10 01:39:04,260 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:04,594 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:04,802 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:05,010 | T:1996076608 | the_entertainer.mid is selected
+INFO | 2019-04-10 01:39:05,361 | T:1996076608 | player-pause btn clicked
+INFO | 2019-04-10 01:39:08,258 | T:1996076608 | player-play btn clicked
+INFO | 2019-04-10 01:39:08,262 | T:1996076608 | *Resume Playing*
+INFO | 2019-04-10 01:39:09,778 | T:1996076608 | player-pause btn clicked
+INFO | 2019-04-10 01:39:10,610 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:10,703 | T:1996076608 | silent_night_easy.mid is selected
+INFO | 2019-04-10 01:39:13,682 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:14,098 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:14,482 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:15,393 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:15,650 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:15,858 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:16,160 | T:1996076608 | maple_leaf_rag.mid is selected
+INFO | 2019-04-10 01:39:20,097 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:20,148 | T:1996076608 | custom_song_04.mid is selected
+INFO | 2019-04-10 01:39:21,522 | T:1996076608 | player-stop btn clicked
+INFO | 2019-04-10 01:39:24,642 | T:1996076608 | player-play btn clicked
+INFO | 2019-04-10 01:39:24,646 | T:1996076608 | *Start Playing*
+INFO | 2019-04-10 01:39:26,178 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:26,276 | T:1996076608 | twinkle_twinkle.mid is selected
+INFO | 2019-04-10 01:39:28,002 | T:1996076608 | player-pause btn clicked
+INFO | 2019-04-10 01:39:28,403 | T:1996076608 | player-stop btn clicked
+INFO | 2019-04-10 01:39:29,042 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:29,250 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:29,410 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:29,602 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:29,762 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:29,922 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:30,098 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:30,258 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:30,418 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:30,594 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:30,754 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:30,914 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:31,058 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:31,234 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:31,938 | T:1996076608 | player-shuffle btn clicked
+INFO | 2019-04-10 01:39:32,626 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:32,834 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:33,010 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:33,172 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:33,346 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:33,506 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:33,666 | T:1996076608 | player-back btn clicked
+INFO | 2019-04-10 01:39:33,986 | T:1996076608 | H O M E  btn pressed
+INFO | 2019-04-10 01:39:34,323 | T:1996076608 | E X I T  btn pressed
+INFO | 2019-04-10 01:39:36,026 | T:1996076608 | EXIT PRESSED: CLEANUP IO HERE 
+
+
+
+INFO | 2019-04-10 01:48:12,507 | T:1995482688 | launching GUI
+INFO | 2019-04-10 01:48:13,116 | T:1995482688 | PATH: /home/pi/pyano-git
+INFO | 2019-04-10 01:48:16,577 | T:1995482688 | P L A Y E R  btn clicked
+INFO | 2019-04-10 01:48:16,623 | T:1995482688 | chpn_op66.mid is selected
+INFO | 2019-04-10 01:48:17,615 | T:1995482688 | H O M E  btn pressed
+INFO | 2019-04-10 01:48:18,034 | T:1995482688 | L I V E  btn clicked
+INFO | 2019-04-10 01:48:20,896 | T:1995482688 | H O M E  btn pressed
+INFO | 2019-04-10 01:48:21,776 | T:1995482688 | E X I T  btn pressed
+INFO | 2019-04-10 01:48:22,694 | T:1995482688 | EXIT PRESSED: CLEANUP IO HERE 
+
+
+
+INFO | 2019-04-10 01:48:35,601 | T:1996416576 | launching GUI
+INFO | 2019-04-10 01:48:36,187 | T:1996416576 | PATH: /home/pi/pyano-git
+INFO | 2019-04-10 01:48:37,007 | T:1996416576 | L I V E  btn clicked
+INFO | 2019-04-10 01:58:35,693 | T:1996416576 | H O M E  btn pressed
+INFO | 2019-04-10 01:58:35,850 | T:1996416576 | G U I D E  btn clicked
+INFO | 2019-04-10 01:58:36,750 | T:1996416576 | H O M E  btn pressed
+INFO | 2019-04-10 01:58:37,469 | T:1996416576 | M A K E R  btn clicked
+INFO | 2019-04-10 01:58:37,519 | T:1996416576 | setting default song name to: custom_song_05.mid
+INFO | 2019-04-10 01:58:41,373 | T:1996416576 | H O M E  btn pressed
+INFO | 2019-04-10 01:58:42,125 | T:1996416576 | E X I T  btn pressed
+INFO | 2019-04-10 01:58:42,964 | T:1996416576 | EXIT PRESSED: CLEANUP IO HERE 
+
+
+
+INFO | 2019-04-10 02:11:54,151 | T:1995564608 | launching GUI
+INFO | 2019-04-10 02:11:54,724 | T:1995564608 | PATH: /home/pi/pyano-git
+INFO | 2019-04-10 02:11:55,559 | T:1995564608 | L I V E  btn clicked
+INFO | 2019-04-10 02:11:58,104 | T:1995564608 | H O M E  btn pressed
+INFO | 2019-04-10 02:11:58,488 | T:1995564608 | E X I T  btn pressed
+INFO | 2019-04-10 02:11:59,302 | T:1995564608 | EXIT PRESSED: CLEANUP IO HERE 
+
+
+
+INFO | 2019-04-10 02:12:17,047 | T:1996207680 | launching GUI
+INFO | 2019-04-10 02:12:17,619 | T:1996207680 | PATH: /home/pi/pyano-git
+INFO | 2019-04-10 02:12:18,442 | T:1996207680 | L I V E  btn clicked
+INFO | 2019-04-10 02:12:24,152 | T:1996207680 | H O M E  btn pressed
+INFO | 2019-04-10 02:12:24,567 | T:1996207680 | E X I T  btn pressed
+INFO | 2019-04-10 02:12:25,236 | T:1996207680 | EXIT PRESSED: CLEANUP IO HERE 
+
+
+
+INFO | 2019-04-10 02:13:10,817 | T:1995724352 | launching GUI
+INFO | 2019-04-10 02:13:11,410 | T:1995724352 | PATH: /home/pi/pyano-git
+INFO | 2019-04-10 02:13:12,023 | T:1995724352 | P L A Y E R  btn clicked
+INFO | 2019-04-10 02:13:12,066 | T:1995724352 | chpn_op66.mid is selected
+INFO | 2019-04-10 02:13:12,935 | T:1995724352 | H O M E  btn pressed
+INFO | 2019-04-10 02:13:13,449 | T:1995724352 | L I V E  btn clicked
+INFO | 2019-04-10 02:13:21,095 | T:1995724352 | H O M E  btn pressed
+INFO | 2019-04-10 02:13:21,559 | T:1995724352 | E X I T  btn pressed
+INFO | 2019-04-10 02:13:22,412 | T:1995724352 | EXIT PRESSED: CLEANUP IO HERE 
+
+
+
+INFO | 2019-04-10 02:14:37,771 | T:1996207680 | launching GUI
+INFO | 2019-04-10 02:14:38,360 | T:1996207680 | PATH: /home/pi/pyano-git
+INFO | 2019-04-10 02:14:39,160 | T:1996207680 | L I V E  btn clicked
+INFO | 2019-04-10 02:14:39,702 | T:1996207680 | live-start btn clicked
+INFO | 2019-04-10 02:14:46,150 | T:1996207680 | H O M E  btn pressed
+INFO | 2019-04-10 02:14:46,567 | T:1996207680 | E X I T  btn pressed
+INFO | 2019-04-10 02:14:47,267 | T:1996207680 | EXIT PRESSED: CLEANUP IO HERE 
+
+
+
+INFO | 2019-04-10 02:19:13,414 | T:1995966016 | launching GUI
+INFO | 2019-04-10 02:19:13,990 | T:1995966016 | PATH: /home/pi/pyano-git
+INFO | 2019-04-10 02:19:15,513 | T:1995966016 | L I V E  btn clicked
+INFO | 2019-04-10 02:19:16,326 | T:1995966016 | live-start btn clicked
+INFO | 2019-04-10 02:19:18,309 | T:1995966016 | H O M E  btn pressed
+INFO | 2019-04-10 02:19:18,662 | T:1995966016 | E X I T  btn pressed
+INFO | 2019-04-10 02:19:19,395 | T:1995966016 | EXIT PRESSED: CLEANUP IO HERE 
+
+
+
+INFO | 2019-04-10 02:19:27,315 | T:1995761216 | launching GUI
+INFO | 2019-04-10 02:19:27,898 | T:1995761216 | PATH: /home/pi/pyano-git
+INFO | 2019-04-10 02:19:28,503 | T:1995761216 | M A K E R  btn clicked
+INFO | 2019-04-10 02:19:28,573 | T:1995761216 | setting default song name to: custom_song_05.mid
+INFO | 2019-04-10 02:19:29,589 | T:1995761216 | H O M E  btn pressed
+INFO | 2019-04-10 02:19:30,038 | T:1995761216 | L I V E  btn clicked
+INFO | 2019-04-10 02:19:30,885 | T:1995761216 | live-start btn clicked
+INFO | 2019-04-10 02:19:35,349 | T:1995761216 | H O M E  btn pressed
+INFO | 2019-04-10 02:19:35,973 | T:1995761216 | E X I T  btn pressed
+INFO | 2019-04-10 02:19:37,006 | T:1995761216 | EXIT PRESSED: CLEANUP IO HERE 
+
+
+
+INFO | 2019-04-10 02:19:48,016 | T:1995785792 | launching GUI
+INFO | 2019-04-10 02:19:48,653 | T:1995785792 | PATH: /home/pi/pyano-git
+INFO | 2019-04-10 02:19:49,301 | T:1995785792 | L I V E  btn clicked
+INFO | 2019-04-10 02:19:49,765 | T:1995785792 | live-start btn clicked
+INFO | 2019-04-10 02:19:58,325 | T:1995785792 | live-start btn clicked
+INFO | 2019-04-10 02:20:02,405 | T:1995785792 | H O M E  btn pressed
+INFO | 2019-04-10 02:20:02,949 | T:1995785792 | E X I T  btn pressed
+INFO | 2019-04-10 02:20:03,600 | T:1995785792 | EXIT PRESSED: CLEANUP IO HERE 
+
+
+
+INFO | 2019-04-10 02:20:55,696 | T:1995966016 | launching GUI
+INFO | 2019-04-10 02:20:56,317 | T:1995966016 | PATH: /home/pi/pyano-git
+INFO | 2019-04-10 02:20:56,884 | T:1995966016 | L I V E  btn clicked
+INFO | 2019-04-10 02:20:57,941 | T:1995966016 | live-start btn clicked
+INFO | 2019-04-10 02:21:11,429 | T:1995966016 | H O M E  btn pressed
+INFO | 2019-04-10 02:21:11,923 | T:1995966016 | E X I T  btn pressed
+INFO | 2019-04-10 02:21:12,635 | T:1995966016 | EXIT PRESSED: CLEANUP IO HERE 
+
+
+
+INFO | 2019-04-10 02:22:19,996 | T:1996084800 | launching GUI
+INFO | 2019-04-10 02:22:20,605 | T:1996084800 | PATH: /home/pi/pyano-git
+INFO | 2019-04-10 02:22:21,188 | T:1996084800 | P L A Y E R  btn clicked
+INFO | 2019-04-10 02:22:21,233 | T:1996084800 | chpn_op66.mid is selected
+INFO | 2019-04-10 02:22:22,132 | T:1996084800 | H O M E  btn pressed
+INFO | 2019-04-10 02:22:22,694 | T:1996084800 | L I V E  btn clicked
+INFO | 2019-04-10 02:22:23,172 | T:1996084800 | live-start btn clicked
+INFO | 2019-04-10 02:22:26,388 | T:1996084800 | H O M E  btn pressed
+INFO | 2019-04-10 02:22:26,740 | T:1996084800 | E X I T  btn pressed
+INFO | 2019-04-10 02:22:27,554 | T:1996084800 | EXIT PRESSED: CLEANUP IO HERE 
+
+
+
+INFO | 2019-04-10 02:22:36,508 | T:1996355136 | launching GUI
+INFO | 2019-04-10 02:22:37,103 | T:1996355136 | PATH: /home/pi/pyano-git
+INFO | 2019-04-10 02:22:38,406 | T:1996355136 | M A K E R  btn clicked
+INFO | 2019-04-10 02:22:38,475 | T:1996355136 | setting default song name to: custom_song_05.mid
+INFO | 2019-04-10 02:22:38,995 | T:1996355136 | H O M E  btn pressed
+INFO | 2019-04-10 02:22:39,462 | T:1996355136 | L I V E  btn clicked
+INFO | 2019-04-10 02:22:39,957 | T:1996355136 | live-start btn clicked
+INFO | 2019-04-10 02:22:45,940 | T:1996355136 | H O M E  btn pressed
+INFO | 2019-04-10 02:22:46,388 | T:1996355136 | E X I T  btn pressed
+INFO | 2019-04-10 02:22:47,104 | T:1996355136 | EXIT PRESSED: CLEANUP IO HERE 
+
+
+
+INFO | 2019-04-10 02:22:52,234 | T:1996215872 | launching GUI
+INFO | 2019-04-10 02:22:52,824 | T:1996215872 | PATH: /home/pi/pyano-git
+INFO | 2019-04-10 02:22:53,332 | T:1996215872 | P L A Y E R  btn clicked
+INFO | 2019-04-10 02:22:53,374 | T:1996215872 | chpn_op66.mid is selected
+INFO | 2019-04-10 02:22:54,516 | T:1996215872 | H O M E  btn pressed
+INFO | 2019-04-10 02:22:54,854 | T:1996215872 | L I V E  btn clicked
+INFO | 2019-04-10 02:22:56,212 | T:1996215872 | live-start btn clicked
+INFO | 2019-04-10 02:23:03,876 | T:1996215872 | live-start btn clicked
+INFO | 2019-04-10 02:23:05,668 | T:1996215872 | H O M E  btn pressed
+INFO | 2019-04-10 02:23:06,116 | T:1996215872 | E X I T  btn pressed
+INFO | 2019-04-10 02:23:06,878 | T:1996215872 | EXIT PRESSED: CLEANUP IO HERE 
+
+
+
+INFO | 2019-04-10 02:23:34,979 | T:1995519552 | launching GUI
+INFO | 2019-04-10 02:23:35,562 | T:1995519552 | PATH: /home/pi/pyano-git
+INFO | 2019-04-10 02:23:36,741 | T:1995519552 | L I V E  btn clicked
+INFO | 2019-04-10 02:23:37,636 | T:1995519552 | live-start btn clicked
+INFO | 2019-04-10 02:23:59,396 | T:1995519552 | H O M E  btn pressed
+INFO | 2019-04-10 02:23:59,828 | T:1995519552 | E X I T  btn pressed
+INFO | 2019-04-10 02:24:00,592 | T:1995519552 | EXIT PRESSED: CLEANUP IO HERE 
+
+
+
+INFO | 2019-04-10 02:24:03,043 | T:1996236352 | launching GUI
+INFO | 2019-04-10 02:24:03,691 | T:1996236352 | PATH: /home/pi/pyano-git
+INFO | 2019-04-10 02:24:04,276 | T:1996236352 | L I V E  btn clicked
+INFO | 2019-04-10 02:24:05,060 | T:1996236352 | live-start btn clicked
+INFO | 2019-04-10 02:24:18,658 | T:1996236352 | H O M E  btn pressed
+INFO | 2019-04-10 02:24:19,108 | T:1996236352 | E X I T  btn pressed
+INFO | 2019-04-10 02:24:19,888 | T:1996236352 | EXIT PRESSED: CLEANUP IO HERE 
+
+
+
+INFO | 2019-04-10 02:24:32,678 | T:1995527744 | launching GUI
+INFO | 2019-04-10 02:24:33,264 | T:1995527744 | PATH: /home/pi/pyano-git
+INFO | 2019-04-10 02:24:34,595 | T:1995527744 | L I V E  btn clicked
+INFO | 2019-04-10 02:24:35,251 | T:1995527744 | live-start btn clicked
+INFO | 2019-04-10 02:25:28,195 | T:1995527744 | H O M E  btn pressed
+INFO | 2019-04-10 02:25:28,883 | T:1995527744 | E X I T  btn pressed
+INFO | 2019-04-10 02:25:29,836 | T:1995527744 | EXIT PRESSED: CLEANUP IO HERE 
+
+
+

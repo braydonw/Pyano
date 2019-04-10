@@ -1,3 +1,4 @@
+# cleanup imports and only keep what is used / needed in this file
 import os
 import sys
 import glob
@@ -12,7 +13,7 @@ from pynput import keyboard
 from pynput.keyboard import Key, Controller
 from pyano.player import PlayerThread
 from pyano.maker import MakerThread
-#~ from pyano.live import LiveThread
+from pyano.live import LiveThread
 
 def main():
     # setup simultaneous logging to log file and terminal window
@@ -95,6 +96,8 @@ class MainWindow(QtGui.QWidget):
         
         # live page setup
         self.btn_live_home.clicked.connect(self.on_home_click)
+        self.btn_live_start.clicked.connect(self.on_live_start_click)
+        self.btn_live_done.clicked.connect(self.on_live_done_click)
         self.btn_live_home.setIcon(QtGui.QIcon(self.proj_path + '/resources/home.png'))
         
         # guide page setup
@@ -193,7 +196,17 @@ class MainWindow(QtGui.QWidget):
         
         # setup page elements
         self.label_title.setText('L I V E')
+        self.btn_live_done.setVisible(False)
+        self.textEdit_live.clear()
         self.stackedWidget.setCurrentIndex(3) # last thing in setup so you cant see changes
+        
+        # setup maker thread (doesn't start until btn_maker_start is pressed
+        self.liveThread = LiveThread(None)
+        
+        # connect function calls in this thread to emits from liveThread
+        self.connect(self.liveThread, QtCore.SIGNAL("updateLiveText(QString)"), self.update_live_text)
+        self.connect(self.liveThread, QtCore.SIGNAL("resetLiveGUI()"), self.reset_live_gui)
+
         
     def on_guide_click(self):
         logging.info('G U I D E  btn clicked')
@@ -273,6 +286,11 @@ class MainWindow(QtGui.QWidget):
         if not self.btn_player_home.isEnabled():
             self.btn_player_play.setVisible(False)
             self.btn_player_pause.setVisible(True)
+            
+        else: # this allows you to go back when the song is not playing
+            self.listWidget_player_files.setCurrentRow(self.listWidget_player_files.currentRow()-1)
+            if self.listWidget_player_files.currentRow() == -1:
+                self.listWidget_player_files.setCurrentRow(len(self.playerThread.midi_file_list)-1)
             
         self.playerThread.back_check = True
     
@@ -568,6 +586,41 @@ class MainWindow(QtGui.QWidget):
         self.label_maker.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
         self.label_maker.setText(text)
 
+
+#---LIVE PAGE ELEMENTS--------------------------------------------------
+
+    def on_live_start_click(self):
+        logging.info('live-start btn clicked')
+        
+        # update GUI
+        self.btn_live_start.setVisible(False)
+        self.btn_live_done.setVisible(True)
+        self.btn_live_home.setEnabled(False)
+        self.textEdit_live.clear()
+        
+        # start live thread by calling its run() method
+        self.liveThread.start()
+    
+    def on_live_done_click(self):
+        # simulate keypress to stop keywatcher code in liveThread
+        # simulating keypress calls reset_live_gui
+        kb = Controller()
+        kb.press(Key.esc)
+        kb.release(Key.esc)
+        
+    def reset_live_gui(self):
+        self.btn_live_start.setVisible(True)
+        self.btn_live_done.setVisible(False)
+        self.btn_live_home.setEnabled(True)
+        
+    def update_live_text(self, text):
+        # update and auto-scroll textEdit box
+        # text is a string with key, note, and timing info
+        self.textEdit_live.append(text)
+        sb = self.textEdit_live.verticalScrollBar()
+        sb.setValue(sb.maximum())
+        
+        
 
 if __name__ == '__main__':
     main()

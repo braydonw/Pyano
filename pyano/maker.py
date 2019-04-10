@@ -1,3 +1,4 @@
+# cleanup imports and only keep what is used / needed in this file
 import time
 import logging
 from PyQt4 import QtGui, QtCore, uic
@@ -96,6 +97,9 @@ class MakerThread(QtCore.QThread):
                 
         # method call from key listener
         def on_release(key):
+            
+            # NEED TO ADD DICTIONARY CHECK HERE ALSO - INVALID KEYS ARE MESSING THIS UP!
+            
             # get the time that has passed since this thread started
             time_since_start = time.time() - start_time
 
