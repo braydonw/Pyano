@@ -143,9 +143,12 @@ class MainWindow(QtGui.QWidget):
         # connect function calls in this thread to emits from playerThread
         self.connect(self.playerThread, QtCore.SIGNAL("updatePlayerText(QString)"), self.update_player_text)
         self.connect(self.playerThread, QtCore.SIGNAL("playerNextFile()"), self.player_next_file)
+        self.connect(self.playerThread, QtCore.SIGNAL("playerLastFile()"), self.player_last_file)
         self.connect(self.playerThread, QtCore.SIGNAL("updatePlayerProgress(int)"), self.update_player_progress)
-        self.connect(self.playerThread, QtCore.SIGNAL("playerSkipEnabled(bool)"), self.player_skip_enabled)
+        self.connect(self.playerThread, QtCore.SIGNAL("playerNextEnabled(bool)"), self.player_next_enabled)
+        self.connect(self.playerThread, QtCore.SIGNAL("playerBackEnabled(bool)"), self.player_back_enabled)
         #~ self.connect(self.playerThread, QtCore.SIGNAL("playerEnableSkip()"), self.enable_player_skip)
+        
         
         
         
@@ -266,12 +269,23 @@ class MainWindow(QtGui.QWidget):
     def on_player_back_click(self):
         logging.info('player-back btn clicked')
         
+        # update GUI (only if song is already playing/paused)
+        if not self.btn_player_home.isEnabled():
+            self.btn_player_play.setVisible(False)
+            self.btn_player_pause.setVisible(True)
+            
         self.playerThread.back_check = True
+    
+    # ***
+    def player_last_file(self):
+        # only gets called when back btn is pressed and progress is < 5%
         
-        # when no file is highlighted, pressing back highlights the last file
-        if self.listWidget_player_files.currentRow() == -1:
+        # when no file or the first file is highlighted, pressing back highlights the last file
+        if self.listWidget_player_files.currentRow() == -1 or self.listWidget_player_files.currentRow() == 0:
             self.listWidget_player_files.setCurrentRow(len(self.playerThread.midi_file_list)-1)
             logging.info(self.listWidget_player_files.currentItem().text() + ' is selected')
+         
+            
         
         # update highlighted list item (don't let the user go back to before the first file)
         elif self.listWidget_player_files.currentRow() != 0:
@@ -285,7 +299,14 @@ class MainWindow(QtGui.QWidget):
             self.label_player.setText("Playing: {}".format(self.listWidget_player_files.currentItem().text()))
             if self.btn_player_play.isVisible():
                 self.label_player.setText("Paused: {}".format(self.listWidget_player_files.currentItem().text()))
-        
+    
+    # ***
+    def player_back_enabled(self, b):
+        if b:
+            self.btn_player_back.setEnabled(True)
+        else:
+            self.btn_player_back.setEnabled(False)
+                
     def on_player_next_click(self):
         logging.info('player-next btn clicked')
         
@@ -293,16 +314,16 @@ class MainWindow(QtGui.QWidget):
         
         # update GUI (only if song is already playing/paused)
         if not self.btn_player_home.isEnabled():
-            print("!")
             self.btn_player_play.setVisible(False)
             self.btn_player_pause.setVisible(True)
         
         self.playerThread.next_check = True
         self.player_next_file()
-        
+    
+    # ***
     def player_next_file(self):
+        # gets called when next btn is clicked AND when song naturally finishes  
         # linked to playerThread function call
-        # updates GUI elements when player automatically finishes a file and moves to the next one
         
         # update highlighted list item (don't let the user skip past the last file)
         if self.listWidget_player_files.currentRow() != len(self.playerThread.midi_file_list)-1:
@@ -319,7 +340,14 @@ class MainWindow(QtGui.QWidget):
         if not self.btn_player_home.isEnabled(): # home btn not enabled = song is playing or paused
                 self.label_player.setText("Playing: {}".format(self.listWidget_player_files.currentItem().text()))
                 self.progressBar_player.setValue(0)
-        
+    
+    # ***
+    def player_next_enabled(self, b):
+        if b:
+            self.btn_player_next.setEnabled(True)
+        else:
+            self.btn_player_next.setEnabled(False)
+                
     def on_player_stop_click(self):
         logging.info('player-stop btn clicked')
         
@@ -338,6 +366,9 @@ class MainWindow(QtGui.QWidget):
         self.label_player.setText("Press play to begin")
         self.listWidget_player_files.setFocus()
         self.progressBar_player.setValue(0)
+        
+        self.btn_player_back.setEnabled(True)
+        self.btn_player_next.setEnabled(True)
         
     def on_player_shuffle_click(self):
         logging.info('player-shuffle btn clicked')
@@ -416,11 +447,7 @@ class MainWindow(QtGui.QWidget):
     def update_player_progress(self, percentage):
         self.progressBar_player.setValue(percentage)
     
-    def player_skip_enabled(self, b):
-        if b:
-            self.btn_player_next.setEnabled(True)
-        else:
-            self.btn_player_next.setEnabled(False)
+    
     
 #---MAKER PAGE ELEMENTS-------------------------------------------------
         
