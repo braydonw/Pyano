@@ -1,26 +1,18 @@
-# cleanup imports and only keep what is used / needed in this file
-import os
-import sys
-import glob
-import time
-import shutil
-import string
-import logging
-import random
-from PyQt4 import QtGui, QtCore, uic
-from mido import MidiFile, MidiTrack, Message, second2tick, bpm2tempo
-from pynput import keyboard
+import os, sys, glob, shutil, time, string, random, logging, csv, random
+from PyQt4 import QtGui, QtCore, uic # GUI framework
+from pynput import keyboard # used to simulate key-presses
 from pynput.keyboard import Key, Controller
 from pyano.player import PlayerThread
 from pyano.maker import MakerThread
 from pyano.live import LiveThread
+from pyano.hero import HeroThread
 
 def main():
     # setup simultaneous logging to log file and terminal window
     # this for loop  is required because PyQt4 uses DEBUG logging level for uic
     for handler in logging.root.handlers[:]:
         logging.root.removeHandler(handler)
-    # format output to log file and console window
+    # format output to a log file and the console window
     fileFormatter = logging.Formatter('%(levelname)s | %(asctime)s | T:%(thread)d | %(message)s')
     consoleFormatter = logging.Formatter('%(levelname)s | %(message)s')
     rootLogger = logging.getLogger()
@@ -32,12 +24,9 @@ def main():
     consoleHandler.setFormatter(consoleFormatter)
     rootLogger.addHandler(consoleHandler)
     
-    # ADD IOPI & GPIO SETUP HERE
-    
     # setup and launch GUI
     logging.info('launching GUI')
     app = QtGui.QApplication(sys.argv)
-    #~ app.setStyle(QtGui.QStyleFactory.create('Cleanlooks'))
     GUI = MainWindow() # calls MainWindow's __init__ method
     GUI.show()
     sys.exit(app.exec_())
@@ -46,8 +35,6 @@ def main():
 #---MAIN THREAD: GUI----------------------------------------------------
     
 class MainWindow(QtGui.QWidget):
-    
-    # put proj_path here and remove self?
     
     def __init__(self, parent = None):
         super(MainWindow, self).__init__(parent) # super returns parent obj (QWidget obj)
@@ -76,7 +63,7 @@ class MainWindow(QtGui.QWidget):
         self.btn_player_shuffle.clicked.connect(self.on_player_shuffle_click)
         self.btn_player_alpha.clicked.connect(self.on_player_alpha_click)
         self.btn_player_add_files.clicked.connect(self.on_player_add_files_click)
-        # icons not working with Qt Designer Resources. solution is setting them like this:
+        # icons not working with Qt Designer Resources, solution is setting them like this:
         self.btn_player_back.setIcon(QtGui.QIcon(self.proj_path + '/resources/player-back.png'))
         self.btn_player_play.setIcon(QtGui.QIcon(self.proj_path + '/resources/player-play.png'))
         self.btn_player_pause.setIcon(QtGui.QIcon(self.proj_path + '/resources/player-pause.png'))
@@ -103,13 +90,21 @@ class MainWindow(QtGui.QWidget):
         # guide page setup
         self.btn_guide_home.clicked.connect(self.on_home_click)
         self.btn_guide_home.setIcon(QtGui.QIcon(self.proj_path + '/resources/home.png'))
+        self.btn_secret_hero.clicked.connect(self.on_hero_click)
+        self.btn_secret_hero.setStyleSheet("background-color:transparent;border:0;")
         
         # credits page setup
         self.btn_credits_home.clicked.connect(self.on_home_click)
         self.btn_credits_home.setIcon(QtGui.QIcon(self.proj_path + '/resources/home.png'))
         
+        # hero page setup
+        self.btn_hero_home.clicked.connect(self.on_home_click)
+        self.btn_hero_start.clicked.connect(self.on_hero_start_click)
+        self.btn_hero_cancel.clicked.connect(self.on_hero_cancel_click)
+        self.btn_hero_home.setIcon(QtGui.QIcon(self.proj_path + '/resources/home.png'))
+        
         # always last things in __init__
-        # stackedWidget 0-5 are the various GUI pages (home, p, m, l, guide, credits)
+        # stackedWidget 0-6 are the various GUI pages (home, p, m, l, guide, credits, hero)
         self.stackedWidget.setCurrentIndex(0) 
         self.showFullScreen()
         
@@ -150,10 +145,6 @@ class MainWindow(QtGui.QWidget):
         self.connect(self.playerThread, QtCore.SIGNAL("updatePlayerProgress(int)"), self.update_player_progress)
         self.connect(self.playerThread, QtCore.SIGNAL("playerNextEnabled(bool)"), self.player_next_enabled)
         self.connect(self.playerThread, QtCore.SIGNAL("playerBackEnabled(bool)"), self.player_back_enabled)
-        #~ self.connect(self.playerThread, QtCore.SIGNAL("playerEnableSkip()"), self.enable_player_skip)
-        
-        
-        
         
         # fill in a file listWidget with all .mid files in directory
         self.listWidget_player_files.clear()
@@ -197,6 +188,7 @@ class MainWindow(QtGui.QWidget):
         # setup page elements
         self.label_title.setText('L I V E')
         self.btn_live_done.setVisible(False)
+        self.label_live.setText("Press start to begin")
         self.textEdit_live.clear()
         self.stackedWidget.setCurrentIndex(3) # last thing in setup so you cant see changes
         
@@ -207,7 +199,6 @@ class MainWindow(QtGui.QWidget):
         self.connect(self.liveThread, QtCore.SIGNAL("updateLiveText(QString)"), self.update_live_text)
         self.connect(self.liveThread, QtCore.SIGNAL("resetLiveGUI()"), self.reset_live_gui)
 
-        
     def on_guide_click(self):
         logging.info('G U I D E  btn clicked')
         
@@ -220,6 +211,71 @@ class MainWindow(QtGui.QWidget):
         self.stackedWidget.setCurrentIndex(5)
         self.label_title.setText('C R E D I T S')
     
+    def on_hero_click(self):
+        logging.info('H E R O  btn clicked')
+        
+        # hide all yellow squares (move to init?)
+        self.label_z.setVisible(False)
+        self.label_x.setVisible(False)
+        self.label_c.setVisible(False)
+        self.label_c.setVisible(False)
+        self.label_v.setVisible(False)
+        self.label_b.setVisible(False)
+        self.label_n.setVisible(False)
+        self.label_m.setVisible(False)
+        self.label_s.setVisible(False)
+        self.label_d.setVisible(False)
+        self.label_g.setVisible(False)
+        self.label_h.setVisible(False)
+        self.label_j.setVisible(False)
+        
+        # setup page elements
+        self.stackedWidget.setCurrentIndex(6)
+        self.label_title.setText('P Y A N O   H E R O')
+        self.btn_hero_cancel.setVisible(False)
+        self.textEdit_hero_leader1.clear()
+        self.textEdit_hero_leader2.clear()
+        self.textEdit_hero_leader1.setAlignment(QtCore.Qt.AlignCenter)
+        self.textEdit_hero_leader2.setAlignment(QtCore.Qt.AlignCenter)
+        self.stackedWidget_hero.setCurrentIndex(0)
+        
+        # fill in comboBox with all non-custom midi files + a random option
+        self.comboBox_hero_song.clear()
+        self.comboBox_hero_song.addItem('Random')
+        os.chdir(self.proj_path + '/midi-files') 
+        for midi_file in sorted(glob.glob("*.mid")): # alphabetical sort since glob uses random order
+            # ignore custom files (only works if name starts with custom right now)
+            if not midi_file.startswith('custom'):
+                self.comboBox_hero_song.addItem(midi_file)
+        
+        # get top 7 highscores from leaderboard.csv file
+        with open(self.proj_path + '/pyano/leaderboard.csv', 'r') as lb_file:
+            highscores = []
+            try:
+                csv_reader = csv.reader(lb_file, delimiter=',', lineterminator='\n')
+                next(csv_reader) # skip first row containing field names
+                sorted_lb = sorted(csv_reader, key=lambda row: int(row[0]), reverse=True)
+                i = 0
+                for row in sorted_lb:
+                    if i == 7:
+                        break
+                    highscores.append(row)
+                    i += 1
+            except IndexError as e:
+                logging.error(e)
+        print(highscores)
+        
+        # display highscores in 2 panels: usernames & scores
+        for row in highscores:
+            self.textEdit_hero_leader1.append(row[1])
+            self.textEdit_hero_leader2.append(row[0])
+            
+        # setup hero thread (doesn't start until btn_maker_start is pressed
+        self.heroThread = HeroThread(None)
+        
+        # connect function calls in this thread to emits from heroThread
+        self.connect(self.heroThread, QtCore.SIGNAL("heroSongDone(QString)"), self.on_hero_cancel_click)
+        
     def on_exit_click(self):
         logging.info('E X I T  btn pressed')
         
@@ -231,6 +287,7 @@ class MainWindow(QtGui.QWidget):
             logging.info("EXIT PRESSED: CLEANUP IO HERE \n\n\n")
             sys.exit()
         logging.info('user selected not to exit')
+
 
 #---PLAYER PAGE ELEMENTS------------------------------------------------
 
@@ -294,7 +351,6 @@ class MainWindow(QtGui.QWidget):
             
         self.playerThread.back_check = True
     
-    # ***
     def player_last_file(self):
         # only gets called when back btn is pressed and progress is < 5%
         
@@ -318,7 +374,6 @@ class MainWindow(QtGui.QWidget):
             if self.btn_player_play.isVisible():
                 self.label_player.setText("Paused: {}".format(self.listWidget_player_files.currentItem().text()))
     
-    # ***
     def player_back_enabled(self, b):
         if b:
             self.btn_player_back.setEnabled(True)
@@ -338,7 +393,6 @@ class MainWindow(QtGui.QWidget):
         self.playerThread.next_check = True
         self.player_next_file()
     
-    # ***
     def player_next_file(self):
         # gets called when next btn is clicked AND when song naturally finishes  
         # linked to playerThread function call
@@ -359,7 +413,6 @@ class MainWindow(QtGui.QWidget):
                 self.label_player.setText("Playing: {}".format(self.listWidget_player_files.currentItem().text()))
                 self.progressBar_player.setValue(0)
     
-    # ***
     def player_next_enabled(self, b):
         if b:
             self.btn_player_next.setEnabled(True)
@@ -466,7 +519,6 @@ class MainWindow(QtGui.QWidget):
         self.progressBar_player.setValue(percentage)
     
     
-    
 #---MAKER PAGE ELEMENTS-------------------------------------------------
         
     def on_maker_start_click(self):
@@ -477,7 +529,7 @@ class MainWindow(QtGui.QWidget):
         self.makerThread.maker_song_name = self.lineEdit_maker_name.text()
         
         # 1.  make sure name doesn't contain any invalid characters
-        valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
+        valid_chars = "-_.()%s%s" % (string.ascii_letters, string.digits)
         invalid_chars = ""
         for c in self.makerThread.maker_song_name:
             if c not in valid_chars:
@@ -520,6 +572,8 @@ class MainWindow(QtGui.QWidget):
         self.btn_maker_home.setEnabled(False)
         self.comboBox_maker_BPM.setEnabled(False)
         self.lineEdit_maker_name.setEnabled(False)
+        self.label_maker_saveas.setEnabled(False)
+        self.label_maker_BPM.setEnabled(False)
         self.label_maker_recording_indicator.show()
         self.textEdit_maker.clear()
         self.label_maker.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
@@ -582,6 +636,8 @@ class MainWindow(QtGui.QWidget):
         self.btn_maker_home.setEnabled(True)
         self.comboBox_maker_BPM.setEnabled(True)
         self.lineEdit_maker_name.setEnabled(True)
+        self.label_maker_saveas.setEnabled(True)
+        self.label_maker_BPM.setEnabled(True)
         self.label_maker_recording_indicator.hide()
         self.label_maker.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
         self.label_maker.setText(text)
@@ -596,14 +652,18 @@ class MainWindow(QtGui.QWidget):
         self.btn_live_start.setVisible(False)
         self.btn_live_done.setVisible(True)
         self.btn_live_home.setEnabled(False)
+        self.label_live.setText("Press done to stop")
         self.textEdit_live.clear()
         
         # start live thread by calling its run() method
         self.liveThread.start()
     
     def on_live_done_click(self):
+        logging.info('live-done btn clicked')
+        
         # simulate keypress to stop keywatcher code in liveThread
         # simulating keypress calls reset_live_gui
+        # THIS IS STILL CALLING 2x (KNOWN THREADING ISSUE)
         kb = Controller()
         kb.press(Key.esc)
         kb.release(Key.esc)
@@ -612,6 +672,7 @@ class MainWindow(QtGui.QWidget):
         self.btn_live_start.setVisible(True)
         self.btn_live_done.setVisible(False)
         self.btn_live_home.setEnabled(True)
+        self.label_live.setText("Press start to begin")
         
     def update_live_text(self, text):
         # update and auto-scroll textEdit box
@@ -619,7 +680,76 @@ class MainWindow(QtGui.QWidget):
         self.textEdit_live.append(text)
         sb = self.textEdit_live.verticalScrollBar()
         sb.setValue(sb.maximum())
+
+
+#---HERO PAGE ELEMENTS--------------------------------------------------
+
+    def on_hero_start_click(self):
+        logging.info('hero-start btn clicked')
         
+        # check to see if hero_username is valid
+        # first pull username name from gui
+        self.heroThread.hero_username = self.lineEdit_hero_username.text()
+        # 1.  make sure name doesn't contain any invalid characters
+        valid_chars = "-_%s%s" % (string.ascii_letters, string.digits)
+        invalid_chars = ""
+        for c in self.heroThread.hero_username:
+            if c not in valid_chars:
+                invalid_chars += c
+        if invalid_chars:
+            QtGui.QMessageBox.warning(self, 'Error', "Invalid characters in name:\n %s" % invalid_chars, QtGui.QMessageBox.Close)
+            return
+        # 2.  make sure name is not too long 
+        if len(self.heroThread.hero_username) > 10:
+            QtGui.QMessageBox.warning(self, 'Error', "Username is too long \n10 character max", QtGui.QMessageBox.Close)
+            return
+        # 3.  make sure name is not empty
+        if len(self.heroThread.hero_username) <= 2:
+            QtGui.QMessageBox.warning(self, 'Error', "Username is either too short or empty \nMust be at least 3 characters", QtGui.QMessageBox.Close)
+            return
+        
+        # pull song variable from gui combobox
+        selection = str(self.comboBox_hero_song.currentText())
+        if selection == 'Random':
+            # build list of midi files then select a random one
+            os.chdir(self.proj_path + '/midi-files') 
+            midi_file_list = []
+            for midi_file in sorted(glob.glob("*.mid")):
+                # ignore custom files (only works if name starts with custom right now)
+                if not midi_file.startswith('custom'):
+                    midi_file_list.append(midi_file)
+            self.heroThread.hero_song = random.choice(midi_file_list)
+        else:
+            self.heroThread.hero_song = selection
+        self.label_hero_song.setText('Playing: ' + self.heroThread.hero_song)
+        
+        # update GUI
+        self.btn_hero_start.setVisible(False)
+        self.btn_hero_cancel.setVisible(True)
+        self.btn_hero_home.setEnabled(False)
+        self.stackedWidget_hero.setCurrentIndex(1)
+        
+        # FOR AN EXAMPLE
+        self.label_z.setVisible(True)
+        
+        # start hero thread by calling its run() method
+        self.heroThread.start()
+        
+    def on_hero_cancel_click(self):
+        logging.info('hero-done btn clicked')
+        
+        # update GUI
+        self.btn_hero_start.setVisible(True)
+        self.btn_hero_cancel.setVisible(False)
+        self.btn_hero_home.setEnabled(True)
+        self.stackedWidget_hero.setCurrentIndex(0)
+        
+        # FOR AN EXAMPLE
+        self.label_z.setVisible(False)
+        
+    def update_hero_score(self, score):
+        pass
+        self.label_hero_song.setText('Score: ' + score)
         
 
 if __name__ == '__main__':

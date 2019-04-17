@@ -1,10 +1,7 @@
-# cleanup imports and only keep what is used / needed in this file
-import time
-import logging
+import time, logging
 from PyQt4 import QtCore
 from mido import MidiFile, MidiTrack, Message, MetaMessage, second2tick, bpm2tempo, tempo2bpm
-import os # REMOVE?
-from pyano.IOPi import IOPi #Library for IOPI Plus expansion board
+from pyano.IOPi import IOPi
 
 
 #---WORKER THREAD: MIDI PLAYER------------------------------------------
@@ -21,20 +18,17 @@ class PlayerThread(QtCore.QThread):
         self.stop_check = False
         self.current_song = 0 # current_song is the index of the highlighted_file that is set when play btn is presed
         
-        #~ #IO setup
-        #~ bus1 = IOPi(0x20) #address for first bus
-        #~ bus2 = IOPi(0x21) #address for second bus
-
-        #~ bus1.set_port_direction(0, 0x00) #set channels 1-8 on bus 1 to output
-                                         #~ #first variable is the port (0 or1)
-                                         #~ #second variable is bit by bit assignment (0 = out, 1 = in)
-        #~ bus1.set_port_direction(1, 0x00) #set channes 9-16 on bus 1 to output
-        #~ bus2.set_port_direction(0, 0x00) #set channels 1-8 on bus 2 to output
-        #~ bus2.set_port_direction(1, 0xC0) #set channels 9-15 on bus 2 to output
-                                         #~ #pin 16 is set to input for hardware control
-                                         
-        #~ #Initialize all outputs to 0
-        #~ self.clear_outputs()
+        # IO setup
+        # get busses from i2c addresses
+        self.bus1 = IOPi(0x20)
+        self.bus2 = IOPi(0x21)
+        # set all 4 port directions to output (0x00)
+        self.bus1.set_port_direction(0, 0x00)
+        self.bus1.set_port_direction(1, 0x00)
+        self.bus2.set_port_direction(0, 0x00)
+        self.bus2.set_port_direction(1, 0x00) # THIS WAS 0xC0 ???? 
+        # initialize all outputs to 0
+        self.clear_outputs()
     
     # this gets ran when the thread is activated (when play btn is clicked on player page)
     def run(self):  
@@ -48,20 +42,13 @@ class PlayerThread(QtCore.QThread):
             if self.stop_check:
                 return # exit if stop btn is pressed
             
-            # ???
-            
-            
             # make sure all outputs are low before playing the next song
-            #~ self.clear_outputs()
+            self.clear_outputs()
             
             
     def play_file(self):
         
-        self.off_check = False
-        #~ self.on_check = False
-        
         # disable skip & back btns until the song starts playing
-        # could combine player_next_enabled & player_back_enabled into 1 function
         self.emit(QtCore.SIGNAL("playerNextEnabled(bool)"), False)
         self.emit(QtCore.SIGNAL("playerBackEnabled(bool)"), False)
         
@@ -93,7 +80,9 @@ class PlayerThread(QtCore.QThread):
             self.emit(QtCore.SIGNAL("playerNextFile()"))
             self.current_song += 1
             return
-            
+        
+        # variable inits
+        self.off_check = False
         progress = 0
         message_count = 0 # used to keep track of progress of a song
         current_message = 0 # used to keep track of the progress of a song
@@ -103,9 +92,8 @@ class PlayerThread(QtCore.QThread):
         file_length = (round(mid.length, 2))
         self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "Length: {}s".format(file_length))\
         
-        # **
         # go through midi file and convert + display the song's tempo in BPM
-        # only display the first temp change (some downloaded files have a ton of tempo changes that spam screen)
+        # only display the first tempo change (some downloaded files have a ton of tempo changes that spam screen)
         for msg in mid:
             if msg.is_meta and msg.type == 'set_tempo':
                 msg_data = str(msg)
@@ -115,7 +103,6 @@ class PlayerThread(QtCore.QThread):
                 break
         self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "BPM: {}".format(round(tempo2bpm(int(tempo)))))
         
-        # **
         # go through midi file for processing
         for msg in mid:
             # adjust octave range & count messages for song progress bar
@@ -125,19 +112,12 @@ class PlayerThread(QtCore.QThread):
                 self.adjust_octave(msg, notes)
                 message_count += 1 # message count is really only counting on/off messages
                 
-        # **
         # skip midi file if it does not have off commands
         if self.off_check == False:
             self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "This file cannot be played becuase it does not contain 'off' commands")
             self.emit(QtCore.SIGNAL("playerNextFile()"))
             self.current_song += 1
             return
-            
-        #~ if self.on_check == False:
-            #~ self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "This file cannot be played becuase it does not contain 'on' commands")
-            #~ self.emit(QtCore.SIGNAL("playerNextFile()"))
-            #~ self.current_song += 1
-            #~ return
         
         # WHAT IS ADJUST VALUE - UNDERSTAND BETTER
         # testing note range of each MIDI file
@@ -145,9 +125,13 @@ class PlayerThread(QtCore.QThread):
         max_value = max([int(i) for i in notes])
         range_notes = max_value - min_value
         adjust_value = min_value - 1 # the number that needs to be subtracted from every note to make it playable
-        print("All Notes: {}".format(notes))
+        #~ print("All Notes: {}".format(notes))
         print("Min Note: {} Max Note: {}".format(min_value, max_value))
         print("Range: ", range_notes)
+        
+        # enable skip & back btns after song processing completes
+        self.emit(QtCore.SIGNAL("playerNextEnabled(bool)"), True)
+        self.emit(QtCore.SIGNAL("playerBackEnabled(bool)"), True)
         
         # go through midi file and actually play notes          
         for msg in mid:
@@ -155,12 +139,10 @@ class PlayerThread(QtCore.QThread):
             # is there better way to have all same code in and out of pause check??
             if self.pause_check:
                 self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "*P A U S E D*")
+                self.clear_outputs()
                 
                 while self.pause_check: 
                     # stop/next/back are all same as when not paused except in here they also reset the pause_check 
-                    
-                    # turn off solenoids while song is paused
-                    #~ self.clear_outputs()
                     
                     if self.stop_check:
                         self.pause_check = False
@@ -189,12 +171,14 @@ class PlayerThread(QtCore.QThread):
                     time.sleep(0.2)
                     
             if self.stop_check:
+                self.clear_outputs()
                 return
         
             if self.next_check:
                 self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "*S K I P P E D*")
                 self.current_song +=1
                 self.next_check = False
+                self.clear_outputs()
                 return
                 
             if self.back_check:
@@ -207,6 +191,7 @@ class PlayerThread(QtCore.QThread):
                     # just return to main while loop and restart file from beginning 
                     self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "*R E S T A R T*")
                 self.back_check = False
+                self.clear_outputs()
                 return
      
             if not msg.is_meta and msg.type != 'program_change' and msg.type != 'control_change':
@@ -226,7 +211,6 @@ class PlayerThread(QtCore.QThread):
         self.emit(QtCore.SIGNAL("playerNextFile()"))
         self.current_song += 1
     
-    
     # NEED TO WRAP MY HEAD AROUND OCTAVE ADJUST - WHY IS THERE ANOTHER -24 WHILE NOTE>24 IN PLAY_NOTE???
     def adjust_octave(self, msg, notes):
         
@@ -245,155 +229,48 @@ class PlayerThread(QtCore.QThread):
         # check if the midi file has on/off commands
         if status == 'off ':
             self.off_check = True
-        #~ if status == 'on':
-            #~ self.on_check = True
             
         return
     
     def play_note(self, msg, notes, adjust_value):
         
-        # enable skip (& back) btns until the song starts playing
-        self.emit(QtCore.SIGNAL("playerNextEnabled(bool)"), True)
-        self.emit(QtCore.SIGNAL("playerBackEnabled(bool)"), True)
-        
+        # extract note and status from message
+        status = msg.type[len('note_'):]
         msg_data = str(msg)
-        temp1 = msg_data.find('note_')
-        temp2 = msg_data.find('channel')
-        status = msg_data[temp1 + 5:temp2]  # status = on or off (redundant: just use msg.type == 'note_on')
         temp1 = msg_data.find('note=')
         temp2 = msg_data.find('velocity=')
         note = msg_data[temp1 + 5:temp2]  # note represented as MIDI #
         note = int(note) - adjust_value # adjust notes to playable range
 
-        # ******** TRY BOTH WAYS !?!?!?
-        #adjust for notes that are still outside the range of the piano
+        # adjust for notes that are still outside the range of the piano
         while note > 24:
-            #~ note = note - 8 # changed from -24 to -8
             note = note - 24
-
-        #print to terminal for debug purposes
-        #~ print("Note {} {}".format(note, status))
-        #~ self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "Note {} {}".format(note, status))
         
-        # google easier way? use dictionaries??
-        #Output to solenoids
-        if status == 'off ':
-            print("Note {} {}".format(note, status))
-            #~ self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "Note {} {}".format(note, status)) 
-            
-            # CHANGE TO DICTIONARIES LIKE LIVE MODE!!!
-            #~ if note == 1:
-                #~ bus1.write_pin(1, 0)
-            #~ elif note == 2:
-                #~ bus1.write_pin(2, 0)
-            #~ elif note == 3:
-                #~ bus1.write_pin(3, 0)
-            #~ elif note == 4:
-                #~ bus1.write_pin(4, 0)
-            #~ elif note == 5:
-                #~ bus1.write_pin(5, 0)
-            #~ elif note == 6:
-                #~ bus1.write_pin(6, 0)
-            #~ elif note == 7:
-                #~ bus1.write_pin(7, 0)
-            #~ elif note == 8:
-                #~ bus1.write_pin(8, 0)
-            #~ elif note == 9:
-                #~ bus1.write_pin(9, 0)
-            #~ elif note == 10:
-                #~ bus1.write_pin(10, 0)
-            #~ elif note == 11:
-                #~ bus1.write_pin(11, 0)
-            #~ elif note == 12:
-                #~ bus1.write_pin(12, 0)
-            #~ elif note == 13:
-                #~ bus1.write_pin(13, 0)
-            #~ elif note == 14:
-                #~ bus1.write_pin(14, 0)
-            #~ elif note == 15:
-                #~ bus1.write_pin(15, 0)
-            #~ elif note == 16:
-                #~ bus1.write_pin(16, 0)
-            #~ elif note == 17:
-                #~ bus2.write_pin(1, 0)
-            #~ elif note == 18:
-                #~ bus2.write_pin(2, 0)
-            #~ elif note == 19:
-                #~ bus2.write_pin(3, 0)
-            #~ elif note == 20:
-                #~ bus2.write_pin(4, 0)
-            #~ elif note == 21:
-                #~ bus2.write_pin(5, 0)
-            #~ elif note == 22:
-                #~ bus2.write_pin(6, 0)
-            #~ elif note == 23:
-                #~ bus2.write_pin(7, 0)
-            #~ elif note == 24:
-                #~ bus2.write_pin(8, 0)
-            #~ elif note == 25:
-                #~ bus2.write_pin(9, 0)
-                
+        # print/update GUI with note and status
+        print("Note {} {}".format(note, status))
+        self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "Note {} {}".format(note, status)) 
+        
+        # turn solenoids on or off based on status variable
         if status == 'on ':
-            print("Note {} {}".format(note, status))
-            self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "Note {} {}".format(note, status)) 
-            
-            #~ if note == 1:
-                #~ bus1.write_pin(1, 1)
-            #~ elif note == 2:
-                #~ bus1.write_pin(2, 1)
-            #~ elif note == 3:
-                #~ bus1.write_pin(3, 1)
-            #~ elif note == 4:
-                #~ bus1.write_pin(4, 1)
-            #~ elif note == 5:
-                #~ bus1.write_pin(5, 1)
-            #~ elif note == 6:
-                #~ bus1.write_pin(6, 1)
-            #~ elif note == 7:
-                #~ bus1.write_pin(7, 1)
-            #~ elif note == 8:
-                #~ bus1.write_pin(8, 1)
-            #~ elif note == 9:
-                #~ bus1.write_pin(9, 1)
-            #~ elif note == 10:
-                #~ bus1.write_pin(10, 1)
-            #~ elif note == 11:
-                #~ bus1.write_pin(11, 1)
-            #~ elif note == 12:
-                #~ bus1.write_pin(12, 1)
-            #~ elif note == 13:
-                #~ bus1.write_pin(13, 1)
-            #~ elif note == 14:
-                #~ bus1.write_pin(14, 1)
-            #~ elif note == 15:
-                #~ bus1.write_pin(15, 1)
-            #~ elif note == 16:
-                #~ bus1.write_pin(16, 1)
-            #~ elif note == 17:
-                #~ bus2.write_pin(1, 1)
-            #~ elif note == 18:
-                #~ bus2.write_pin(2, 1)
-            #~ elif note == 19:
-                #~ bus2.write_pin(3, 1)
-            #~ elif note == 20:
-                #~ bus2.write_pin(4, 1)
-            #~ elif note == 21:
-                #~ bus2.write_pin(5, 1)
-            #~ elif note == 22:
-                #~ bus2.write_pin(6, 1)
-            #~ elif note == 23:
-                #~ bus2.write_pin(7, 1)
-            #~ elif note == 24:
-                #~ bus2.write_pin(8, 1)
-            #~ elif note == 25:
-                #~ bus2.write_pin(9, 1)
-         
+            if note < 17:
+                self.bus1.write_pin(note, 1)
+            else:
+                note -= 16
+                self.bus2.write_pin(note, 1)
+        elif status == 'off': 
+            if note < 17:
+                self.bus1.write_pin(note, 0)
+            else:
+                note -= 16
+                self.bus2.write_pin(note, 0)
+                
         return
             
-    #~ def clear_outputs(self):
-        #~ bus1.write_port(0, 0x00)
-        #~ bus1.write_port(1, 0x00)
-        #~ bus2.write_port(0, 0x00)
-        #~ bus2.write_port(1, 0x00)
+    def clear_outputs(self):
+        logging.info('CLEARING OUTPUTS')
+        self.bus1.write_port(0, 0x00)
+        self.bus1.write_port(1, 0x00)
+        self.bus2.write_port(0, 0x00)
+        self.bus2.write_port(1, 0x00)
     
     

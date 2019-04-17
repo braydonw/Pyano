@@ -1,10 +1,9 @@
-# cleanup imports and only keep what is used / needed in this file
-import time
-import logging
+import time, logging
 from PyQt4 import QtGui, QtCore, uic
 from mido import MidiFile, MidiTrack, Message, MetaMessage, second2tick, bpm2tempo
 from pynput import keyboard
 from pynput.keyboard import Key, Controller
+
 
 #---WORKER THREAD: MIDI MAKER-------------------------------------------
 
@@ -45,6 +44,9 @@ class MakerThread(QtCore.QThread):
         self.prev_time = 0 # self since we are modifying it in the on_press sub-method
         
         self.hold_times = []
+        
+        
+        # MOVE ADJ TIME AND STUFF TO HERE??
         
         # method call from key listener
         def on_press(key):
@@ -162,4 +164,3 @@ class MakerThread(QtCore.QThread):
             
 
         logging.info('Exiting makerThread')
-

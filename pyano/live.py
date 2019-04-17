@@ -1,8 +1,8 @@
-# cleanup imports and only keep what is used / needed in this file
-import time
+import time, logging
 from PyQt4 import QtCore
-from pynput import keyboard #reads keyboard inputs
-#~ from pyano.IOPi import IOPi #Library for IOPI Plus expansion board
+from pynput import keyboard
+from pyano.IOPi import IOPi
+
 
 #---WORKER THREAD: MIDI LIVE--------------------------------------------
 
@@ -11,29 +11,21 @@ class LiveThread(QtCore.QThread):
     def __init__(self, parent = None):
         super(LiveThread, self).__init__(parent)
         
-    # TRY TO MOVE IO SETUP OUT OF WORKER THREADS AND INTO MAIN WINDOW IF POSSIBLE
-    # MAY HAVE TO PASS SOME VARIABLES IN
-    #~ #IO setup
-    #~ bus1 = IOPi(0x20) #address for first bus
-    #~ bus2 = IOPi(0x21) #address for second bus
-    #~ bus1.set_port_direction(0, 0x00) #set channels 1-8 on bus 1 to output
-                                     #~ #first variable is the port (0 or1)
-                                     #~ #second variable is bit by bit assignment (0 = out, 1 = in)
-    #~ bus1.set_port_direction(1, 0x00) #set channes 9-16 on bus 1 to output
-    #~ bus2.set_port_direction(0, 0x00) #set channels 1-8 on bus 2 to output
-    #~ bus2.set_port_direction(1, 0xC0) #set channels 9-15 on bus 2 to output
-                                     #~ #pin 16 is set to input for hardware control
-
-    #~ #Initialize all outputs to 0
-    # MAKE INTO FUNCTION LIKE PLAYER HAS??
-    #~ bus1.write_port(0, 0x00)
-    #~ bus1.write_port(1, 0x00)
-    #~ bus2.write_port(0, 0x00)
-    #~ bus2.write_port(1, 0x00)
+        # IO setup
+        # get busses from i2c addresses
+        self.bus1 = IOPi(0x20)
+        self.bus2 = IOPi(0x21)
+        # set all 4 port directions to output (0x00)
+        self.bus1.set_port_direction(0, 0x00)
+        self.bus1.set_port_direction(1, 0x00)
+        self.bus2.set_port_direction(0, 0x00)
+        self.bus2.set_port_direction(1, 0x00) # THIS WAS 0xC0 ???? 
+        # initialize all outputs to 0
+        self.clear_outputs()
     
     def run(self):
         
-        # dictionaries that map qwerty-kb keys to solenoids
+        # dictionaries that map qwerty-kb keys to solenoids & piano notes
         key2solenoid = {'z':  1, 's':  2, 'x':  3, 'd':  4, 'c':  5, 'v':  6,
                         'g':  7, 'b':  8, 'h':  9, 'n': 10, 'j': 11, 'm': 12,
                         'q': 13, '2': 14, 'w': 15, '3': 16, 'e': 17, 'r': 18,
@@ -50,45 +42,38 @@ class LiveThread(QtCore.QThread):
                 gui_output = str(key.char) + " | " + note + "| " + str(solenoid) + " pressed"
                 self.emit(QtCore.SIGNAL("updateLiveText(QString)"), gui_output)
                 if solenoid < 17:
-                    #~ bus1.write_pin(solenoid, 1)
-                    pass
+                    self.bus1.write_pin(solenoid, 1)
                 else:
                     solenoid -= 16
-                    #~ bus2.write_pin(solenoid, 1)
-                #~ live_on(key.char)
-            except (KeyError, AttributeError) as e:
+                    self.bus2.write_pin(solenoid, 1)
+            except (KeyError, AttributeError):
                 pass
-            return
-
+                
+                
         def on_release(key):
             try:
                 solenoid = key2solenoid[key.char]
                 if solenoid < 17:
-                    #~ bus1.write_pin(solenoid, 0)
+                    self.bus1.write_pin(solenoid, 0)
                     pass
                 else:
                     solenoid -= 16
-                    #~ bus2.write_pin(solenoid, 0)
-                #~ live_off(key.char)
-            except (KeyError, AttributeError) as e:
+                    self.bus2.write_pin(solenoid, 0)
+            except (KeyError, AttributeError):
                 pass
                 
             if key == keyboard.Key.esc:
+                self.clear_outputs()
                 self.emit(QtCore.SIGNAL("resetLiveGUI()"))
-                #~ bus1.write_port(0, 0x00)
-                #~ bus1.write_port(1, 0x00)
-                #~ bus2.write_port(0, 0x00)
-                #~ bus2.write_port(1, 0x00)
-                return False
-
+                return False # stops keyboard.listener
+                
+        # start key listener that calls on_press and on_release for each key pressed
         with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
             listener.join()
-    
-    #~ bus1.write_port(0, 0x00)
-    #~ bus1.write_port(1, 0x00)
-    #~ bus2.write_port(0, 0x00)
-    #~ bus2.write_port(1, 0x00)
-
-
-if __name__ == "__main__":
-    main()
+            
+    def clear_outputs(self):
+        logging.info('CLEARING OUTPUTS')
+        self.bus1.write_port(0, 0x00)
+        self.bus1.write_port(1, 0x00)
+        self.bus2.write_port(0, 0x00)
+        self.bus2.write_port(1, 0x00)
