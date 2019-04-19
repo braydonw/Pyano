@@ -18,17 +18,17 @@ class PlayerThread(QtCore.QThread):
         self.stop_check = False
         self.current_song = 0 # current_song is the index of the highlighted_file that is set when play btn is presed
         
-        # IO setup
-        # get busses from i2c addresses
-        self.bus1 = IOPi(0x20)
-        self.bus2 = IOPi(0x21)
-        # set all 4 port directions to output (0x00)
-        self.bus1.set_port_direction(0, 0x00)
-        self.bus1.set_port_direction(1, 0x00)
-        self.bus2.set_port_direction(0, 0x00)
-        self.bus2.set_port_direction(1, 0x00) # THIS WAS 0xC0 ???? 
-        # initialize all outputs to 0
-        self.clear_outputs()
+        #~ # IO setup
+        #~ # get busses from i2c addresses
+        #~ self.bus1 = IOPi(0x20)
+        #~ self.bus2 = IOPi(0x21)
+        #~ # set all 4 port directions to output (0x00)
+        #~ self.bus1.set_port_direction(0, 0x00)
+        #~ self.bus1.set_port_direction(1, 0x00)
+        #~ self.bus2.set_port_direction(0, 0x00)
+        #~ self.bus2.set_port_direction(1, 0x00) # THIS WAS 0xC0 ???? 
+        #~ # initialize all outputs to 0
+        #~ self.clear_outputs()
     
     # this gets ran when the thread is activated (when play btn is clicked on player page)
     def run(self):  
@@ -90,7 +90,7 @@ class PlayerThread(QtCore.QThread):
 
         # get the length of MIDI file in seconds
         file_length = (round(mid.length, 2))
-        self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "Length: {}s".format(file_length))\
+        self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "Length: {}s".format(file_length))
         
         # go through midi file and convert + display the song's tempo in BPM
         # only display the first tempo change (some downloaded files have a ton of tempo changes that spam screen)
@@ -139,7 +139,7 @@ class PlayerThread(QtCore.QThread):
             # is there better way to have all same code in and out of pause check??
             if self.pause_check:
                 self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "*P A U S E D*")
-                self.clear_outputs()
+                #~ self.clear_outputs()
                 
                 while self.pause_check: 
                     # stop/next/back are all same as when not paused except in here they also reset the pause_check 
@@ -171,14 +171,14 @@ class PlayerThread(QtCore.QThread):
                     time.sleep(0.2)
                     
             if self.stop_check:
-                self.clear_outputs()
+                #~ self.clear_outputs()
                 return
         
             if self.next_check:
                 self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "*S K I P P E D*")
                 self.current_song +=1
                 self.next_check = False
-                self.clear_outputs()
+                #~ self.clear_outputs()
                 return
                 
             if self.back_check:
@@ -191,7 +191,7 @@ class PlayerThread(QtCore.QThread):
                     # just return to main while loop and restart file from beginning 
                     self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "*R E S T A R T*")
                 self.back_check = False
-                self.clear_outputs()
+                #~ self.clear_outputs()
                 return
      
             if not msg.is_meta and msg.type != 'program_change' and msg.type != 'control_change':
@@ -253,24 +253,28 @@ class PlayerThread(QtCore.QThread):
         # turn solenoids on or off based on status variable
         if status == 'on ':
             if note < 17:
-                self.bus1.write_pin(note, 1)
+                #~ self.bus1.write_pin(note, 1)
+                pass
             else:
                 note -= 16
-                self.bus2.write_pin(note, 1)
+                #~ self.bus2.write_pin(note, 1)
+                pass
         elif status == 'off': 
             if note < 17:
-                self.bus1.write_pin(note, 0)
+                #~ self.bus1.write_pin(note, 0)
+                pass
             else:
                 note -= 16
-                self.bus2.write_pin(note, 0)
+                #~ self.bus2.write_pin(note, 0)
+                pass
                 
         return
             
-    def clear_outputs(self):
-        logging.info('CLEARING OUTPUTS')
-        self.bus1.write_port(0, 0x00)
-        self.bus1.write_port(1, 0x00)
-        self.bus2.write_port(0, 0x00)
-        self.bus2.write_port(1, 0x00)
+    #~ def clear_outputs(self):
+        #~ logging.info('CLEARING OUTPUTS')
+        #~ self.bus1.write_port(0, 0x00)
+        #~ self.bus1.write_port(1, 0x00)
+        #~ self.bus2.write_port(0, 0x00)
+        #~ self.bus2.write_port(1, 0x00)
     
     

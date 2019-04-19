@@ -1,4 +1,4 @@
-import os, sys, glob, shutil, time, string, random, logging, csv, random
+import os, sys, glob, shutil, time, string, random, logging, csv
 from PyQt4 import QtGui, QtCore, uic # GUI framework
 from pynput import keyboard # used to simulate key-presses
 from pynput.keyboard import Key, Controller
@@ -49,6 +49,7 @@ class MainWindow(QtGui.QWidget):
         self.btn_player.clicked.connect(self.on_player_click)
         self.btn_maker.clicked.connect(self.on_maker_click)
         self.btn_live.clicked.connect(self.on_live_click)
+        self.btn_hero.clicked.connect(self.on_hero_click)
         self.btn_guide.clicked.connect(self.on_guide_click)
         self.btn_credits.clicked.connect(self.on_credits_click)
         self.btn_exit.clicked.connect(self.on_exit_click)
@@ -90,8 +91,6 @@ class MainWindow(QtGui.QWidget):
         # guide page setup
         self.btn_guide_home.clicked.connect(self.on_home_click)
         self.btn_guide_home.setIcon(QtGui.QIcon(self.proj_path + '/resources/home.png'))
-        self.btn_secret_hero.clicked.connect(self.on_hero_click)
-        self.btn_secret_hero.setStyleSheet("background-color:transparent;border:0;")
         
         # credits page setup
         self.btn_credits_home.clicked.connect(self.on_home_click)
@@ -100,7 +99,7 @@ class MainWindow(QtGui.QWidget):
         # hero page setup
         self.btn_hero_home.clicked.connect(self.on_home_click)
         self.btn_hero_start.clicked.connect(self.on_hero_start_click)
-        self.btn_hero_cancel.clicked.connect(self.on_hero_cancel_click)
+        self.btn_hero_stop.clicked.connect(self.on_hero_stop_click)
         self.btn_hero_home.setIcon(QtGui.QIcon(self.proj_path + '/resources/home.png'))
         
         # always last things in __init__
@@ -213,31 +212,19 @@ class MainWindow(QtGui.QWidget):
     
     def on_hero_click(self):
         logging.info('H E R O  btn clicked')
-        
-        # hide all yellow squares (move to init?)
-        self.label_z.setVisible(False)
-        self.label_x.setVisible(False)
-        self.label_c.setVisible(False)
-        self.label_c.setVisible(False)
-        self.label_v.setVisible(False)
-        self.label_b.setVisible(False)
-        self.label_n.setVisible(False)
-        self.label_m.setVisible(False)
-        self.label_s.setVisible(False)
-        self.label_d.setVisible(False)
-        self.label_g.setVisible(False)
-        self.label_h.setVisible(False)
-        self.label_j.setVisible(False)
-        
+
         # setup page elements
-        self.stackedWidget.setCurrentIndex(6)
         self.label_title.setText('P Y A N O   H E R O')
-        self.btn_hero_cancel.setVisible(False)
+        self.btn_hero_stop.setVisible(False)
         self.textEdit_hero_leader1.clear()
         self.textEdit_hero_leader2.clear()
         self.textEdit_hero_leader1.setAlignment(QtCore.Qt.AlignCenter)
         self.textEdit_hero_leader2.setAlignment(QtCore.Qt.AlignCenter)
         self.stackedWidget_hero.setCurrentIndex(0)
+        self.lineEdit_hero_username.clear()
+        self.lineEdit_hero_username.setFocus()
+        self.hide_all_hero_indicators() # NEW FUNCTION
+        self.stackedWidget.setCurrentIndex(6)
         
         # fill in comboBox with all non-custom midi files + a random option
         self.comboBox_hero_song.clear()
@@ -274,7 +261,10 @@ class MainWindow(QtGui.QWidget):
         self.heroThread = HeroThread(None)
         
         # connect function calls in this thread to emits from heroThread
-        self.connect(self.heroThread, QtCore.SIGNAL("heroSongDone(QString)"), self.on_hero_cancel_click)
+        self.connect(self.heroThread, QtCore.SIGNAL("updateHeroIndicator(QString, QString)"), self.update_hero_indicator)
+        self.connect(self.heroThread, QtCore.SIGNAL("updateHeroScore(QString)"), self.update_hero_score)
+        self.connect(self.heroThread, QtCore.SIGNAL("updateHeroHealth(QString)"), self.update_hero_health)
+        self.connect(self.heroThread, QtCore.SIGNAL("resetHeroGUI()"), self.reset_hero_gui)
         
     def on_exit_click(self):
         logging.info('E X I T  btn pressed')
@@ -725,33 +715,140 @@ class MainWindow(QtGui.QWidget):
         
         # update GUI
         self.btn_hero_start.setVisible(False)
-        self.btn_hero_cancel.setVisible(True)
+        self.btn_hero_stop.setVisible(True)
         self.btn_hero_home.setEnabled(False)
+        self.label_hero_health.setText('Health: 100%')
         self.stackedWidget_hero.setCurrentIndex(1)
         
         # FOR AN EXAMPLE
-        self.label_z.setVisible(True)
+        #~ self.label_z.setVisible(True)
         
         # start hero thread by calling its run() method
         self.heroThread.start()
         
-    def on_hero_cancel_click(self):
-        logging.info('hero-done btn clicked')
+    def on_hero_stop_click(self):
+        logging.info('hero-stop btn clicked')
+        
+        # simulate keypress to stop keywatcher code in liveThread
+        # simulating keypress calls reset_live_gui
+        # THIS IS STILL CALLING 2x (KNOWN THREADING ISSUE)
+        kb = Controller()
+        kb.press(Key.esc)
+        kb.release(Key.esc)
+        
+    def reset_hero_gui(self):
         
         # update GUI
         self.btn_hero_start.setVisible(True)
-        self.btn_hero_cancel.setVisible(False)
+        self.btn_hero_stop.setVisible(False)
         self.btn_hero_home.setEnabled(True)
         self.stackedWidget_hero.setCurrentIndex(0)
+        self.hide_all_hero_indicators()
+        self.textEdit_hero_leader1.clear()
+        self.textEdit_hero_leader2.clear()
+        self.textEdit_hero_leader1.setAlignment(QtCore.Qt.AlignCenter)
+        self.textEdit_hero_leader2.setAlignment(QtCore.Qt.AlignCenter)
+        self.update_hero_score('0')
         
-        # FOR AN EXAMPLE
+        # update top 7 highscores from leaderboard.csv file
+        with open(self.proj_path + '/pyano/leaderboard.csv', 'r') as lb_file:
+            highscores = []
+            try:
+                csv_reader = csv.reader(lb_file, delimiter=',', lineterminator='\n')
+                next(csv_reader) # skip first row containing field names
+                sorted_lb = sorted(csv_reader, key=lambda row: int(row[0]), reverse=True)
+                i = 0
+                for row in sorted_lb:
+                    if i == 7:
+                        break
+                    highscores.append(row)
+                    i += 1
+            except IndexError as e:
+                logging.error(e)
+        
+        # display highscores in 2 panels: usernames & scores
+        for row in highscores:
+            self.textEdit_hero_leader1.append(row[1])
+            self.textEdit_hero_leader2.append(row[0])
+    
+    def update_hero_indicator(self, key, color):
+        
+        # convert key string to a pyqt label_key
+        if key == 'z':
+            key = self.label_z
+        elif key == 'x':
+            key = self.label_x
+        elif key == 'c':
+            key = self.label_c
+        elif key == 'v':
+            key = self.label_v
+        elif key == 'b':
+            key = self.label_b
+        elif key == 'n':
+            key = self.label_n
+        elif key == 'm':
+            key = self.label_m
+        elif key == 's':
+            key = self.label_s
+        elif key == 'd':
+            key = self.label_d
+        elif key == 'g':
+            key = self.label_g
+        elif key == 'h':
+            key = self.label_h
+        elif key == 'j':
+            key = self.label_j 
+        
+        # swap color string with pyqt color data struct
+        if color == 'green':
+            color  = QtGui.QColor(0, 255, 0) 
+        elif color == 'yellow':
+            color  = QtGui.QColor(255, 255, 0) 
+        elif color == 'red':
+            color  = QtGui.QColor(255, 0, 0)
+        else: # if color = "tran" or anything else then hide it
+            key.setVisible(False)
+            return
+        
+        # format strings for setting stylesheet
+        border_values = "{r}, {g}, {b}, {a}".format(
+                                            r = color.red(),
+                                            g= color.green(),
+                                            b = color.blue(),
+                                            a = 255)
+        background_values = "{r}, {g}, {b}, {a}".format(
+                                            r = color.red(),
+                                            g = color.green(),
+                                            b = color.blue(),
+                                            a = 155)
+        
+        # update stylesheet and make label visible
+        key.setStyleSheet("QLabel { color: rgba("+border_values+"); background-color: rgba("+background_values+"); }")
+        key.setVisible(True)
+    
+    def hide_all_hero_indicators(self):
+        # hide all indicator labels
         self.label_z.setVisible(False)
-        
+        self.label_x.setVisible(False)
+        self.label_c.setVisible(False)
+        self.label_c.setVisible(False)
+        self.label_v.setVisible(False)
+        self.label_b.setVisible(False)
+        self.label_n.setVisible(False)
+        self.label_m.setVisible(False)
+        self.label_s.setVisible(False)
+        self.label_d.setVisible(False)
+        self.label_g.setVisible(False)
+        self.label_h.setVisible(False)
+        self.label_j.setVisible(False)
+    
     def update_hero_score(self, score):
-        pass
-        self.label_hero_song.setText('Score: ' + score)
+        self.label_hero_score.setText('Score: ' + score)
         
-
+    def update_hero_health(self, health):
+        self.label_hero_health.setText('Health: ' + health + '%')
+    
+    
 if __name__ == '__main__':
     main()
     

@@ -1,28 +1,4 @@
-import time
-from pynput import keyboard #reads keyboard inputs
-import os  # used for finding .mid files in the project folder
-import glob  # ^
-import mido  # used to create, edit, or read .mid files
-from IOPi import IOPi #Library for IOPI Plus expansion board
-#----------------------------------------------------
-#IO setup
-bus1 = IOPi(0x20) #address for first bus
-bus2 = IOPi(0x21) #address for second bus
-bus1.set_port_direction(0, 0x00) #set channels 1-8 on bus 1 to output
-                                 #first variable is the port (0 or1)
-                                 #second variable is bit by bit assignment (0 = out, 1 = in)
-bus1.set_port_direction(1, 0x00) #set channes 9-16 on bus 1 to output
-bus2.set_port_direction(0, 0x00) #set channels 1-8 on bus 2 to output
-bus2.set_port_direction(1, 0xC0) #set channels 9-15 on bus 2 to output
-                                 #pin 16 is set to input for hardware control
-								 #hardware control pin isnt actually necessary but I'm keeping
-								 #it for consistency and future proofing
-#----------------------------------------------------
-#Initialize all outputs to 0
-bus1.write_port(0, 0x00)
-bus1.write_port(1, 0x00)
-bus2.write_port(0, 0x00)
-bus2.write_port(1, 0x00)
+
 #----------------------------------------------------
 #global variables
 key_pressed = None
