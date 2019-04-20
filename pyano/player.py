@@ -43,7 +43,7 @@ class PlayerThread(QtCore.QThread):
                 return # exit if stop btn is pressed
             
             # make sure all outputs are low before playing the next song
-            self.clear_outputs()
+            #~ self.clear_outputs()
             
             
     def play_file(self):

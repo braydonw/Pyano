@@ -17,7 +17,7 @@ def main():
     consoleFormatter = logging.Formatter('%(levelname)s | %(message)s')
     rootLogger = logging.getLogger()
     rootLogger.setLevel(logging.INFO) # change to DEBUG for more UI info
-    fileHandler = logging.FileHandler(os.getcwd() + '/logs.log')
+    fileHandler = logging.FileHandler(os.getcwd() + '/pyano/logs.log')
     fileHandler.setFormatter(fileFormatter)
     rootLogger.addHandler(fileHandler)
     consoleHandler = logging.StreamHandler()
@@ -220,10 +220,11 @@ class MainWindow(QtGui.QWidget):
         self.textEdit_hero_leader2.clear()
         self.textEdit_hero_leader1.setAlignment(QtCore.Qt.AlignCenter)
         self.textEdit_hero_leader2.setAlignment(QtCore.Qt.AlignCenter)
-        self.stackedWidget_hero.setCurrentIndex(0)
-        self.lineEdit_hero_username.clear()
+        #~ self.lineEdit_hero_username.clear()
+        self.lineEdit_hero_username.setText("Braydon")
         self.lineEdit_hero_username.setFocus()
-        self.hide_all_hero_indicators() # NEW FUNCTION
+        self.hide_all_hero_indicators()
+        self.stackedWidget_hero.setCurrentIndex(0)
         self.stackedWidget.setCurrentIndex(6)
         
         # fill in comboBox with all non-custom midi files + a random option
@@ -749,6 +750,7 @@ class MainWindow(QtGui.QWidget):
         self.textEdit_hero_leader1.setAlignment(QtCore.Qt.AlignCenter)
         self.textEdit_hero_leader2.setAlignment(QtCore.Qt.AlignCenter)
         self.update_hero_score('0')
+        self.img_hero_kb.setFocus() # so continued typing doesnt modify username
         
         # update top 7 highscores from leaderboard.csv file
         with open(self.proj_path + '/pyano/leaderboard.csv', 'r') as lb_file:
