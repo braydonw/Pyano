@@ -70,6 +70,8 @@ class MakerThread(QtCore.QThread):
                 midi_note = key2midi[key.char]
                 kb_note = key2note[key.char]
                 
+                self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'maker', str(key.char), 'on')
+                
                 # if the key is valid find the time since last keypress
                 adj_time = time_since_start - self.prev_time
                 self.prev_time = time_since_start # ignore the time of any invalid keys
@@ -99,17 +101,13 @@ class MakerThread(QtCore.QThread):
                 
         # method call from key listener
         def on_release(key):
-            
-            # NEED TO ADD DICTIONARY CHECK HERE ALSO - INVALID KEYS ARE MESSING THIS UP!
-            
-            # get the time that has passed since this thread started
-            time_since_start = time.time() - start_time
 
             # check for cancel/done keypress (backspace/enter)
             # remember gui btns simulate key presses
-            if key == keyboard.Key.backspace:
+            if key == keyboard.Key.backspace or key == keyboard.Key.esc:
                 # discard file
                 self.emit(QtCore.SIGNAL("updateMakerGUI(QString)"), "Canceled... Discarding song...")
+                self.emit(QtCore.SIGNAL("hideAllIndicators()"))
                 logging.info('maker-cancel btn clicked')
                 return False # returning False stops the key listener
 
@@ -118,6 +116,7 @@ class MakerThread(QtCore.QThread):
                 mid.save(self.maker_song_name)
                 self.emit(QtCore.SIGNAL("updateMakerGUI(QString)"), "File saved successfully")
                 self.emit(QtCore.SIGNAL("updateMakerName()"))
+                self.emit(QtCore.SIGNAL("hideAllIndicators()"))
                 logging.info('maker-done btn clicked')
                 return False
 
@@ -125,6 +124,11 @@ class MakerThread(QtCore.QThread):
                 # see if the key pressed is in dictionary of valid keys
                 midi_note = key2midi[key.char]
                 kb_note = key2note[key.char]
+                
+                self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'maker', str(key.char), 'off')
+                
+                # get the time that has passed since this thread started
+                time_since_start = time.time() - start_time
                 
                 # remove first element in hold_time list since it is already saved with the On Message
                 # add the rest of the elements up and add them to the Off Message

@@ -55,28 +55,22 @@ class PlayerThread(QtCore.QThread):
         # use mido library to create mid object which is all the song/file data
         midi_file = self.midi_file_list[self.current_song]
         mid = MidiFile(midi_file)  # mid is the current mido MIDI file playing
-        self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "")
-        self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "Playing: {}".format(midi_file))
         
         # filter out files that are not MIDI type 1
         if mid.type == 0:
             # type 0 (single track): all messages are saved in one track
-            self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "MIDI Type: 0 (unsupported)")
             self.emit(QtCore.SIGNAL("playerNextFile()"))
             self.current_song += 1
             return
         elif mid.type == 1:
             # type 1 (synchronous): all tracks start at the same time
-            #~ self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "MIDI Type: 1")
             pass
         elif mid.type == 2:
             # type 2 (asynchronous): each track is independent of the others
-            self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "MIDI Type: 2 (unsupported)")
             self.emit(QtCore.SIGNAL("playerNextFile()"))
             self.current_song += 1
             return
         else:
-            self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "MIDI Type Error")
             self.emit(QtCore.SIGNAL("playerNextFile()"))
             self.current_song += 1
             return
@@ -90,7 +84,6 @@ class PlayerThread(QtCore.QThread):
 
         # get the length of MIDI file in seconds
         file_length = (round(mid.length, 2))
-        self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "Length: {}s".format(file_length))
         
         # go through midi file and convert + display the song's tempo in BPM
         # only display the first tempo change (some downloaded files have a ton of tempo changes that spam screen)
@@ -101,7 +94,6 @@ class PlayerThread(QtCore.QThread):
                 temp2 = msg_data.find('time=')
                 tempo = msg_data[temp1 + 6:temp2]
                 break
-        self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "BPM: {}".format(round(tempo2bpm(int(tempo)))))
         
         # go through midi file for processing
         for msg in mid:
@@ -114,7 +106,6 @@ class PlayerThread(QtCore.QThread):
                 
         # skip midi file if it does not have off commands
         if self.off_check == False:
-            self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "This file cannot be played becuase it does not contain 'off' commands")
             self.emit(QtCore.SIGNAL("playerNextFile()"))
             self.current_song += 1
             return
@@ -138,7 +129,7 @@ class PlayerThread(QtCore.QThread):
             
             # is there better way to have all same code in and out of pause check??
             if self.pause_check:
-                self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "*P A U S E D*")
+                self.emit(QtCore.SIGNAL("hideAllIndicators()"))
                 #~ self.clear_outputs()
                 
                 while self.pause_check: 
@@ -149,7 +140,6 @@ class PlayerThread(QtCore.QThread):
                         return
                 
                     if self.next_check:
-                        self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "*S K I P P E D*")
                         self.current_song +=1
                         self.next_check = False
                         self.pause_check = False
@@ -158,12 +148,9 @@ class PlayerThread(QtCore.QThread):
                     if self.back_check:
                         # file_length < 20 sec fixes not being able to go back a file when playing a really short file
                         if progress < 5 or file_length < 20: 
-                            self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "*P R E V I O U S*")
                             self.current_song -= 1
                             self.emit(QtCore.SIGNAL("playerLastFile()"))
-                        else:
-                            # just return to main while loop and restart file from beginning 
-                            self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "*R E S T A R T*")
+                        # otherwise just return to main while loop and restart file from beginning 
                         self.back_check = False
                         self.pause_check = False
                         return
@@ -171,26 +158,25 @@ class PlayerThread(QtCore.QThread):
                     time.sleep(0.2)
                     
             if self.stop_check:
+                self.emit(QtCore.SIGNAL("hideAllIndicators()"))
                 #~ self.clear_outputs()
                 return
         
             if self.next_check:
-                self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "*S K I P P E D*")
                 self.current_song +=1
                 self.next_check = False
+                self.emit(QtCore.SIGNAL("hideAllIndicators()"))
                 #~ self.clear_outputs()
                 return
                 
             if self.back_check:
                 # file_length < 20 sec fixes not being able to go back a file when playing a really short file
                 if progress < 5 or file_length < 20: 
-                    self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "*P R E V I O U S*")
                     self.current_song -= 1
                     self.emit(QtCore.SIGNAL("playerLastFile()"))
-                else:
-                    # just return to main while loop and restart file from beginning 
-                    self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "*R E S T A R T*")
+                # otherwise just return to main while loop and restart file from beginning 
                 self.back_check = False
+                self.emit(QtCore.SIGNAL("hideAllIndicators()"))
                 #~ self.clear_outputs()
                 return
      
@@ -234,6 +220,11 @@ class PlayerThread(QtCore.QThread):
     
     def play_note(self, msg, notes, adjust_value):
         
+        self.solenoid2key = {'1': 'z', '2': 's', '3': 'x', '4': 'd', '5': 'c', '6': 'v',
+                             '7': 'g', '8': 'b', '9': 'h', '10': 'n', '11': 'j', '12': 'm',
+                             '13': 'q', '14': '2', '15': 'w', '16': '3', '17': 'e', '18': 'r',
+                             '19': '5', '20': 't', '21': '6', '22': 'y', '23': '7', '24': 'u'}
+        
         # extract note and status from message
         status = msg.type[len('note_'):]
         msg_data = str(msg)
@@ -245,13 +236,18 @@ class PlayerThread(QtCore.QThread):
         # adjust for notes that are still outside the range of the piano
         while note > 24:
             note = note - 24
+            
+        try:
+            key = self.solenoid2key[str(note)]
+        except:
+            pass
         
         # print/update GUI with note and status
         print("Note {} {}".format(note, status))
-        self.emit(QtCore.SIGNAL("updatePlayerText(QString)"), "Note {} {}".format(note, status)) 
         
         # turn solenoids on or off based on status variable
-        if status == 'on ':
+        if status == 'on':
+            self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'player', key, 'on') 
             if note < 17:
                 #~ self.bus1.write_pin(note, 1)
                 pass
@@ -260,6 +256,7 @@ class PlayerThread(QtCore.QThread):
                 #~ self.bus2.write_pin(note, 1)
                 pass
         elif status == 'off': 
+            self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'player', key, 'off')
             if note < 17:
                 #~ self.bus1.write_pin(note, 0)
                 pass

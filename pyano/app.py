@@ -7,6 +7,11 @@ from pyano.maker import MakerThread
 from pyano.live import LiveThread
 from pyano.hero import HeroThread
 
+
+PROJ_PATH = '/home/pi/pyano-git'
+#~ PROJ_PATH = os.getcwd()
+
+
 def main():
     # setup simultaneous logging to log file and terminal window
     # this for loop  is required because PyQt4 uses DEBUG logging level for uic
@@ -42,8 +47,8 @@ class MainWindow(QtGui.QWidget):
         from resources import resources # pyrcc4 -o resources.py resources.qrc -py3
         
         # get path to project folder
-        self.proj_path = os.getcwd() # /home/pi/pyano-git
-        logging.info('PATH: {}'.format(self.proj_path))
+        #~ self.proj_path = os.getcwd() # /home/pi/pyano-git
+        logging.info('PATH: {}'.format(PROJ_PATH))
         
         # home page setup (connect GUI btn presses to function calls)
         self.btn_player.clicked.connect(self.on_player_click)
@@ -65,42 +70,44 @@ class MainWindow(QtGui.QWidget):
         self.btn_player_alpha.clicked.connect(self.on_player_alpha_click)
         self.btn_player_add_files.clicked.connect(self.on_player_add_files_click)
         # icons not working with Qt Designer Resources, solution is setting them like this:
-        self.btn_player_back.setIcon(QtGui.QIcon(self.proj_path + '/resources/player-back.png'))
-        self.btn_player_play.setIcon(QtGui.QIcon(self.proj_path + '/resources/player-play.png'))
-        self.btn_player_pause.setIcon(QtGui.QIcon(self.proj_path + '/resources/player-pause.png'))
-        self.btn_player_next.setIcon(QtGui.QIcon(self.proj_path + '/resources/player-next.png'))
-        self.btn_player_stop.setIcon(QtGui.QIcon(self.proj_path + '/resources/player-stop.png'))
-        self.btn_player_shuffle.setIcon(QtGui.QIcon(self.proj_path + '/resources/player-shuffle.png'))
-        self.btn_player_alpha.setIcon(QtGui.QIcon(self.proj_path + '/resources/player-alpha.png'))
-        self.btn_player_add_files.setIcon(QtGui.QIcon(self.proj_path + '/resources/player-add.png'))
-        self.btn_player_home.setIcon(QtGui.QIcon(self.proj_path + '/resources/home.png'))
+        self.btn_player_back.setIcon(QtGui.QIcon(PROJ_PATH + '/resources/player-back.png'))
+        self.btn_player_play.setIcon(QtGui.QIcon(PROJ_PATH + '/resources/player-play.png'))
+        self.btn_player_pause.setIcon(QtGui.QIcon(PROJ_PATH + '/resources/player-pause.png'))
+        self.btn_player_next.setIcon(QtGui.QIcon(PROJ_PATH + '/resources/player-next.png'))
+        self.btn_player_stop.setIcon(QtGui.QIcon(PROJ_PATH + '/resources/player-stop.png'))
+        self.btn_player_shuffle.setIcon(QtGui.QIcon(PROJ_PATH + '/resources/player-shuffle.png'))
+        self.btn_player_alpha.setIcon(QtGui.QIcon(PROJ_PATH + '/resources/player-alpha.png'))
+        self.btn_player_add_files.setIcon(QtGui.QIcon(PROJ_PATH + '/resources/player-add.png'))
+        self.btn_player_home.setIcon(QtGui.QIcon(PROJ_PATH + '/resources/home.png'))
         
         # maker page setup
         self.btn_maker_home.clicked.connect(self.on_home_click)
         self.btn_maker_start.clicked.connect(self.on_maker_start_click)
         self.btn_maker_done.clicked.connect(self.on_maker_done_click)
         self.btn_maker_cancel.clicked.connect(self.on_maker_cancel_click)
-        self.btn_maker_home.setIcon(QtGui.QIcon(self.proj_path + '/resources/home.png'))
+        self.btn_maker_home.setIcon(QtGui.QIcon(PROJ_PATH + '/resources/home.png'))
+        self.comboBox_maker_BPM.setCurrentIndex(1) # set to 120 BPM
         
         # live page setup
         self.btn_live_home.clicked.connect(self.on_home_click)
         self.btn_live_start.clicked.connect(self.on_live_start_click)
         self.btn_live_done.clicked.connect(self.on_live_done_click)
-        self.btn_live_home.setIcon(QtGui.QIcon(self.proj_path + '/resources/home.png'))
+        self.btn_live_home.setIcon(QtGui.QIcon(PROJ_PATH + '/resources/home.png'))
         
         # guide page setup
         self.btn_guide_home.clicked.connect(self.on_home_click)
-        self.btn_guide_home.setIcon(QtGui.QIcon(self.proj_path + '/resources/home.png'))
+        self.btn_guide_home.setIcon(QtGui.QIcon(PROJ_PATH + '/resources/home.png'))
         
         # credits page setup
         self.btn_credits_home.clicked.connect(self.on_home_click)
-        self.btn_credits_home.setIcon(QtGui.QIcon(self.proj_path + '/resources/home.png'))
+        self.btn_credits_home.setIcon(QtGui.QIcon(PROJ_PATH + '/resources/home.png'))
         
         # hero page setup
         self.btn_hero_home.clicked.connect(self.on_home_click)
         self.btn_hero_start.clicked.connect(self.on_hero_start_click)
         self.btn_hero_stop.clicked.connect(self.on_hero_stop_click)
-        self.btn_hero_home.setIcon(QtGui.QIcon(self.proj_path + '/resources/home.png'))
+        self.btn_hero_home.setIcon(QtGui.QIcon(PROJ_PATH + '/resources/home.png'))
+        self.comboBox_hero_difficulty.setCurrentIndex(1) # set to normal mode
         
         # always last things in __init__
         # stackedWidget 0-6 are the various GUI pages (home, p, m, l, guide, credits, hero)
@@ -113,16 +120,278 @@ class MainWindow(QtGui.QWidget):
     def on_home_click(self):
         logging.info('H O M E  btn pressed')
         self.stackedWidget.setCurrentIndex(0)
-        self.label_title.setText('P Y A N O')
+        self.label_title.setText(' P Y A N O')
+    
+    def hide_all_indicators(self):
+        # hide all indicator labels on all pages
         
+        # player page
+        self.ind_p1.setVisible(False)
+        self.ind_p2.setVisible(False)
+        self.ind_p3.setVisible(False)
+        self.ind_p4.setVisible(False)
+        self.ind_p5.setVisible(False)
+        self.ind_p6.setVisible(False)
+        self.ind_p7.setVisible(False)
+        self.ind_p8.setVisible(False)
+        self.ind_p9.setVisible(False)
+        self.ind_p10.setVisible(False)
+        self.ind_p11.setVisible(False)
+        self.ind_p12.setVisible(False)
+        self.ind_p13.setVisible(False)
+        self.ind_p14.setVisible(False)
+        self.ind_p15.setVisible(False)
+        self.ind_p16.setVisible(False)
+        self.ind_p17.setVisible(False)
+        self.ind_p18.setVisible(False)
+        self.ind_p19.setVisible(False)
+        self.ind_p20.setVisible(False)
+        self.ind_p21.setVisible(False)
+        self.ind_p22.setVisible(False)
+        self.ind_p23.setVisible(False)
+        self.ind_p24.setVisible(False)
+        
+        # maker page
+        self.ind_mz.setVisible(False)
+        self.ind_mx.setVisible(False)
+        self.ind_mc.setVisible(False)
+        self.ind_mv.setVisible(False)
+        self.ind_mb.setVisible(False)
+        self.ind_mn.setVisible(False)
+        self.ind_mm.setVisible(False)
+        self.ind_ms.setVisible(False)
+        self.ind_md.setVisible(False)
+        self.ind_mg.setVisible(False)
+        self.ind_mh.setVisible(False)
+        self.ind_mj.setVisible(False)
+        self.ind_mq.setVisible(False)
+        self.ind_mw.setVisible(False)
+        self.ind_me.setVisible(False)
+        self.ind_mr.setVisible(False)
+        self.ind_mt.setVisible(False)
+        self.ind_my.setVisible(False)
+        self.ind_mu.setVisible(False)
+        self.ind_m2.setVisible(False)
+        self.ind_m3.setVisible(False)
+        self.ind_m5.setVisible(False)
+        self.ind_m6.setVisible(False)
+        self.ind_m7.setVisible(False)
+        
+        # live page
+        self.ind_lz.setVisible(False)
+        self.ind_lx.setVisible(False)
+        self.ind_lc.setVisible(False)
+        self.ind_lv.setVisible(False)
+        self.ind_lb.setVisible(False)
+        self.ind_ln.setVisible(False)
+        self.ind_lm.setVisible(False)
+        self.ind_ls.setVisible(False)
+        self.ind_ld.setVisible(False)
+        self.ind_lg.setVisible(False)
+        self.ind_lh.setVisible(False)
+        self.ind_lj.setVisible(False)
+        self.ind_lq.setVisible(False)
+        self.ind_lw.setVisible(False)
+        self.ind_le.setVisible(False)
+        self.ind_lr.setVisible(False)
+        self.ind_lt.setVisible(False)
+        self.ind_ly.setVisible(False)
+        self.ind_lu.setVisible(False)
+        self.ind_l2.setVisible(False)
+        self.ind_l3.setVisible(False)
+        self.ind_l5.setVisible(False)
+        self.ind_l6.setVisible(False)
+        self.ind_l7.setVisible(False)
+        
+        # hero page
+        self.ind_hz.setVisible(False)
+        self.ind_hx.setVisible(False)
+        self.ind_hc.setVisible(False)
+        self.ind_hc.setVisible(False)
+        self.ind_hv.setVisible(False)
+        self.ind_hb.setVisible(False)
+        self.ind_hn.setVisible(False)
+        self.ind_hm.setVisible(False)
+        self.ind_hs.setVisible(False)
+        self.ind_hd.setVisible(False)
+        self.ind_hg.setVisible(False)
+        self.ind_hh.setVisible(False)
+        self.ind_hj.setVisible(False)
+        
+    def show_indicator(self, page, key, state):
+        # used for player, maker, and live indicators
+        # hero uses an advanced version that includes colors
+        
+        # convert key string to a pyqt label_key
+        
+        # player page
+        if page == 'player' and key == 'z':
+            key = self.ind_p1
+        elif page == 'player' and key == 's':
+            key = self.ind_p2
+        elif page == 'player' and key == 'x':
+            key = self.ind_p3
+        elif page == 'player' and key == 'd':
+            key = self.ind_p4
+        elif page == 'player' and key == 'c':
+            key = self.ind_p5
+        elif page == 'player' and key == 'v':
+            key = self.ind_p6
+        elif page == 'player' and key == 'g':
+            key = self.ind_p7
+        elif page == 'player' and key == 'b':
+            key = self.ind_p8
+        elif page == 'player' and key == 'h':
+            key = self.ind_p9
+        elif page == 'player' and key == 'n':
+            key = self.ind_p10
+        elif page == 'player' and key == 'j':
+            key = self.ind_p11
+        elif page == 'player' and key == 'm':
+            key = self.ind_p12
+        elif page == 'player' and key == 'q':
+            key = self.ind_p13
+        elif page == 'player' and key == '2':
+            key = self.ind_p14
+        elif page == 'player' and key == 'w':
+            key = self.ind_p15
+        elif page == 'player' and key == '3':
+            key = self.ind_p16
+        elif page == 'player' and key == 'e':
+            key = self.ind_p17
+        elif page == 'player' and key == 'r':
+            key = self.ind_p18
+        elif page == 'player' and key == '5':
+            key = self.ind_p19
+        elif page == 'player' and key == 't':
+            key = self.ind_p21
+        elif page == 'player' and key == '6':
+            key = self.ind_p21
+        elif page == 'player' and key == 'y':
+            key = self.ind_p22
+        elif page == 'player' and key == '7':
+            key = self.ind_p23
+        elif page == 'player' and key == 'u':
+            key = self.ind_p24
+            
+        # maker page
+        if page == 'maker' and key == 'z':
+            key = self.ind_mz
+        elif page == 'maker' and key == 's':
+            key = self.ind_ms
+        elif page == 'maker' and key == 'x':
+            key = self.ind_mx
+        elif page == 'maker' and key == 'd':
+            key = self.ind_md
+        elif page == 'maker' and key == 'c':
+            key = self.ind_mc
+        elif page == 'maker' and key == 'v':
+            key = self.ind_mv
+        elif page == 'maker' and key == 'g':
+            key = self.ind_mg
+        elif page == 'maker' and key == 'b':
+            key = self.ind_mb
+        elif page == 'maker' and key == 'h':
+            key = self.ind_mh
+        elif page == 'maker' and key == 'n':
+            key = self.ind_mn
+        elif page == 'maker' and key == 'j':
+            key = self.ind_mj
+        elif page == 'maker' and key == 'm':
+            key = self.ind_mm
+        elif page == 'maker' and key == 'q':
+            key = self.ind_mq
+        elif page == 'maker' and key == '2':
+            key = self.ind_m2
+        elif page == 'maker' and key == 'w':
+            key = self.ind_mw
+        elif page == 'maker' and key == '3':
+            key = self.ind_m3
+        elif page == 'maker' and key == 'e':
+            key = self.ind_me
+        elif page == 'maker' and key == 'r':
+            key = self.ind_mr
+        elif page == 'maker' and key == '5':
+            key = self.ind_m5
+        elif page == 'maker' and key == 't':
+            key = self.ind_mt
+        elif page == 'maker' and key == '6':
+            key = self.ind_m6
+        elif page == 'maker' and key == 'y':
+            key = self.ind_my
+        elif page == 'maker' and key == '7':
+            key = self.ind_m7
+        elif page == 'maker' and key == 'u':
+            key = self.ind_mu
+            
+        # live page
+        if page == 'live' and key == 'z':
+            key = self.ind_lz
+        elif page == 'live' and key == 's':
+            key = self.ind_ls
+        elif page == 'live' and key == 'x':
+            key = self.ind_lx
+        elif page == 'live' and key == 'd':
+            key = self.ind_ld
+        elif page == 'live' and key == 'c':
+            key = self.ind_lc
+        elif page == 'live' and key == 'v':
+            key = self.ind_lv
+        elif page == 'live' and key == 'g':
+            key = self.ind_lg
+        elif page == 'live' and key == 'b':
+            key = self.ind_lb
+        elif page == 'live' and key == 'h':
+            key = self.ind_lh
+        elif page == 'live' and key == 'n':
+            key = self.ind_ln
+        elif page == 'live' and key == 'j':
+            key = self.ind_lj
+        elif page == 'live' and key == 'm':
+            key = self.ind_lm
+        elif page == 'live' and key == 'q':
+            key = self.ind_lq
+        elif page == 'live' and key == '2':
+            key = self.ind_l2
+        elif page == 'live' and key == 'w':
+            key = self.ind_lw
+        elif page == 'live' and key == '3':
+            key = self.ind_l3
+        elif page == 'live' and key == 'e':
+            key = self.ind_le
+        elif page == 'live' and key == 'r':
+            key = self.ind_lr
+        elif page == 'live' and key == '5':
+            key = self.ind_l5
+        elif page == 'live' and key == 't':
+            key = self.ind_lt
+        elif page == 'live' and key == '6':
+            key = self.ind_l6
+        elif page == 'live' and key == 'y':
+            key = self.ind_ly
+        elif page == 'live' and key == '7':
+            key = self.ind_l7
+        elif page == 'live' and key == 'u':
+            key = self.ind_lu
+            
+        # turn indicator on based on state parameter
+        if state == 'on':
+            key.setVisible(True)
+        else:
+            key.setVisible(False)
+        
+        pass
         
 #---HOME PAGE ELEMENTS--------------------------------------------------
 
     def on_player_click(self):
         logging.info('P L A Y E R  btn clicked')
         
+        # setup player thread (doesn't start until btn_player_start is pressed)
+        self.playerThread = PlayerThread(None)
+        
         # setup page elements
-        self.label_title.setText('P L A Y E R')
+        self.label_title.setText(' P L A Y E R')
         self.listWidget_player_files.setFocus()
         self.btn_player_play.setVisible(True)
         self.btn_player_pause.setVisible(False)
@@ -130,24 +399,22 @@ class MainWindow(QtGui.QWidget):
         self.btn_player_alpha.setVisible(False) 
         self.btn_player_stop.setEnabled(False) 
         self.progressBar_player.setValue(0)
-        self.textEdit_player.clear()
         self.label_player.setText("Press play to begin")
+        self.hide_all_indicators()
         self.stackedWidget.setCurrentIndex(1) # last thing in setup so you cant see changes
         
-        # setup player thread (doesn't start until btn_player_start is pressed)
-        self.playerThread = PlayerThread(None)
-        
         # connect function calls in this thread to emits from playerThread
-        self.connect(self.playerThread, QtCore.SIGNAL("updatePlayerText(QString)"), self.update_player_text)
         self.connect(self.playerThread, QtCore.SIGNAL("playerNextFile()"), self.player_next_file)
         self.connect(self.playerThread, QtCore.SIGNAL("playerLastFile()"), self.player_last_file)
         self.connect(self.playerThread, QtCore.SIGNAL("updatePlayerProgress(int)"), self.update_player_progress)
         self.connect(self.playerThread, QtCore.SIGNAL("playerNextEnabled(bool)"), self.player_next_enabled)
         self.connect(self.playerThread, QtCore.SIGNAL("playerBackEnabled(bool)"), self.player_back_enabled)
+        self.connect(self.playerThread, QtCore.SIGNAL("showIndicator(QString, QString, QString)"), self.show_indicator)
+        self.connect(self.playerThread, QtCore.SIGNAL("hideAllIndicators()"), self.hide_all_indicators)
         
         # fill in a file listWidget with all .mid files in directory
         self.listWidget_player_files.clear()
-        os.chdir(self.proj_path + '/midi-files') 
+        os.chdir(PROJ_PATH + '/midi-files') 
         for midi_file in sorted(glob.glob("*.mid")): # alphabetical sort since glob uses random order
             self.playerThread.midi_file_list.append(midi_file) # build midi_file_list for playerThread
             self.listWidget_player_files.addItem(midi_file)
@@ -159,62 +426,71 @@ class MainWindow(QtGui.QWidget):
     def on_maker_click(self):
         logging.info('M A K E R  btn clicked')
         
+        # setup maker thread (doesn't start until btn_maker_start is pressed
+        self.makerThread = MakerThread(None)
+        os.chdir(PROJ_PATH + '/midi-files') # where to play files from
+        
         # setup page elements
-        self.label_title.setText('M A K E R')
+        self.label_title.setText(' M A K E R')
         self.kb_piano_img.setFocus() # removes focus from lineEdit_maker_name
         self.btn_maker_done.setVisible(False)
         self.btn_maker_cancel.setVisible(False)
         self.label_maker_recording_indicator.hide()
         self.label_maker.setText("Press start to begin")
         self.textEdit_maker.clear()
+        self.hide_all_indicators()
         self.stackedWidget.setCurrentIndex(2) # last thing in setup so you cant see changes
         
         # fill in lineEdit_maker_name with first available file name
         self.update_maker_filename()
         
-        # setup maker thread (doesn't start until btn_maker_start is pressed
-        self.makerThread = MakerThread(None)
-        os.chdir(self.proj_path + '/midi-files') # where to play files from
-        
         # connect function calls in this thread to emits from makerThread
         self.connect(self.makerThread, QtCore.SIGNAL("updateMakerText(QString)"), self.update_maker_text)
         self.connect(self.makerThread, QtCore.SIGNAL("updateMakerGUI(QString)"), self.update_maker_gui)
         self.connect(self.makerThread, QtCore.SIGNAL("updateMakerName()"), self.update_maker_filename)
+        self.connect(self.makerThread, QtCore.SIGNAL("showIndicator(QString, QString, QString)"), self.show_indicator)
+        self.connect(self.makerThread, QtCore.SIGNAL("hideAllIndicators()"), self.hide_all_indicators)
         
     def on_live_click(self):
         logging.info('L I V E  btn clicked')
         
+        # setup maker thread (doesn't start until btn_maker_start is pressed
+        self.liveThread = LiveThread(None)
+        
         # setup page elements
-        self.label_title.setText('L I V E')
+        self.label_title.setText(' L I V E')
         self.btn_live_done.setVisible(False)
         self.label_live.setText("Press start to begin")
         self.textEdit_live.clear()
+        self.hide_all_indicators()
         self.stackedWidget.setCurrentIndex(3) # last thing in setup so you cant see changes
-        
-        # setup maker thread (doesn't start until btn_maker_start is pressed
-        self.liveThread = LiveThread(None)
         
         # connect function calls in this thread to emits from liveThread
         self.connect(self.liveThread, QtCore.SIGNAL("updateLiveText(QString)"), self.update_live_text)
         self.connect(self.liveThread, QtCore.SIGNAL("resetLiveGUI()"), self.reset_live_gui)
+        self.connect(self.liveThread, QtCore.SIGNAL("showIndicator(QString, QString, QString)"), self.show_indicator)
+        self.connect(self.liveThread, QtCore.SIGNAL("hideAllIndicators()"), self.hide_all_indicators)
 
     def on_guide_click(self):
         logging.info('G U I D E  btn clicked')
         
         self.stackedWidget.setCurrentIndex(4)
-        self.label_title.setText('G U I D E')
+        self.label_title.setText(' G U I D E')
         
     def on_credits_click(self):
         logging.info('C R E D I T S  btn clicked')
         
         self.stackedWidget.setCurrentIndex(5)
-        self.label_title.setText('C R E D I T S')
+        self.label_title.setText(' C R E D I T S')
     
     def on_hero_click(self):
         logging.info('H E R O  btn clicked')
+        
+        # setup hero thread (doesn't start until btn_maker_start is pressed
+        self.heroThread = HeroThread(None)
 
         # setup page elements
-        self.label_title.setText('P Y A N O   H E R O')
+        self.label_title.setText(' H E R O')
         self.btn_hero_stop.setVisible(False)
         self.textEdit_hero_leader1.clear()
         self.textEdit_hero_leader2.clear()
@@ -223,49 +499,35 @@ class MainWindow(QtGui.QWidget):
         #~ self.lineEdit_hero_username.clear()
         self.lineEdit_hero_username.setText("Braydon")
         self.lineEdit_hero_username.setFocus()
-        self.hide_all_hero_indicators()
+        self.hide_all_indicators()
+        self.label_hero_health.setStyleSheet("QLabel {color: rgb(40, 40, 40);}")
+        self.label_hero_score.setStyleSheet("QLabel {color: rgb(40, 40, 40);}")
         self.stackedWidget_hero.setCurrentIndex(0)
         self.stackedWidget.setCurrentIndex(6)
         
         # fill in comboBox with all non-custom midi files + a random option
         self.comboBox_hero_song.clear()
-        self.comboBox_hero_song.addItem('Random')
-        os.chdir(self.proj_path + '/midi-files') 
+        self.comboBox_hero_song.addItem('Random Song')
+        os.chdir(PROJ_PATH + '/midi-files') 
         for midi_file in sorted(glob.glob("*.mid")): # alphabetical sort since glob uses random order
             # ignore custom files (only works if name starts with custom right now)
             if not midi_file.startswith('custom'):
                 self.comboBox_hero_song.addItem(midi_file)
         
-        # get top 7 highscores from leaderboard.csv file
-        with open(self.proj_path + '/pyano/leaderboard.csv', 'r') as lb_file:
-            highscores = []
-            try:
-                csv_reader = csv.reader(lb_file, delimiter=',', lineterminator='\n')
-                next(csv_reader) # skip first row containing field names
-                sorted_lb = sorted(csv_reader, key=lambda row: int(row[0]), reverse=True)
-                i = 0
-                for row in sorted_lb:
-                    if i == 7:
-                        break
-                    highscores.append(row)
-                    i += 1
-            except IndexError as e:
-                logging.error(e)
-        print(highscores)
-        
+        # get top 7 highscores from leaderboard.csv file (& set lowest and highest highscores in hero thread)
+        highscores = self.get_hero_highscores()
+            
         # display highscores in 2 panels: usernames & scores
         for row in highscores:
             self.textEdit_hero_leader1.append(row[1])
             self.textEdit_hero_leader2.append(row[0])
             
-        # setup hero thread (doesn't start until btn_maker_start is pressed
-        self.heroThread = HeroThread(None)
-        
         # connect function calls in this thread to emits from heroThread
         self.connect(self.heroThread, QtCore.SIGNAL("updateHeroIndicator(QString, QString)"), self.update_hero_indicator)
         self.connect(self.heroThread, QtCore.SIGNAL("updateHeroScore(QString)"), self.update_hero_score)
         self.connect(self.heroThread, QtCore.SIGNAL("updateHeroHealth(QString)"), self.update_hero_health)
         self.connect(self.heroThread, QtCore.SIGNAL("resetHeroGUI()"), self.reset_hero_gui)
+        #~ self.connect(self.heroThread, QtCore.SIGNAL("heroNewHighscore(QString)"), self.hero_new_highscore)
         
     def on_exit_click(self):
         logging.info('E X I T  btn pressed')
@@ -312,7 +574,6 @@ class MainWindow(QtGui.QWidget):
         else:
             logging.info("*Start Playing*")
             self.btn_player_stop.setEnabled(True) 
-            self.textEdit_player.clear() # move this to on_player_stop_click?
             self.playerThread.stop_check = False
             self.playerThread.pause_check = False
             self.playerThread.next_check = False
@@ -463,7 +724,7 @@ class MainWindow(QtGui.QWidget):
         logging.info('player-add-files btn clicked')
         
         new_files = []
-        dest_dir = self.proj_path + '/midi-files'
+        dest_dir = PROJ_PATH + '/midi-files'
         usb_list = os.listdir('/media/pi')
         usb_list.remove('SETTINGS')
         if not usb_list:
@@ -500,11 +761,6 @@ class MainWindow(QtGui.QWidget):
                 QtGui.QMessageBox.warning(self, 'Error', 
                 'All .mid files have already been imported', 
                 QtGui.QMessageBox.Close)
-
-    def update_player_text(self, text):
-        self.textEdit_player.append(text)
-        sb = self.textEdit_player.verticalScrollBar()
-        sb.setValue(sb.maximum()) # auto scrolling text
 
     def update_player_progress(self, percentage):
         self.progressBar_player.setValue(percentage)
@@ -598,7 +854,7 @@ class MainWindow(QtGui.QWidget):
         
     def update_maker_filename(self):
         # fill in lineEdit_maker_name with first available file name
-        os.chdir(self.proj_path + '/midi-files')
+        os.chdir(PROJ_PATH+ '/midi-files')
         i = 1
         while os.path.exists("custom_song_0%s.mid" % i):
             i += 1
@@ -701,9 +957,9 @@ class MainWindow(QtGui.QWidget):
         
         # pull song variable from gui combobox
         selection = str(self.comboBox_hero_song.currentText())
-        if selection == 'Random':
+        if selection == 'Random Song':
             # build list of midi files then select a random one
-            os.chdir(self.proj_path + '/midi-files') 
+            os.chdir(PROJ_PATH + '/midi-files') 
             midi_file_list = []
             for midi_file in sorted(glob.glob("*.mid")):
                 # ignore custom files (only works if name starts with custom right now)
@@ -713,6 +969,9 @@ class MainWindow(QtGui.QWidget):
         else:
             self.heroThread.hero_song = selection
         self.label_hero_song.setText('Playing: ' + self.heroThread.hero_song)
+        
+        # set difficulty level
+        self.heroThread.difficulty = self.comboBox_hero_difficulty.currentText()
         
         # update GUI
         self.btn_hero_start.setVisible(False)
@@ -744,29 +1003,18 @@ class MainWindow(QtGui.QWidget):
         self.btn_hero_stop.setVisible(False)
         self.btn_hero_home.setEnabled(True)
         self.stackedWidget_hero.setCurrentIndex(0)
-        self.hide_all_hero_indicators()
+        self.hide_all_indicators()
         self.textEdit_hero_leader1.clear()
         self.textEdit_hero_leader2.clear()
         self.textEdit_hero_leader1.setAlignment(QtCore.Qt.AlignCenter)
         self.textEdit_hero_leader2.setAlignment(QtCore.Qt.AlignCenter)
         self.update_hero_score('0')
         self.img_hero_kb.setFocus() # so continued typing doesnt modify username
+        self.label_hero_health.setStyleSheet("QLabel {color: rgb(40, 40, 40);}")
+        self.label_hero_score.setStyleSheet("QLabel {color: rgb(40, 40, 40);}")
         
-        # update top 7 highscores from leaderboard.csv file
-        with open(self.proj_path + '/pyano/leaderboard.csv', 'r') as lb_file:
-            highscores = []
-            try:
-                csv_reader = csv.reader(lb_file, delimiter=',', lineterminator='\n')
-                next(csv_reader) # skip first row containing field names
-                sorted_lb = sorted(csv_reader, key=lambda row: int(row[0]), reverse=True)
-                i = 0
-                for row in sorted_lb:
-                    if i == 7:
-                        break
-                    highscores.append(row)
-                    i += 1
-            except IndexError as e:
-                logging.error(e)
+        # get top 7 highscores from leaderboard.csv file (& set lowest and highest highscores in hero thread)
+        highscores = self.get_hero_highscores()
         
         # display highscores in 2 panels: usernames & scores
         for row in highscores:
@@ -777,29 +1025,29 @@ class MainWindow(QtGui.QWidget):
         
         # convert key string to a pyqt label_key
         if key == 'z':
-            key = self.label_z
+            key = self.ind_hz
         elif key == 'x':
-            key = self.label_x
+            key = self.ind_hx
         elif key == 'c':
-            key = self.label_c
+            key = self.ind_hc
         elif key == 'v':
-            key = self.label_v
+            key = self.ind_hv
         elif key == 'b':
-            key = self.label_b
+            key = self.ind_hb
         elif key == 'n':
-            key = self.label_n
+            key = self.ind_hn
         elif key == 'm':
-            key = self.label_m
+            key = self.ind_hm
         elif key == 's':
-            key = self.label_s
+            key = self.ind_hs
         elif key == 'd':
-            key = self.label_d
+            key = self.ind_hd
         elif key == 'g':
-            key = self.label_g
+            key = self.ind_hg
         elif key == 'h':
-            key = self.label_h
+            key = self.ind_hh
         elif key == 'j':
-            key = self.label_j 
+            key = self.ind_hj 
         
         # swap color string with pyqt color data struct
         if color == 'green':
@@ -828,29 +1076,54 @@ class MainWindow(QtGui.QWidget):
         key.setStyleSheet("QLabel { color: rgba("+border_values+"); background-color: rgba("+background_values+"); }")
         key.setVisible(True)
     
-    def hide_all_hero_indicators(self):
-        # hide all indicator labels
-        self.label_z.setVisible(False)
-        self.label_x.setVisible(False)
-        self.label_c.setVisible(False)
-        self.label_c.setVisible(False)
-        self.label_v.setVisible(False)
-        self.label_b.setVisible(False)
-        self.label_n.setVisible(False)
-        self.label_m.setVisible(False)
-        self.label_s.setVisible(False)
-        self.label_d.setVisible(False)
-        self.label_g.setVisible(False)
-        self.label_h.setVisible(False)
-        self.label_j.setVisible(False)
-    
     def update_hero_score(self, score):
         self.label_hero_score.setText('Score: ' + score)
         
+        if int(score) >= self.heroThread.highest_highscore: # gold
+            self.label_hero_score.setStyleSheet("QLabel {color: rgb(175, 175, 0);}") # CHANGE TO BETTER GOLD
+        elif int(score) >= self.heroThread.lowest_highscore: # green
+            self.label_hero_score.setStyleSheet("QLabel {color: rgb(0, 170, 0);}")
+        
     def update_hero_health(self, health):
         self.label_hero_health.setText('Health: ' + health + '%')
-    
-    
+        
+        if int(health) <= 25: # red
+            self.label_hero_health.setStyleSheet("QLabel {color: rgb(255, 0, 0);}")
+        else: # black
+            self.label_hero_health.setStyleSheet("QLabel {color: rgb(40, 40, 40);}")
+
+    def get_hero_highscores(self):
+        # get top 7 highscores from leaderboard.csv file
+        with open(PROJ_PATH + '/pyano/leaderboard.csv', 'r') as lb_file:
+            highscores = []
+            try:
+                csv_reader = csv.reader(lb_file, delimiter=',', lineterminator='\n')
+                next(csv_reader) # skip first row containing field names
+                sorted_lb = sorted(csv_reader, key=lambda row: int(row[0]), reverse=True)
+                i = 0
+                for row in sorted_lb:
+                    if i == 7:
+                        break
+                    highscores.append(row)
+                    i += 1
+            except IndexError as e:
+                logging.error(e)
+        #~ print(highscores)
+        
+        # set lowest and highest highscores for hero thread (pass these to change score color)
+        try:
+            self.heroThread.highest_highscore = int(highscores[0][0])
+            
+            if len(highscores) < 7:
+                self.heroThread.lowest_highscore = 0
+            else:
+                self.heroThread.lowest_highscore = int(highscores[-1][0])
+        except:
+            print("CSV File Error: empty file or extra whitespace")
+
+        return highscores
+        
+
 if __name__ == '__main__':
     main()
     

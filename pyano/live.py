@@ -41,6 +41,7 @@ class LiveThread(QtCore.QThread):
                 note = key2note[key.char]
                 gui_output = str(key.char) + " | " + note + "| " + str(solenoid) + " pressed"
                 self.emit(QtCore.SIGNAL("updateLiveText(QString)"), gui_output)
+                self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'live', str(key.char), 'on') 
                 if solenoid < 17:
                     #~ self.bus1.write_pin(solenoid, 1)
                     print("1 - " + str(solenoid))
@@ -55,6 +56,7 @@ class LiveThread(QtCore.QThread):
         def on_release(key):
             try:
                 solenoid = key2solenoid[key.char]
+                self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'live', str(key.char), 'off') 
                 if solenoid < 17:
                     #~ self.bus1.write_pin(solenoid, 0x00)
                     pass
@@ -76,6 +78,7 @@ class LiveThread(QtCore.QThread):
         listener = keyboard.Listener(on_press=on_press,on_release=on_release)
         listener.start()
         
+        # ??
         while True:
             try:
                 #~ listener.join()

@@ -22,11 +22,11 @@ class HeroThread(QtCore.QThread):
         self.hero_song = ""
         self.hero_score = 0
         self.hero_health = 100
+        self.difficulty = None # set by GUI on_hero_click
+        self.lowest_highscore = 0 # lowest highscore to beat to get on lb (passing makes score turn green)
+        self.highest_highscore = 0 # highest highscore to beat to get on lb (passing makes score turn gold)
         
-        # difficulty settings
-        self.score_increment = 5 # points to add for each successful hit
-        self.health_decrement = 5 # points to subtract from each miss
-        self.delay_multiplier = 1.5 # multipled with midi message delay
+        
         
         # dictionaries that map qwerty-kb keys to solenoids & piano notes
         self.key2note = {'z': 'C4 ', 's': 'C#4', 'x': 'D4 ', 'd': 'D#4', 'c': 'E4 ', 'v': 'F4 ',
@@ -50,6 +50,33 @@ class HeroThread(QtCore.QThread):
         
         
     def run(self):
+        
+        # for when there are < 7 highscores, score is automatically green
+        #~ if self.hero_score >= self.lowest_highscore:
+            #~ self.emit(QtCore.SIGNAL("heroNewHighscore(QString)"), 'green')
+        #~ elif self.hero_score >= self.highest_highscore:
+            #~ self.emit(QtCore.SIGNAL("heroNewHighscore(QString)"), 'gold')
+
+        # difficulty settings
+        if self.difficulty == 'E':
+            self.delay_multiplier = 1.5
+            self.score_increment = 2
+            self.health_decrement = self.health_increment = 2
+        elif self.difficulty == 'H':
+            self.delay_multiplier = 0.75
+            self.score_increment = 10
+            self.health_decrement = 5
+            self.health_increment = 3
+        elif self.difficulty == 'L':
+            self.delay_multiplier = 0.6
+            self.score_increment = 20
+            self.health_decrement = 10
+            self.health_increment = 3
+        else: # elif difficulty == 'N':
+            self.delay_multiplier = 1
+            self.score_increment = 5
+            self.health_decrement = self.health_increment= 3
+            
         
         # reset everything before each run
         self.hero_score = 0
@@ -92,6 +119,7 @@ class HeroThread(QtCore.QThread):
                 if key.char == 'z' and self.z_flag:
                     self.emit(QtCore.SIGNAL("updateHeroIndicator(QString, QString)"), 'z', "green")
                     self.hero_score += self.score_increment
+                    self.hero_health += self.health_increment
                     self.z_hit = True
                     self.z_flag = False # prevents holding key to spam score increase
                 # if key is pressed and flag is false (no yellow indicator - subtract health)
@@ -102,6 +130,7 @@ class HeroThread(QtCore.QThread):
                 elif key.char == 'x' and self.x_flag:
                     self.emit(QtCore.SIGNAL("updateHeroIndicator(QString, QString)"), 'x', "green")
                     self.hero_score += self.score_increment
+                    self.hero_health += self.health_increment
                     self.x_hit = True
                     self.z_flag = False
                     #~ self.emit(QtCore.SIGNAL("updateHeroScore(QString)"), str(self.hero_score))
@@ -111,6 +140,7 @@ class HeroThread(QtCore.QThread):
                 elif key.char == 'c' and self.c_flag:
                     self.emit(QtCore.SIGNAL("updateHeroIndicator(QString, QString)"), 'c', "green")
                     self.hero_score += self.score_increment
+                    self.hero_health += self.health_increment
                     self.c_hit = True
                     self.c_flag = False
                 elif key.char == 'c' and not self.c_flag:
@@ -119,6 +149,7 @@ class HeroThread(QtCore.QThread):
                 elif key.char == 'v' and self.v_flag:
                     self.emit(QtCore.SIGNAL("updateHeroIndicator(QString, QString)"), 'v', "green")
                     self.hero_score += self.score_increment
+                    self.hero_health += self.health_increment
                     self.v_hit = True
                     self.v_flag = False
                 elif key.char == 'v' and not self.v_flag:
@@ -127,6 +158,7 @@ class HeroThread(QtCore.QThread):
                 elif key.char == 'b' and self.b_flag:
                     self.emit(QtCore.SIGNAL("updateHeroIndicator(QString, QString)"), 'b', "green")
                     self.hero_score += self.score_increment
+                    self.hero_health += self.health_increment
                     self.b_hit = True
                     self.b_flag = False
                 elif key.char == 'b' and not self.b_flag:
@@ -135,6 +167,7 @@ class HeroThread(QtCore.QThread):
                 elif key.char == 'n' and self.n_flag:
                     self.emit(QtCore.SIGNAL("updateHeroIndicator(QString, QString)"), 'n', "green")
                     self.hero_score += score_increment
+                    self.hero_health += self.health_increment
                     self.n_hit = True
                     self.n_flag = False
                 elif key.char == 'n' and self.n_flag == False:
@@ -143,6 +176,7 @@ class HeroThread(QtCore.QThread):
                 elif key.char == 'm' and self.m_flag == True:
                     self.emit(QtCore.SIGNAL("updateHeroIndicator(QString, QString)"), 'm', "green")
                     self.hero_score += self.score_increment
+                    self.hero_health += self.health_increment
                     self.m_hit = True
                     self.m_flag = False
                 elif key.char == 'm' and self.m_flag == False:
@@ -151,6 +185,7 @@ class HeroThread(QtCore.QThread):
                 elif key.char == 's' and self.s_flag == True:
                     self.emit(QtCore.SIGNAL("updateHeroIndicator(QString, QString)"), 's', "green")
                     self.hero_score += self.score_increment
+                    self.hero_health += self.health_increment
                     self.s_hit = True
                     self.s_flag = False
                 elif key.char == 's' and not self.s_flag:
@@ -159,6 +194,7 @@ class HeroThread(QtCore.QThread):
                 elif key.char == 'd' and self.d_flag:
                     self.emit(QtCore.SIGNAL("updateHeroIndicator(QString, QString)"), 'd', "green")
                     self.hero_score += self.score_increment
+                    self.hero_health += self.health_increment
                     self.d_hit = True
                     self.d_flag = False
                 elif key.char == 'd' and not self.d_flag:
@@ -167,6 +203,7 @@ class HeroThread(QtCore.QThread):
                 elif key.char == 'g' and self.g_flag:
                     self.emit(QtCore.SIGNAL("updateHeroIndicator(QString, QString)"), 'g', "green")
                     self.hero_score += self.score_increment
+                    self.hero_health += self.health_increment
                     self.g_hit = True
                     self.g_flag = False
                 elif key.char == 'g' and not self.g_flag:
@@ -175,6 +212,7 @@ class HeroThread(QtCore.QThread):
                 elif key.char == 'h' and self.h_flag:
                     self.emit(QtCore.SIGNAL("updateHeroIndicator(QString, QString)"), 'h', "green")
                     self.hero_score += self.score_increment
+                    self.hero_health += self.health_increment
                     self.h_hit = True
                     self.h_flag = False
                 elif key.char == 'h' and not self.h_flag:
@@ -183,11 +221,20 @@ class HeroThread(QtCore.QThread):
                 elif key.char == 'j' and self.j_flag:
                     self.emit(QtCore.SIGNAL("updateHeroIndicator(QString, QString)"), 'j', "green")
                     self.hero_score += self.score_increment
+                    self.hero_health += self.health_increment
                     self.j_hit = True
                     self.j_flag = False
                 elif key.char == 'j' and not self.j_flag:
                     self.emit(QtCore.SIGNAL("updateHeroIndicator(QString, QString)"), 'j', "red")
                     self.hero_health -= self.health_decrement
+                    
+                # limit health range to 0-100
+                if self.hero_health < 0:
+                    self.hero_health = 0
+                elif self.hero_health > 100:
+                    self.hero_health = 100
+                
+                # update health and score in GUI thread
                 self.emit(QtCore.SIGNAL("updateHeroScore(QString)"), str(self.hero_score))
                 self.emit(QtCore.SIGNAL("updateHeroHealth(QString)"), str(self.hero_health))
                     
@@ -265,7 +312,7 @@ class HeroThread(QtCore.QThread):
         # add username and score to leaderboard.csv file
         # fix hardcoded path
         with open('/home/pi/pyano-git/pyano/leaderboard.csv', 'a') as csv_file:
-            line = str(self.hero_score) + ',' + self.hero_username + ',' + self.hero_song + '\n'
+            line = str(self.hero_score) + ',' + self.hero_username + ',' + self.hero_song + ',' + self.difficulty + '\n'
             csv_file.write(line)
             
         print('Final Score:', self.hero_score)
@@ -340,6 +387,14 @@ class HeroThread(QtCore.QThread):
                 #~ self.clear_outputs()
                 return
                 
+        #~ if self.hero_health < 25:
+            #~ self.emit(QtCore.SIGNAL("heroLowHealth()"))
+            
+        #~ if self.hero_score >= self.highest_highscore:
+            #~ self.emit(QtCore.SIGNAL("heroNewHighscore(QString)"), 'gold')
+        #~ elif self.hero_score >= self.lowest_highscore:
+            #~ self.emit(QtCore.SIGNAL("heroNewHighscore(QString)"), 'green')
+            
         # extract note and status from message
         status = msg.type[len('note_'):]
         msg_data = str(msg)
@@ -356,7 +411,7 @@ class HeroThread(QtCore.QThread):
             note = note + 8
             
         # if the note is in the 1st octave, have the user play it
-        if note in range (1, 12, 1):
+        if note in range (1, 13, 1):
             key = self.solenoid2key[str(note)]
             if status == 'on':
                 self.emit(QtCore.SIGNAL("updateHeroIndicator(QString, QString)"), key, "yellow")

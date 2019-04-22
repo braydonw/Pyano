@@ -1,5 +1,10 @@
 <RCC>
   <qresource prefix="newPrefix">
+    <file>24-key-piano.jpg</file>
+    <file>24-key-piano.jpg</file>
+    <file>24-key-piano.jpg</file>
+    <file>kb_full_55.jpg</file>
+    <file>kb_half_55.jpg</file>
     <file>hero-keyboard.jpg</file>
     <file>home.png</file>
     <file>maker-keyboard.jpg</file>
