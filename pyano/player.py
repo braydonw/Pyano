@@ -203,11 +203,11 @@ class PlayerThread(QtCore.QThread):
                 
                 # if we made it this far then the message must be note_on/off type
                 
-                #~ time.sleep(msg.time) # MUST GO BERFORE PLAY_NOTE FUNCTION
+                time.sleep(msg.time) # MUST GO BERFORE PLAY_NOTE FUNCTION
                 self.play_note(msg, notes, adjust_value)
                 
-                # SLEEPING AFTER IS WOKRING FOR CUSTOM SONGS
-                time.sleep(msg.time) # MUST GO BERFORE PLAY_NOTE FUNCTION
+                # SLEEPING AFTER IS WOKRING FOR CUSTOM SONGS???
+                #~ time.sleep(msg.time) # MUST GO BERFORE PLAY_NOTE FUNCTION
 
                     
                 # song progress
