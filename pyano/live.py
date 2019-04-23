@@ -75,7 +75,7 @@ class LiveThread(QtCore.QThread):
             except (KeyError, AttributeError):
                 pass
                 
-            if key == keyboard.Key.esc:
+            if key == keyboard.Key.esc or key == keyboard.Key.backspace:
                 self.clear_outputs()
                 self.emit(QtCore.SIGNAL("resetLiveGUI()"))
                 return False # stops keyboard.listener

@@ -34,7 +34,7 @@ class MakerThread(QtCore.QThread):
         track = MidiTrack()        
         mid.tracks.append(track)
 
-        ticks_per_beat = 600 # pulses per quarter note (240 is good default)              ** PLAY WITH THIS **
+        ticks_per_beat = 720 # pulses per quarter note (240 is good default)              ** PLAY WITH THIS **
         tempo = bpm2tempo(120) # micro-seconds per beat
         
         # timing setup for recording the time between keypresses
