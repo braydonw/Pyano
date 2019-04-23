@@ -3,16 +3,12 @@ from PyQt4 import QtCore
 from pyano.IOPi import IOPi
 from pynput import keyboard
 from pynput.keyboard import Key, Controller
-
-from mido import MidiFile, MidiTrack, Message, MetaMessage, second2tick, bpm2tempo, tempo2bpm # CLEANUP
-
 from mido import MidiFile, MidiTrack, Message
 
+GPIO_ENABLED = True
+PRINT_NOTES = False
 
-GPIO_ENABLED = False
-PRINT_NOTES = False # prints right half of notes (13-24) when pressed
-
-# TODO: add a point multiplier for when the user gets on a streak
+# TODO: add a point multiplier for when the user gets on a hit streak
 
 
 #---WORKER THREAD: MIDI HERO--------------------------------------------
@@ -560,24 +556,25 @@ class HeroThread(QtCore.QThread):
         else: 
             if PRINT_NOTES:
                 print("Note {} {}".format(note, status))
-            if status == 'on':
-                self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'hero', str(note), 'on') 
-                if note < 17:
-                    #~ self.bus1.write_pin(note, 1)
-                    pass
-                else:
-                    note -= 16
-                    #~ self.bus2.write_pin(note, 1)
-                    pass
-            elif status == 'off': 
-                self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'hero', str(note), 'off') 
-                if note < 17:
-                    #~ self.bus1.write_pin(note, 0)
-                    pass
-                else:
-                    note -= 16
-                    #~ self.bus2.write_pin(note, 0)
-                    pass
+            if GPIO_ENABLED:
+                if status == 'on':
+                    self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'hero', str(note), 'on') 
+                    if note < 17:
+                        self.bus1.write_pin(note, 1)
+                        pass
+                    else:
+                        note -= 16
+                        self.bus2.write_pin(note, 1)
+                        pass
+                elif status == 'off': 
+                    self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'hero', str(note), 'off') 
+                    if note < 17:
+                        self.bus1.write_pin(note, 0)
+                        pass
+                    else:
+                        note -= 16
+                        self.bus2.write_pin(note, 0)
+                        pass
                     
         return
         

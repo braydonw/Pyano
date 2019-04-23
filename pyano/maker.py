@@ -34,13 +34,22 @@ class MakerThread(QtCore.QThread):
         track = MidiTrack()        
         mid.tracks.append(track)
 
-        ticks_per_beat = 720 # pulses per quarter note (240 is good default)              ** PLAY WITH THIS **
+        # setup midi time signature
+        ticks_per_beat = 720 # pulses per quarter note (240 was default)                     ** PLAY WITH THIS **
         tempo = bpm2tempo(120) # micro-seconds per beat
         
-        # timing setup for recording the time between keypresses
-        start_time = time.time()
-        self.prev_time = 0 # self since we are modifying it in the on_press sub-method
+        # to get the midi message timing to work properly we need to
         
+        
+        # timing setup for recording the time between keypresses
+        start_time = time.time() # base time that everything is ref from
+        self.prev_time = 0 # stores the time_sinse_start of prev msg
+        
+        # hold time arrays store ticks (converted time_since_prev key) 
+        # and are needed for each character because pynput starts to 
+        # spam on_press calls when holding down a key. the first element
+        # of the array is used for the corresponding key's on msg and 
+        # the remaining ticks are summed and added to the key's off msg
         self.z_hold_times = []
         self.s_hold_times = []
         self.x_hold_times = []
@@ -65,6 +74,33 @@ class MakerThread(QtCore.QThread):
         self.y_hold_times = []
         self.seven_hold_times = []
         self.u_hold_times = []
+        
+        self.z_flag = False
+        self.s_flag = False
+        self.x_flag = False
+        self.d_flag = False
+        self.c_flag = False
+        self.v_flag = False
+        self.g_flag = False
+        self.b_flag = False
+        self.h_flag = False
+        self.flag = False
+        self.j_flag = False
+        self.flag = False
+        self.q_flag = False
+        self.two_flag = False
+        self.w_flag = False
+        self.three_flag = False
+        self.e_flag = False
+        self.r_flag = False
+        self.five_flag = False
+        self.t_flag = False
+        self.six_flag = False
+        self.y_flag = False
+        self.seven_flag = False
+        self.u_flag = False
+        
+        
         
         
         # method call from key listener
@@ -103,7 +139,8 @@ class MakerThread(QtCore.QThread):
                 #~ logging.info('ticks: {}'.format(int(ticks)))
                 
                 # add the note on/off data to the midi file
-                track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                # only add first on message to track - add rest of on delays to first off of same key type
+                #~ track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
                 
                 # build and emit gui text output
                 #~ gui_output = (" " + key.char.upper() + "    " + kb_note + "   " + str((round(time_since_prev, 3))))
@@ -119,52 +156,124 @@ class MakerThread(QtCore.QThread):
                 # for that key, then clear hold_times
                 if key.char == 'z': 
                     self.z_hold_times.append(ticks)
+                    if not self.z_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.z_flag = True # set False when corresponding off command (key is released)
                 elif key.char == 's':
                     self.s_hold_times.append(ticks)
+                    if not self.s_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.s_flag = True
                 elif key.char == 'x':
                     self.x_hold_times.append(ticks)
+                    if not self.x_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.z_flag = True
                 elif key.char == 'd':
                     self.d_hold_times.append(ticks)
+                    if not self.d_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.d_flag = True
                 elif key.char == 'c':
                     self.c_hold_times.append(ticks)
+                    if not self.c_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.c_flag = True
                 elif key.char == 'v':
                     self.v_hold_times.append(ticks)
+                    if not self.v_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.v_flag = True
                 elif key.char == 'g':
                     self.g_hold_times.append(ticks)
+                    if not self.g_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.g_flag = True
                 elif key.char == 'b':
                     self.b_hold_times.append(ticks)
+                    if not self.b_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.b_flag = True
                 elif key.char == 'h':
                     self.h_hold_times.append(ticks)
+                    if not self.h_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.h_flag = True
                 elif key.char == 'n':
                     self.n_hold_times.append(ticks)
+                    if not self.n_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.n_flag = True
                 elif key.char == 'j':
                     self.j_hold_times.append(ticks)
+                    if not self.j_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.j_flag = True
                 elif key.char == 'm':
                     self.m_hold_times.append(ticks)
+                    if not self.m_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.m_flag = True
                 elif key.char == 'q': 
                     self.q_hold_times.append(ticks)
+                    if not self.q_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.q_flag = True
                 elif key.char == '2':
                     self.two_hold_times.append(ticks)
+                    if not self.two_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.two_flag = True
                 elif key.char == 'w':
                     self.w_hold_times.append(ticks)
+                    if not self.w_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.w_flag = True
                 elif key.char == '3':
                     self.three_hold_times.append(ticks)
+                    if not self.three_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.three_flag = True
                 elif key.char == 'e':
                     self.e_hold_times.append(ticks)
+                    if not self.e_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.e_flag = True
                 elif key.char == 'r':
                     self.r_hold_times.append(ticks)
+                    if not self.r_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.r_flag = True
                 elif key.char == '5':
                     self.five_hold_times.append(ticks)
+                    if not self.five_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.five_flag = True
                 elif key.char == 't':
                     self.t_hold_times.append(ticks)
+                    if not self.t_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.t_flag = True
                 elif key.char == '6':
                     self.six_hold_times.append(ticks)
+                    if not self.six_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.six_flag = True
                 elif key.char == 'y':
                     self.y_hold_times.append(ticks)
+                    if not self.y_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.y_flag = True
                 elif key.char == '7':
                     self.seven_hold_times.append(ticks)
+                    if not self.seven_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.seven_flag = True
                 elif key.char == 'u':
                     self.u_hold_times.append(ticks)
+                    if not self.u_flag:
+                        track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
+                        self.u_flag = True
                 
             except (KeyError, AttributeError) as e:
                 logging.debug('invalid key {}'.format(e))
@@ -218,78 +327,102 @@ class MakerThread(QtCore.QThread):
                     # check here to make sure list is not empty? NO sum empty list = 0
                     ticks = ticks + sum(self.z_hold_times)
                     
-                    # reset
+                    # resets
                     self.z_hold_times = []
+                    self.z_flag = False
                     
                 elif key.char == 's':
                     ticks = ticks + sum(self.s_hold_times[1:0])
                     self.s_hold_times = []
+                    self.s_flag = False
                 elif key.char == 'x':
                     ticks = ticks + sum(self.x_hold_times[1:0])
                     self.c_hold_times = []
+                    self.c_flag = False
                 elif key.char == 'd':
                     ticks = ticks + sum(self.d_hold_times[1:0])
                     self.d_hold_times = []
+                    self.d_flag = False
                 elif key.char == 'c':
                     ticks = ticks + sum(self.c_hold_times[1:0])
                     self.c_hold_times = []
+                    self.c_flag = False
                 elif key.char == 'v':
                     ticks = ticks + sum(self.v_hold_times[1:0])
                     self.v_hold_times = []
+                    self.v_flag = False
                 elif key.char == 'g':
                     ticks = ticks + sum(self.g_hold_times[1:0])
                     self.g_hold_times = []
+                    self.g_flag = False
                 elif key.char == 'b':
                     ticks = ticks + sum(self.b_hold_times[1:0])
                     self.b_hold_times = []
+                    self.b_flag = False
                 elif key.char == 'h':
                     ticks = ticks + sum(self.h_hold_times[1:0])
                     self.h_hold_times = []
+                    self.h_flag = False
                 elif key.char == 'n':
                     ticks = ticks + sum(self.n_hold_times[1:0])
                     self.n_hold_times = []
+                    self.n_flag = False
                 elif key.char == 'j':
                     ticks = ticks + sum(self.j_hold_times[1:0])
                     self.j_hold_times = []
+                    self.j_flag = False
                 elif key.char == 'm':
                     ticks = ticks + sum(self.m_hold_times[1:0])
                     self.m_hold_times = []
+                    self.m_flag = False
                 elif key.char == 'q':
                     ticks = ticks + sum(self.q_hold_times[1:0])
                     self.q_hold_times = []
+                    self.q_flag = False
                 elif key.char == '2':
                     ticks = ticks + sum(self.two_hold_times[1:0])
                     self.two_hold_times = []
+                    self.two_flag = False
                 elif key.char == 'w':
                     ticks = ticks + sum(self.w_hold_times[1:0])
                     self.w_hold_times = []
+                    self.w_flag = False
                 elif key.char == '3':
                     ticks = ticks + sum(self.three_hold_times[1:0])
                     self.three_hold_times = []
+                    self.three_flag = False
                 elif key.char == 'e':
                     ticks = ticks + sum(self.e_hold_times[1:0])
                     self.e_hold_times = []
+                    self.e_flag = False
                 elif key.char == 'r':
                     ticks = ticks + sum(self.r_hold_times[1:0])
                     self.r_hold_times = []
+                    self.r_flag = False
                 elif key.char == '5':
                     ticks = ticks + sum(self.five_hold_times[1:0])
                     self.five_hold_times = []
+                    self.five_flag = False
                 elif key.char == 't':
                     ticks = ticks + sum(self.t_hold_times[1:0])
                     self.t_hold_times = []
+                    self.t_flag = False
                 elif key.char == '6':
                     ticks = ticks + sum(self.six_hold_times[1:0])
                     self.six_hold_times = []
+                    self.six_flag = False
                 elif key.char == 'y':
                     ticks = ticks + sum(self.y_hold_times[1:0])
                     self.y_hold_times = []
+                    self.y_flag = False
                 elif key.char == '7':
                     ticks = ticks + sum(self.seven_hold_times[1:0])
                     self.seven_hold_times = []
+                    self.seven_flag = False
                 elif key.char == 'u':
                     ticks = ticks + sum(self.u_hold_times[1:0])
                     self.u_hold_times = []
+                    self.u_flag = False
                     
                     
                 

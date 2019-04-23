@@ -3,10 +3,7 @@ from PyQt4 import QtCore
 from pynput import keyboard
 from pyano.IOPi import IOPi
 
-GPIO_ENABLED = False
-
-
-# ADD COMMENTS LIKE HERO THREAD
+GPIO_ENABLED = True
 
 
 #---WORKER THREAD: MIDI LIVE--------------------------------------------

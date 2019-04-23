@@ -3,8 +3,8 @@ from PyQt4 import QtCore
 from mido import MidiFile, MidiTrack, Message, MetaMessage, second2tick, bpm2tempo, tempo2bpm
 from pyano.IOPi import IOPi
 
-GPIO_ENABLED = False
-PRINT_NOTES = False
+GPIO_ENABLED = True
+PRINT_NOTES = True
 
 #---WORKER THREAD: MIDI PLAYER------------------------------------------
 
@@ -25,6 +25,7 @@ class PlayerThread(QtCore.QThread):
         
         # IO setup
         if GPIO_ENABLED:
+            print("!")
             # get busses from i2c addresses
             self.bus1 = IOPi(0x20)
             self.bus2 = IOPi(0x21)
@@ -270,24 +271,25 @@ class PlayerThread(QtCore.QThread):
                 print("Note {} {}".format(note, status))
             
             # turn solenoids on or off based on status variable
-            if status == 'on':
-                self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'player', key, 'on') 
-                if note < 17:
-                    #~ self.bus1.write_pin(note, 1)
-                    pass
-                else:
-                    note -= 16
-                    #~ self.bus2.write_pin(note, 1)
-                    pass
-            elif status == 'off': 
-                self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'player', key, 'off')
-                if note < 17:
-                    #~ self.bus1.write_pin(note, 0)
-                    pass
-                else:
-                    note -= 16
-                    #~ self.bus2.write_pin(note, 0)
-                    pass
+            if GPIO_ENABLED:
+                if status == 'on':
+                    self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'player', key, 'on') 
+                    if note < 17:
+                        self.bus1.write_pin(note, 1)
+                        pass
+                    else:
+                        note -= 16
+                        self.bus2.write_pin(note, 1)
+                        pass
+                elif status == 'off': 
+                    self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'player', key, 'off')
+                    if note < 17:
+                        self.bus1.write_pin(note, 0)
+                        pass
+                    else:
+                        note -= 16
+                        self.bus2.write_pin(note, 0)
+                        pass
         except:
             pass
         
