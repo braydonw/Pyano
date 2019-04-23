@@ -3,6 +3,8 @@ from PyQt4 import QtCore
 from mido import MidiFile, MidiTrack, Message, MetaMessage, second2tick, bpm2tempo, tempo2bpm
 from pyano.IOPi import IOPi
 
+GPIO_ENABLED = False
+PRINT_NOTES = False
 
 #---WORKER THREAD: MIDI PLAYER------------------------------------------
 
@@ -10,7 +12,10 @@ class PlayerThread(QtCore.QThread):
     
     # this gets ran when the thread is created (when player btn is clicked on main menu page)
     def __init__(self, parent = None):
-        super(PlayerThread, self).__init__(parent)
+        # this is ran when on_player_click is ran in gui thread
+        
+        # set MainWindow (gui thread) as parent of PlayerThread
+        super(self.__class__, self).__init__(parent)
         self.midi_file_list = []
         self.next_check = False
         self.back_check = False
@@ -18,17 +23,18 @@ class PlayerThread(QtCore.QThread):
         self.stop_check = False
         self.current_song = 0 # current_song is the index of the highlighted_file that is set when play btn is presed
         
-        #~ # IO setup
-        #~ # get busses from i2c addresses
-        #~ self.bus1 = IOPi(0x20)
-        #~ self.bus2 = IOPi(0x21)
-        #~ # set all 4 port directions to output (0x00)
-        #~ self.bus1.set_port_direction(0, 0x00)
-        #~ self.bus1.set_port_direction(1, 0x00)
-        #~ self.bus2.set_port_direction(0, 0x00)
-        #~ self.bus2.set_port_direction(1, 0x00) # THIS WAS 0xC0 ???? 
-        #~ # initialize all outputs to 0
-        #~ self.clear_outputs()
+        # IO setup
+        if GPIO_ENABLED:
+            # get busses from i2c addresses
+            self.bus1 = IOPi(0x20)
+            self.bus2 = IOPi(0x21)
+            # set all 4 port directions to output (0x00)
+            self.bus1.set_port_direction(0, 0x00)
+            self.bus1.set_port_direction(1, 0x00)
+            self.bus2.set_port_direction(0, 0x00)
+            self.bus2.set_port_direction(1, 0x00) # THIS WAS 0xC0 ???? 
+            # initialize all outputs to 0
+            self.clear_outputs()
     
     # this gets ran when the thread is activated (when play btn is clicked on player page)
     def run(self):  
@@ -37,17 +43,21 @@ class PlayerThread(QtCore.QThread):
         file_count = len(self.midi_file_list)
         
         while self.current_song < file_count:
+            logging.info("PLAYING: " + self.midi_file_list[self.current_song])
             self.play_file() # plays self.current_song
         
             if self.stop_check:
+                self.emit(QtCore.SIGNAL("resetPlayerGUI()"))
+                self.clear_outputs()
                 return # exit if stop btn is pressed
             
             # make sure all outputs are low before playing the next song
-            #~ self.clear_outputs()
+            self.clear_outputs()
+            
+        self.emit(QtCore.SIGNAL("resetPlayerGUI()"))
             
             
     def play_file(self):
-        
         # disable skip & back btns until the song starts playing
         self.emit(QtCore.SIGNAL("playerNextEnabled(bool)"), False)
         self.emit(QtCore.SIGNAL("playerBackEnabled(bool)"), False)
@@ -106,8 +116,9 @@ class PlayerThread(QtCore.QThread):
                 
         # skip midi file if it does not have off commands
         if self.off_check == False:
-            self.emit(QtCore.SIGNAL("playerNextFile()"))
+            logging.error("ERROR: file does not contain any off commands")
             self.current_song += 1
+            self.emit(QtCore.SIGNAL("playerNextFile()"))
             return
         
         # WHAT IS ADJUST VALUE - UNDERSTAND BETTER
@@ -115,10 +126,16 @@ class PlayerThread(QtCore.QThread):
         min_value = min([int(i) for i in notes]) # the min and max values are strings from the midi file and need to be converted to ints
         max_value = max([int(i) for i in notes])
         range_notes = max_value - min_value
+        
+        if range_notes <= 25:
+            adjust_value = min_value - 1
+        else:
+            adjust_value = 83 # 59, 71, 83
+        
         adjust_value = min_value - 1 # the number that needs to be subtracted from every note to make it playable
         #~ print("All Notes: {}".format(notes))
         print("Min Note: {} Max Note: {}".format(min_value, max_value))
-        print("Range: ", range_notes)
+        print("Range:", range_notes)
         
         # enable skip & back btns after song processing completes
         self.emit(QtCore.SIGNAL("playerNextEnabled(bool)"), True)
@@ -130,13 +147,14 @@ class PlayerThread(QtCore.QThread):
             # is there better way to have all same code in and out of pause check??
             if self.pause_check:
                 self.emit(QtCore.SIGNAL("hideAllIndicators()"))
-                #~ self.clear_outputs()
+                self.clear_outputs()
                 
                 while self.pause_check: 
                     # stop/next/back are all same as when not paused except in here they also reset the pause_check 
                     
                     if self.stop_check:
                         self.pause_check = False
+                        self.emit(QtCore.SIGNAL("resetPlayerGUI()"))
                         return
                 
                     if self.next_check:
@@ -159,14 +177,15 @@ class PlayerThread(QtCore.QThread):
                     
             if self.stop_check:
                 self.emit(QtCore.SIGNAL("hideAllIndicators()"))
-                #~ self.clear_outputs()
+                self.emit(QtCore.SIGNAL("resetPlayerGUI()"))
+                self.clear_outputs()
                 return
         
             if self.next_check:
                 self.current_song +=1
                 self.next_check = False
                 self.emit(QtCore.SIGNAL("hideAllIndicators()"))
-                #~ self.clear_outputs()
+                self.clear_outputs()
                 return
                 
             if self.back_check:
@@ -177,14 +196,19 @@ class PlayerThread(QtCore.QThread):
                 # otherwise just return to main while loop and restart file from beginning 
                 self.back_check = False
                 self.emit(QtCore.SIGNAL("hideAllIndicators()"))
-                #~ self.clear_outputs()
+                self.clear_outputs()
                 return
      
             if not msg.is_meta and msg.type != 'program_change' and msg.type != 'control_change':
                 
                 # if we made it this far then the message must be note_on/off type
-                time.sleep(msg.time) # MUST GO BERFORE PLAY_NOTE FUNCTION
+                
+                #~ time.sleep(msg.time) # MUST GO BERFORE PLAY_NOTE FUNCTION
                 self.play_note(msg, notes, adjust_value)
+                
+                # SLEEPING AFTER IS WOKRING FOR CUSTOM SONGS
+                time.sleep(msg.time) # MUST GO BERFORE PLAY_NOTE FUNCTION
+
                     
                 # song progress
                 current_message += 1
@@ -194,6 +218,7 @@ class PlayerThread(QtCore.QThread):
                     self.emit(QtCore.SIGNAL("updatePlayerProgress(int)"), progress)
                         
         # this runs after each file naturally reaches the end (next btn was NOT pressed)
+        print("HERE")
         self.emit(QtCore.SIGNAL("playerNextFile()"))
         self.current_song += 1
     
@@ -234,44 +259,48 @@ class PlayerThread(QtCore.QThread):
         note = int(note) - adjust_value # adjust notes to playable range
 
         # adjust for notes that are still outside the range of the piano
-        while note > 24:
-            note = note - 24
+        #~ while note > 24:
+            #~ note = note - 24
             
         try:
             key = self.solenoid2key[str(note)]
+            
+            # print/update GUI with note and status
+            if PRINT_NOTES:
+                print("Note {} {}".format(note, status))
+            
+            # turn solenoids on or off based on status variable
+            if status == 'on':
+                self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'player', key, 'on') 
+                if note < 17:
+                    #~ self.bus1.write_pin(note, 1)
+                    pass
+                else:
+                    note -= 16
+                    #~ self.bus2.write_pin(note, 1)
+                    pass
+            elif status == 'off': 
+                self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'player', key, 'off')
+                if note < 17:
+                    #~ self.bus1.write_pin(note, 0)
+                    pass
+                else:
+                    note -= 16
+                    #~ self.bus2.write_pin(note, 0)
+                    pass
         except:
             pass
         
-        # print/update GUI with note and status
-        print("Note {} {}".format(note, status))
         
-        # turn solenoids on or off based on status variable
-        if status == 'on':
-            self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'player', key, 'on') 
-            if note < 17:
-                #~ self.bus1.write_pin(note, 1)
-                pass
-            else:
-                note -= 16
-                #~ self.bus2.write_pin(note, 1)
-                pass
-        elif status == 'off': 
-            self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'player', key, 'off')
-            if note < 17:
-                #~ self.bus1.write_pin(note, 0)
-                pass
-            else:
-                note -= 16
-                #~ self.bus2.write_pin(note, 0)
-                pass
                 
         return
             
-    #~ def clear_outputs(self):
-        #~ logging.info('CLEARING OUTPUTS')
-        #~ self.bus1.write_port(0, 0x00)
-        #~ self.bus1.write_port(1, 0x00)
-        #~ self.bus2.write_port(0, 0x00)
-        #~ self.bus2.write_port(1, 0x00)
+    def clear_outputs(self):
+        if GPIO_ENABLED:
+            logging.info('CLEARING OUTPUTS')
+            self.bus1.write_port(0, 0x00)
+            self.bus1.write_port(1, 0x00)
+            self.bus2.write_port(0, 0x00)
+            self.bus2.write_port(1, 0x00)
     
     

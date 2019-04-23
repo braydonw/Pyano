@@ -3,25 +3,34 @@ from PyQt4 import QtCore
 from pynput import keyboard
 from pyano.IOPi import IOPi
 
+GPIO_ENABLED = False
+
+
+# ADD COMMENTS LIKE HERO THREAD
+
 
 #---WORKER THREAD: MIDI LIVE--------------------------------------------
 
 class LiveThread(QtCore.QThread):
 
     def __init__(self, parent = None):
-        super(LiveThread, self).__init__(parent)
+        # this is ran when on_live_click is ran in gui thread
         
-        #~ # IO setup
-        #~ # get busses from i2c addresses
-        #~ self.bus1 = IOPi(0x20)
-        #~ self.bus2 = IOPi(0x21)
-        #~ # set all 4 port directions to output (0x00)
-        #~ self.bus1.set_port_direction(0, 0x00)
-        #~ self.bus1.set_port_direction(1, 0x00)
-        #~ self.bus2.set_port_direction(0, 0x00)
-        #~ self.bus2.set_port_direction(1, 0x00) # THIS WAS 0xC0 ???? 
-        #~ # initialize all outputs to 0
-        #~ self.clear_outputs()
+        # set MainWindow (gui thread) as parent of LiveThread
+        super(self.__class__, self).__init__(parent)
+        
+        # setup solenoid output using i2c
+        if GPIO_ENABLED:
+            # get busses from i2c addresses
+            self.bus1 = IOPi(0x20)
+            self.bus2 = IOPi(0x21)
+            # set all 4 port directions to output (0x00)
+            self.bus1.set_port_direction(0, 0x00)
+            self.bus1.set_port_direction(1, 0x00)
+            self.bus2.set_port_direction(0, 0x00)
+            self.bus2.set_port_direction(1, 0x00)
+            # initialize all outputs to 0
+            self.clear_outputs()
     
     def run(self):
         
@@ -43,11 +52,11 @@ class LiveThread(QtCore.QThread):
                 self.emit(QtCore.SIGNAL("updateLiveText(QString)"), gui_output)
                 self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'live', str(key.char), 'on') 
                 if solenoid < 17:
-                    #~ self.bus1.write_pin(solenoid, 1)
+                    self.bus1.write_pin(solenoid, 1)
                     print("1 - " + str(solenoid))
                 else:
                     solenoid -= 16
-                    #~ self.bus2.write_pin(solenoid, 1)
+                    self.bus2.write_pin(solenoid, 1)
                     print("1 - " + str(solenoid))
             except (KeyError, AttributeError):
                 pass
@@ -58,16 +67,16 @@ class LiveThread(QtCore.QThread):
                 solenoid = key2solenoid[key.char]
                 self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'live', str(key.char), 'off') 
                 if solenoid < 17:
-                    #~ self.bus1.write_pin(solenoid, 0x00)
+                    self.bus1.write_pin(solenoid, 0x00)
                     pass
                 else:
                     solenoid -= 16
-                    #~ self.bus2.write_pin(solenoid, 0x00)
+                    self.bus2.write_pin(solenoid, 0x00)
             except (KeyError, AttributeError):
                 pass
                 
             if key == keyboard.Key.esc:
-                #~ self.clear_outputs()
+                self.clear_outputs()
                 self.emit(QtCore.SIGNAL("resetLiveGUI()"))
                 return False # stops keyboard.listener
                 
@@ -75,22 +84,11 @@ class LiveThread(QtCore.QThread):
         with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
             listener.join()
             
-        listener = keyboard.Listener(on_press=on_press,on_release=on_release)
-        listener.start()
-        
-        # ??
-        while True:
-            try:
-                #~ listener.join()
-                pass
-            except:
-                pass
             
-        listener.stop()
-            
-    #~ def clear_outputs(self):
-        #~ logging.info('CLEARING OUTPUTS')
-        #~ self.bus1.write_port(0, 0x00)
-        #~ self.bus1.write_port(1, 0x00)
-        #~ self.bus2.write_port(0, 0x00)
-        #~ self.bus2.write_port(1, 0x00)
+    def clear_outputs(self):
+        if GPIO_ENABLED:
+            logging.info('CLEARING OUTPUTS')
+            self.bus1.write_port(0, 0x00)
+            self.bus1.write_port(1, 0x00)
+            self.bus2.write_port(0, 0x00)
+            self.bus2.write_port(1, 0x00)

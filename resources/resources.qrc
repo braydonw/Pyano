@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="newPrefix">
+    <file>24-key-piano-large.png</file>
     <file>24-key-piano.jpg</file>
     <file>24-key-piano.jpg</file>
     <file>24-key-piano.jpg</file>

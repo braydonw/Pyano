@@ -1,6 +1,6 @@
 import time, logging
 from PyQt4 import QtGui, QtCore, uic
-from mido import MidiFile, MidiTrack, Message, MetaMessage, second2tick, bpm2tempo
+from mido import MidiFile, MidiTrack, Message, second2tick, bpm2tempo
 from pynput import keyboard
 from pynput.keyboard import Key, Controller
 
@@ -10,10 +10,12 @@ from pynput.keyboard import Key, Controller
 class MakerThread(QtCore.QThread):
     
     def __init__(self, parent = None):
-        super(MakerThread, self).__init__(parent)
+        # this is ran when on_maker_click is ran in gui thread
+        
+        # set MainWindow (gui thread) as parent of MakerThread
+        super(self.__class__, self).__init__(parent)
         # variables that are changed by the MainWindow thread
         self.maker_song_name = ""
-        self.maker_song_BPM = ""
     
     def run(self):       
         
@@ -32,21 +34,38 @@ class MakerThread(QtCore.QThread):
         track = MidiTrack()        
         mid.tracks.append(track)
 
-        # tempo & beat resolution; 120 BPM = 500,000 tempo
-        ticks_per_beat = 240 # pulses per quarter note (240 is good default)
-        tempo = bpm2tempo(int(self.maker_song_BPM)) # micro-seconds per beat
-        
-        # use bpm from gui to set tempo for the entire file
-        track.append(MetaMessage('set_tempo', tempo=tempo, time=0))
+        ticks_per_beat = 480 # pulses per quarter note (240 is good default)
+        tempo = bpm2tempo(120) # micro-seconds per beat
         
         # timing setup for recording the time between keypresses
         start_time = time.time()
         self.prev_time = 0 # self since we are modifying it in the on_press sub-method
         
-        self.hold_times = []
+        self.z_hold_times = []
+        self.s_hold_times = []
+        self.x_hold_times = []
+        self.d_hold_times = []
+        self.c_hold_times = []
+        self.v_hold_times = []
+        self.g_hold_times = []
+        self.b_hold_times = []
+        self.h_hold_times = []
+        self.n_hold_times = []
+        self.j_hold_times = []
+        self.m_hold_times = []
+        self.q_hold_times = []
+        self.two_hold_times = []
+        self.w_hold_times = []
+        self.three_hold_times = []
+        self.e_hold_times = []
+        self.r_hold_times = []
+        self.five_hold_times = []
+        self.t_hold_times = []
+        self.six_hold_times = []
+        self.y_hold_times = []
+        self.seven_hold_times = []
+        self.u_hold_times = []
         
-        
-        # MOVE ADJ TIME AND STUFF TO HERE??
         
         # method call from key listener
         def on_press(key):
@@ -60,11 +79,8 @@ class MakerThread(QtCore.QThread):
             
             will this work if holding one key and you press another? or does that mess up the hold_times[]
             
-            probably need to change adj_time and prev_time... rethink logic completely
+            probably need to change adj_time (time_since_prev) and prev_time... rethink logic completely
             '''
-            # get the time that has passed since this thread started
-            time_since_start = time.time() - start_time
-                
             try:
                 # see if the key pressed is in dictionary of valid keys
                 midi_note = key2midi[key.char]
@@ -72,29 +88,83 @@ class MakerThread(QtCore.QThread):
                 
                 self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'maker', str(key.char), 'on')
                 
+                # get the time that has passed since this thread started
+                time_since_start = time.time() - start_time
+                
                 # if the key is valid find the time since last keypress
-                adj_time = time_since_start - self.prev_time
-                self.prev_time = time_since_start # ignore the time of any invalid keys
+                time_since_prev = time_since_start - self.prev_time
+                self.prev_time = time_since_start
                 
                 # convert time since last valid keypress to ticks (PPQN)
-                ticks = second2tick(adj_time, ticks_per_beat, tempo)
-                #~ print(ticks)
+                ticks = second2tick(time_since_prev, ticks_per_beat, tempo)
                 
                 # for testing
-                #~ logging.info('adj_time: {}'.format(round(adj_time, 3)))
+                #~ logging.info('time_since_prev: {}'.format(round(time_since_prev, 3)))
                 #~ logging.info('ticks: {}'.format(int(ticks)))
                 
                 # add the note on/off data to the midi file
                 track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
-                #~ track.append(Message('note_off', note=int(midi_note), time=0))
                 
                 # build and emit gui text output
-                gui_output = (" " + key.char.upper() + "    " + kb_note + "   " + str((round(adj_time, 3))))
+                #~ gui_output = (" " + key.char.upper() + "    " + kb_note + "   " + str((round(time_since_prev, 3))))
+                gui_output = (" " + key.char.upper() + "    " + kb_note + "   " + str((round(ticks))))
                 #~ self.emit(QtCore.SIGNAL("updateMakerText(QString)"), gui_output)
                 logging.info('ON  ' + gui_output)
                 
                 
-                self.hold_times.append(ticks)
+                # NEEDS TO BE KEY SPECIFIC SO MULTIPLE KEY PRESSES BEFORE RELEASING 1 STILL WORKS
+                
+                # append to hold times until key is released
+                # then remove 1st one and add the rest to the off delay
+                # for that key, then clear hold_times
+                if key.char == 'z': 
+                    self.z_hold_times.append(ticks)
+                elif key.char == 's':
+                    self.s_hold_times.append(ticks)
+                elif key.char == 'x':
+                    self.x_hold_times.append(ticks)
+                elif key.char == 'd':
+                    self.d_hold_times.append(ticks)
+                elif key.char == 'c':
+                    self.c_hold_times.append(ticks)
+                elif key.char == 'v':
+                    self.v_hold_times.append(ticks)
+                elif key.char == 'g':
+                    self.g_hold_times.append(ticks)
+                elif key.char == 'b':
+                    self.b_hold_times.append(ticks)
+                elif key.char == 'h':
+                    self.h_hold_times.append(ticks)
+                elif key.char == 'n':
+                    self.n_hold_times.append(ticks)
+                elif key.char == 'j':
+                    self.j_hold_times.append(ticks)
+                elif key.char == 'm':
+                    self.m_hold_times.append(ticks)
+                elif key.char == 'q': 
+                    self.q_hold_times.append(ticks)
+                elif key.char == '2':
+                    self.two_hold_times.append(ticks)
+                elif key.char == 'w':
+                    self.w_hold_times.append(ticks)
+                elif key.char == '3':
+                    self.three_hold_times.append(ticks)
+                elif key.char == 'e':
+                    self.e_hold_times.append(ticks)
+                elif key.char == 'r':
+                    self.r_hold_times.append(ticks)
+                elif key.char == '5':
+                    self.five_hold_times.append(ticks)
+                elif key.char == 't':
+                    self.t_hold_times.append(ticks)
+                elif key.char == '6':
+                    self.six_hold_times.append(ticks)
+                elif key.char == 'y':
+                    self.y_hold_times.append(ticks)
+                elif key.char == '7':
+                    self.seven_hold_times.append(ticks)
+                elif key.char == 'u':
+                    self.u_hold_times.append(ticks)
                 
             except (KeyError, AttributeError) as e:
                 logging.debug('invalid key {}'.format(e))
@@ -129,34 +199,113 @@ class MakerThread(QtCore.QThread):
                 
                 # get the time that has passed since this thread started
                 time_since_start = time.time() - start_time
-                
-                # remove first element in hold_time list since it is already saved with the On Message
-                # add the rest of the elements up and add them to the Off Message
-                self.hold_times = self.hold_times[1:]
 
                 # if the key is valid find the time since last keypress
-                adj_time = time_since_start - self.prev_time
+                time_since_prev = time_since_start - self.prev_time
                 self.prev_time = time_since_start # ignore the time of any invalid keys
 
-                # convert time since last valid keypress to ticks (PPQN)
-                ticks = second2tick(adj_time, ticks_per_beat, tempo)
-                print(*self.hold_times)
-                print(sum(self.hold_times))
-                #~ ticks = ticks + sum(self.hold_times)
-                #~ self.hold_times.clear()
+                ticks = second2tick(time_since_prev, ticks_per_beat, tempo)
+                
+                #~ print(len(self.z_hold_times))
+                #~ print(self.z_hold_times)
+                
+                if key.char == 'z':
 
+                    # remove first element in hold_time list since it is already saved with the On Message
+                    # add the rest of the elements up and add them to the Off Message
+                    self.z_hold_times = self.z_hold_times[1:]
+                    
+                    # check here to make sure list is not empty? NO sum empty list = 0
+                    ticks = ticks + sum(self.z_hold_times)
+                    
+                    # reset
+                    self.z_hold_times = []
+                    
+                elif key.char == 's':
+                    ticks = ticks + sum(self.s_hold_times[1:0])
+                    self.s_hold_times = []
+                elif key.char == 'x':
+                    ticks = ticks + sum(self.x_hold_times[1:0])
+                    self.c_hold_times = []
+                elif key.char == 'd':
+                    ticks = ticks + sum(self.d_hold_times[1:0])
+                    self.d_hold_times = []
+                elif key.char == 'c':
+                    ticks = ticks + sum(self.c_hold_times[1:0])
+                    self.c_hold_times = []
+                elif key.char == 'v':
+                    ticks = ticks + sum(self.v_hold_times[1:0])
+                    self.v_hold_times = []
+                elif key.char == 'g':
+                    ticks = ticks + sum(self.g_hold_times[1:0])
+                    self.g_hold_times = []
+                elif key.char == 'b':
+                    ticks = ticks + sum(self.b_hold_times[1:0])
+                    self.b_hold_times = []
+                elif key.char == 'h':
+                    ticks = ticks + sum(self.h_hold_times[1:0])
+                    self.h_hold_times = []
+                elif key.char == 'n':
+                    ticks = ticks + sum(self.n_hold_times[1:0])
+                    self.n_hold_times = []
+                elif key.char == 'j':
+                    ticks = ticks + sum(self.j_hold_times[1:0])
+                    self.j_hold_times = []
+                elif key.char == 'm':
+                    ticks = ticks + sum(self.m_hold_times[1:0])
+                    self.m_hold_times = []
+                elif key.char == 'q':
+                    ticks = ticks + sum(self.q_hold_times[1:0])
+                    self.q_hold_times = []
+                elif key.char == '2':
+                    ticks = ticks + sum(self.two_hold_times[1:0])
+                    self.two_hold_times = []
+                elif key.char == 'w':
+                    ticks = ticks + sum(self.w_hold_times[1:0])
+                    self.w_hold_times = []
+                elif key.char == '3':
+                    ticks = ticks + sum(self.three_hold_times[1:0])
+                    self.three_hold_times = []
+                elif key.char == 'e':
+                    ticks = ticks + sum(self.e_hold_times[1:0])
+                    self.e_hold_times = []
+                elif key.char == 'r':
+                    ticks = ticks + sum(self.r_hold_times[1:0])
+                    self.r_hold_times = []
+                elif key.char == '5':
+                    ticks = ticks + sum(self.five_hold_times[1:0])
+                    self.five_hold_times = []
+                elif key.char == 't':
+                    ticks = ticks + sum(self.t_hold_times[1:0])
+                    self.t_hold_times = []
+                elif key.char == '6':
+                    ticks = ticks + sum(self.six_hold_times[1:0])
+                    self.six_hold_times = []
+                elif key.char == 'y':
+                    ticks = ticks + sum(self.y_hold_times[1:0])
+                    self.y_hold_times = []
+                elif key.char == '7':
+                    ticks = ticks + sum(self.seven_hold_times[1:0])
+                    self.seven_hold_times = []
+                elif key.char == 'u':
+                    ticks = ticks + sum(self.u_hold_times[1:0])
+                    self.u_hold_times = []
+                    
+                    
+                
                 # for testing
-                #~ logging.info('adj_time: {}'.format(round(adj_time, 3)))
+                #~ logging.info('time_since_prev: {}'.format(round(time_since_prev, 3)))
                 #~ logging.info('ticks: {}'.format(int(ticks)))
 
                 # add the note on/off data to the midi file
-                #~ track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
                 track.append(Message('note_off', note=int(midi_note), time=int(ticks)))
 
                 # build and emit gui text output
-                gui_output = (" " + key.char.upper() + "    " + kb_note + "   " + str((round(adj_time, 3))))
+                #~ gui_output = (" " + key.char.upper() + "    " + kb_note + "   " + str((round(time_since_prev, 3))))
+                gui_output = (" " + key.char.upper() + "    " + kb_note + "   " + str((round(ticks))))
                 self.emit(QtCore.SIGNAL("updateMakerText(QString)"), gui_output)
                 logging.info('OFF ' + gui_output)
+                
                 
             except (KeyError, AttributeError) as e:
                 logging.debug('invalid key {}'.format(e))
@@ -165,6 +314,9 @@ class MakerThread(QtCore.QThread):
         # this is actually starting a 3rd thread
         with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
             listener.join()
+            
+            
+            # CHANGE TO BE LIKE OTHER KEY LISTENERS??
             
 
         logging.info('Exiting makerThread')
