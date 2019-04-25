@@ -76,7 +76,7 @@ Now you should have (venv) at the beginning of your terminal line.
 pip install -r requirements.txt
 ```
 
-**Extra.** Update requirements after installing new packages:
+**Side Note.** Update requirements after installing new packages:
 
 ```
 pip freeze > requirements.txt
