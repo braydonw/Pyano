@@ -66,12 +66,12 @@ class LiveThread(QtCore.QThread):
                 note = key2note[key.char]
                 
                 # build and send output string to gui thread
-                if solenoid < 10: 
-                    str_solenoid = "0" + str(solenoid)
-                else:
-                    str_solenoid = str(solenoid)
-                gui_output = key.char.upper() + "  |   " + note + "  |  " + str_solenoid
-                self.emit(QtCore.SIGNAL("updateLiveText(QString)"), gui_output)
+                #~ if solenoid < 10: 
+                    #~ str_solenoid = "0" + str(solenoid)
+                #~ else:
+                    #~ str_solenoid = str(solenoid)
+                #~ gui_output = key.char.upper() + "  |   " + note + "  |  " + str_solenoid
+                #~ self.emit(QtCore.SIGNAL("updateLiveText(QString)"), gui_output)
                 
                 # call gui function that enables key indicator
                 # arguments are (mode, key, state)
@@ -108,6 +108,15 @@ class LiveThread(QtCore.QThread):
             try:
                 # solenoid is the pin number on the IOPi
                 solenoid = key2solenoid[key.char]
+                note = key2note[key.char]
+                
+                # build and send output string to gui thread
+                if solenoid < 10: 
+                    str_solenoid = "0" + str(solenoid)
+                else:
+                    str_solenoid = str(solenoid)
+                gui_output = key.char.upper() + "  |   " + note + "  |  " + str_solenoid
+                self.emit(QtCore.SIGNAL("updateLiveText(QString)"), gui_output)
                 
                 # call gui function that disables key indicator
                 self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'live', str(key.char), 'off') 

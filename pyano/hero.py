@@ -95,14 +95,14 @@ class HeroThread(QtCore.QThread):
         # health_decrement = amount lost for missed keys and misspresses
         if self.difficulty == 'E': # easy
             self.delay_multiplier = 1.5
-            self.score_increment = 2
+            self.score_increment = 15
             self.health_increment = 4
-            self.health_decrement = 8
+            self.health_decrement = 1
         elif self.difficulty == 'N': # normal
             self.delay_multiplier = 1
             self.score_increment = 5
             self.health_increment= 2
-            self.health_decrement = 10
+            self.health_decrement = 6
         elif self.difficulty == 'H': # hard
             self.delay_multiplier = 0.75
             self.score_increment = 7

@@ -53,7 +53,7 @@ class MainWindow(QtGui.QWidget):
         from resources import resources # pyrcc4 -o resources.py resources.qrc -py3
         
         # enable this to reset leaderboard when program launches
-        self.clear_leaderboard_file()
+        #~ self.clear_leaderboard_file()
 
         # get path to project folder
         #~ self.proj_path = os.getcwd() # /home/pi/pyano-git
