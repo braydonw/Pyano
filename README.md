@@ -95,13 +95,19 @@ End with an example (gifs) of getting some data out of the system or using it fo
 <a name="3"></a>
 ## Contributing
 
-**Step 1.** See what files have been modified:
+**Step 1.** Navigate to local project folder:
+
+```
+cd /home/pi/pyano-git
+```
+
+**Step 2.** See what files have been modified:
 
 ```
 git status
 ```
 
-**Step 2.** Make a commit:
+**Step 3.** Make a commit:
 
 ```
 git add .
@@ -115,7 +121,7 @@ git push origin master
 
 Always make a pull before a push to ensure your local project has the most up-to-date git repo files. 
 
-**Step 3.** Remove local project directory:
+**Step 4.** Remove local project directory:
 
 ```
 cd /home/pi
