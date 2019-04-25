@@ -1,8 +1,15 @@
-import time, logging
+'''
+ADD FULL DESCRIPTION HERE
+
+'''
+
+# imports
+import time, logging, os
 from PyQt4 import QtGui, QtCore, uic
-from mido import MidiFile, MidiTrack, Message, second2tick, bpm2tempo
 from pynput import keyboard
 from pynput.keyboard import Key, Controller
+from mido import MidiFile, MidiTrack, Message, MetaMessage
+from mido import second2tick, bpm2tempo
 
 
 #---WORKER THREAD: MIDI MAKER-------------------------------------------
@@ -14,11 +21,13 @@ class MakerThread(QtCore.QThread):
         
         # set MainWindow (gui thread) as parent of MakerThread
         super(self.__class__, self).__init__(parent)
+        
         # variables that are changed by the MainWindow thread
         self.maker_song_name = ""
     
-    def run(self):       
-        
+    
+    def run(self):      
+                
         # dictionaries that map qwerty-kb keys to midi numbers and piano notes
         key2midi = {'z': '60', 's': '61', 'x': '62', 'd': '63', 'c': '64', 'v': '65',
                     'g': '66', 'b': '67', 'h': '68', 'n': '69', 'j': '70', 'm': '71',
@@ -33,6 +42,8 @@ class MakerThread(QtCore.QThread):
         mid = MidiFile()
         track = MidiTrack()        
         mid.tracks.append(track)
+        
+        track.append(MetaMessage('text', text='custom pyano file'))
 
         # setup midi time signature
         ticks_per_beat = 720 # pulses per quarter note (240 was default)                     ** PLAY WITH THIS **
@@ -119,8 +130,9 @@ class MakerThread(QtCore.QThread):
             '''
             try:
                 # see if the key pressed is in dictionary of valid keys
-                midi_note = key2midi[key.char]
                 kb_note = key2note[key.char]
+                midi_note = key2midi[key.char]
+                solenoid = int(midi_note) - 59
                 
                 self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'maker', str(key.char), 'on')
                 
@@ -132,7 +144,7 @@ class MakerThread(QtCore.QThread):
                 self.prev_time = time_since_start
                 
                 # convert time since last valid keypress to ticks (PPQN)
-                ticks = second2tick(time_since_prev, ticks_per_beat, tempo)
+                ticks = second2tick(time_since_prev, ticks_per_beat, tempo) # RENAME TO delta_time
                 
                 # for testing
                 #~ logging.info('time_since_prev: {}'.format(round(time_since_prev, 3)))
@@ -144,7 +156,14 @@ class MakerThread(QtCore.QThread):
                 
                 # build and emit gui text output
                 #~ gui_output = (" " + key.char.upper() + "    " + kb_note + "   " + str((round(time_since_prev, 3))))
-                gui_output = (" " + key.char.upper() + "    " + kb_note + "   " + str((round(ticks))))
+                #~ gui_output = (" " + key.char.upper() + "    " + kb_note + "   " + str((round(time_since_prev))))
+                
+                # build and send output string to gui thread
+                if solenoid < 10: 
+                    str_solenoid = "0" + str(solenoid)
+                else:
+                    str_solenoid = str(solenoid)
+                gui_output = key.char.upper() + "     " + kb_note + "    " + str_solenoid
                 #~ self.emit(QtCore.SIGNAL("updateMakerText(QString)"), gui_output)
                 logging.info('ON  ' + gui_output)
                 
@@ -156,7 +175,7 @@ class MakerThread(QtCore.QThread):
                 # for that key, then clear hold_times
                 if key.char == 'z': 
                     self.z_hold_times.append(ticks)
-                    if not self.z_flag:
+                    if not self.z_flag: # prevents key hold spamming on messages
                         track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
                         self.z_flag = True # set False when corresponding off command (key is released)
                 elif key.char == 's':
@@ -168,7 +187,7 @@ class MakerThread(QtCore.QThread):
                     self.x_hold_times.append(ticks)
                     if not self.x_flag:
                         track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
-                        self.z_flag = True
+                        self.x_flag = True
                 elif key.char == 'd':
                     self.d_hold_times.append(ticks)
                     if not self.d_flag:
@@ -292,7 +311,7 @@ class MakerThread(QtCore.QThread):
 
             elif key == keyboard.Key.enter:
                 # save file
-                mid.save(self.maker_song_name)
+                mid.save(os.getcwd() + '/midi-files/' + self.maker_song_name)
                 self.emit(QtCore.SIGNAL("updateMakerGUI(QString)"), "File saved successfully")
                 self.emit(QtCore.SIGNAL("updateMakerName()"))
                 self.emit(QtCore.SIGNAL("hideAllIndicators()"))
@@ -303,6 +322,7 @@ class MakerThread(QtCore.QThread):
                 # see if the key pressed is in dictionary of valid keys
                 midi_note = key2midi[key.char]
                 kb_note = key2note[key.char]
+                solenoid = int(midi_note) - 59
                 
                 self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'maker', str(key.char), 'off')
                 
@@ -319,111 +339,108 @@ class MakerThread(QtCore.QThread):
                 #~ print(self.z_hold_times)
                 
                 if key.char == 'z':
-
                     # remove first element in hold_time list since it is already saved with the On Message
                     # add the rest of the elements up and add them to the Off Message
                     self.z_hold_times = self.z_hold_times[1:]
-                    
-                    # check here to make sure list is not empty? NO sum empty list = 0
+                    # check here to make sure list is not empty? NO, sum empty list = 0
                     ticks = ticks + sum(self.z_hold_times)
-                    
                     # resets
                     self.z_hold_times = []
                     self.z_flag = False
                     
+                # repeat for the rest of the keys
                 elif key.char == 's':
-                    ticks = ticks + sum(self.s_hold_times[1:0])
+                    ticks = ticks + sum(self.s_hold_times[1:])
                     self.s_hold_times = []
                     self.s_flag = False
                 elif key.char == 'x':
-                    ticks = ticks + sum(self.x_hold_times[1:0])
-                    self.c_hold_times = []
-                    self.c_flag = False
+                    ticks = ticks + sum(self.x_hold_times[1:])
+                    self.x_hold_times = []
+                    self.x_flag = False
                 elif key.char == 'd':
-                    ticks = ticks + sum(self.d_hold_times[1:0])
+                    ticks = ticks + sum(self.d_hold_times[1:])
                     self.d_hold_times = []
                     self.d_flag = False
                 elif key.char == 'c':
-                    ticks = ticks + sum(self.c_hold_times[1:0])
+                    ticks = ticks + sum(self.c_hold_times[1:])
                     self.c_hold_times = []
                     self.c_flag = False
                 elif key.char == 'v':
-                    ticks = ticks + sum(self.v_hold_times[1:0])
+                    ticks = ticks + sum(self.v_hold_times[1:])
                     self.v_hold_times = []
                     self.v_flag = False
                 elif key.char == 'g':
-                    ticks = ticks + sum(self.g_hold_times[1:0])
+                    ticks = ticks + sum(self.g_hold_times[1:])
                     self.g_hold_times = []
                     self.g_flag = False
                 elif key.char == 'b':
-                    ticks = ticks + sum(self.b_hold_times[1:0])
+                    ticks = ticks + sum(self.b_hold_times[1:])
                     self.b_hold_times = []
                     self.b_flag = False
                 elif key.char == 'h':
-                    ticks = ticks + sum(self.h_hold_times[1:0])
+                    ticks = ticks + sum(self.h_hold_times[1:])
                     self.h_hold_times = []
                     self.h_flag = False
                 elif key.char == 'n':
-                    ticks = ticks + sum(self.n_hold_times[1:0])
+                    ticks = ticks + sum(self.n_hold_times[1:])
                     self.n_hold_times = []
                     self.n_flag = False
                 elif key.char == 'j':
-                    ticks = ticks + sum(self.j_hold_times[1:0])
+                    ticks = ticks + sum(self.j_hold_times[1:])
                     self.j_hold_times = []
                     self.j_flag = False
                 elif key.char == 'm':
-                    ticks = ticks + sum(self.m_hold_times[1:0])
+                    ticks = ticks + sum(self.m_hold_times[1:])
                     self.m_hold_times = []
                     self.m_flag = False
                 elif key.char == 'q':
-                    ticks = ticks + sum(self.q_hold_times[1:0])
+                    ticks = ticks + sum(self.q_hold_times[1:])
                     self.q_hold_times = []
                     self.q_flag = False
                 elif key.char == '2':
-                    ticks = ticks + sum(self.two_hold_times[1:0])
+                    ticks = ticks + sum(self.two_hold_times[1:])
                     self.two_hold_times = []
                     self.two_flag = False
                 elif key.char == 'w':
-                    ticks = ticks + sum(self.w_hold_times[1:0])
+                    ticks = ticks + sum(self.w_hold_times[1:])
                     self.w_hold_times = []
                     self.w_flag = False
                 elif key.char == '3':
-                    ticks = ticks + sum(self.three_hold_times[1:0])
+                    ticks = ticks + sum(self.three_hold_times[1:])
                     self.three_hold_times = []
                     self.three_flag = False
                 elif key.char == 'e':
-                    ticks = ticks + sum(self.e_hold_times[1:0])
+                    ticks = ticks + sum(self.e_hold_times[1:])
                     self.e_hold_times = []
                     self.e_flag = False
                 elif key.char == 'r':
-                    ticks = ticks + sum(self.r_hold_times[1:0])
+                    ticks = ticks + sum(self.r_hold_times[1:])
                     self.r_hold_times = []
                     self.r_flag = False
                 elif key.char == '5':
-                    ticks = ticks + sum(self.five_hold_times[1:0])
+                    ticks = ticks + sum(self.five_hold_times[1:])
                     self.five_hold_times = []
                     self.five_flag = False
                 elif key.char == 't':
-                    ticks = ticks + sum(self.t_hold_times[1:0])
+                    ticks = ticks + sum(self.t_hold_times[1:])
                     self.t_hold_times = []
                     self.t_flag = False
                 elif key.char == '6':
-                    ticks = ticks + sum(self.six_hold_times[1:0])
+                    ticks = ticks + sum(self.six_hold_times[1:])
                     self.six_hold_times = []
                     self.six_flag = False
                 elif key.char == 'y':
-                    ticks = ticks + sum(self.y_hold_times[1:0])
+                    ticks = ticks + sum(self.y_hold_times[1:])
                     self.y_hold_times = []
                     self.y_flag = False
                 elif key.char == '7':
-                    ticks = ticks + sum(self.seven_hold_times[1:0])
+                    ticks = ticks + sum(self.seven_hold_times[1:])
                     self.seven_hold_times = []
                     self.seven_flag = False
                 elif key.char == 'u':
-                    ticks = ticks + sum(self.u_hold_times[1:0])
+                    ticks = ticks + sum(self.u_hold_times[1:])
                     self.u_hold_times = []
                     self.u_flag = False
-                    
                     
                 
                 # for testing
@@ -433,23 +450,23 @@ class MakerThread(QtCore.QThread):
                 # add the note on/off data to the midi file
                 track.append(Message('note_off', note=int(midi_note), time=int(ticks)))
 
-                # build and emit gui text output
+                # build and send output string to gui thread
+                if solenoid < 10: 
+                    str_solenoid = "0" + str(solenoid)
+                else:
+                    str_solenoid = str(solenoid)
+                gui_output = key.char.upper() + "     " + kb_note + "    " + str_solenoid
                 #~ gui_output = (" " + key.char.upper() + "    " + kb_note + "   " + str((round(time_since_prev, 3))))
-                gui_output = (" " + key.char.upper() + "    " + kb_note + "   " + str((round(ticks))))
+                #~ gui_output = (" " + key.char.upper() + "    " + kb_note + "   " + str((round(ticks))))
                 self.emit(QtCore.SIGNAL("updateMakerText(QString)"), gui_output)
                 logging.info('OFF ' + gui_output)
                 
                 
-            except (KeyError, AttributeError) as e:
-                logging.debug('invalid key {}'.format(e))
+            except (KeyError, AttributeError):
+                pass
         
         # starts a key listener (return False to stop)
         # this is actually starting a 3rd thread
         with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
             listener.join()
             
-            
-            # CHANGE TO BE LIKE OTHER KEY LISTENERS??
-            
-
-        logging.info('Exiting makerThread')

@@ -1,10 +1,19 @@
-import time, logging
+'''
+ADD FULL DESCRIPTION HERE
+
+'''
+
+# imports
+import time, logging, os
 from PyQt4 import QtCore
-from mido import MidiFile, MidiTrack, Message, MetaMessage, second2tick, bpm2tempo, tempo2bpm
+from mido import MidiFile, MidiTrack, Message, MetaMessage
+from mido import second2tick, bpm2tempo, tempo2bpm
 from pyano.IOPi import IOPi
 
+# globals
 GPIO_ENABLED = True
 PRINT_NOTES = True
+
 
 #---WORKER THREAD: MIDI PLAYER------------------------------------------
 
@@ -27,8 +36,8 @@ class PlayerThread(QtCore.QThread):
         if GPIO_ENABLED:
             print("!")
             # get busses from i2c addresses
-            self.bus1 = IOPi(0x20)
-            self.bus2 = IOPi(0x21)
+            self.bus1 = IOPi(0x21)
+            self.bus2 = IOPi(0x20)
             # set all 4 port directions to output (0x00)
             self.bus1.set_port_direction(0, 0x00)
             self.bus1.set_port_direction(1, 0x00)
@@ -45,6 +54,11 @@ class PlayerThread(QtCore.QThread):
         
         while self.current_song < file_count:
             logging.info("PLAYING: " + self.midi_file_list[self.current_song])
+            
+            # disable buttons (for when next file plays automatically)
+            # clicking next & back buttons do this already
+            self.emit(QtCore.SIGNAL("playerBtnsEnabled(bool)"), False)
+                        
             self.play_file() # plays self.current_song
         
             if self.stop_check:
@@ -59,29 +73,20 @@ class PlayerThread(QtCore.QThread):
             
             
     def play_file(self):
-        # disable skip & back btns until the song starts playing
-        self.emit(QtCore.SIGNAL("playerNextEnabled(bool)"), False)
-        self.emit(QtCore.SIGNAL("playerBackEnabled(bool)"), False)
+        
+        # MAKE THIS MORE LIKE HERO MODE
+        # ADD OCTAVE ADJUST CODE TO THIS FUNCTION
         
         # use mido library to create mid object which is all the song/file data
         midi_file = self.midi_file_list[self.current_song]
-        mid = MidiFile(midi_file)  # mid is the current mido MIDI file playing
+        mid = MidiFile(os.getcwd() + '/midi-files/' + midi_file)  # mid is the current mido MIDI file playing
         
         # filter out files that are not MIDI type 1
-        if mid.type == 0:
-            # type 0 (single track): all messages are saved in one track
-            self.emit(QtCore.SIGNAL("playerNextFile()"))
-            self.current_song += 1
-            return
-        elif mid.type == 1:
-            # type 1 (synchronous): all tracks start at the same time
-            pass
-        elif mid.type == 2:
-            # type 2 (asynchronous): each track is independent of the others
-            self.emit(QtCore.SIGNAL("playerNextFile()"))
-            self.current_song += 1
-            return
-        else:
+        # type 0 (single track): all messages are saved in one track
+        # type 1 (synchronous): all tracks start at the same time
+        # type 2 (asynchronous): each track is independent of the others
+        if mid.type != 1:
+            logging.error('ERROR: file contains unsupported midi type')
             self.emit(QtCore.SIGNAL("playerNextFile()"))
             self.current_song += 1
             return
@@ -93,23 +98,17 @@ class PlayerThread(QtCore.QThread):
         current_message = 0 # used to keep track of the progress of a song
         notes = set()  # testing note range of each MIDI file - build set of all unique notes & find min and max for key shifting
 
-        # get the length of MIDI file in seconds
-        file_length = (round(mid.length, 2))
-        
-        # go through midi file and convert + display the song's tempo in BPM
-        # only display the first tempo change (some downloaded files have a ton of tempo changes that spam screen)
+        is_custom = False
         for msg in mid:
-            if msg.is_meta and msg.type == 'set_tempo':
-                msg_data = str(msg)
-                temp1 = msg_data.find('tempo=')
-                temp2 = msg_data.find('time=')
-                tempo = msg_data[temp1 + 6:temp2]
+            if msg.type == 'text' and msg.text == 'custom pyano file':
+                logging.info('Custom pyano file')
+                is_custom = True
                 break
         
         # go through midi file for processing
         for msg in mid:
             # adjust octave range & count messages for song progress bar
-            if not msg.is_meta and msg.type != 'program_change' and msg.type != 'control_change':
+            if msg.type == 'note_on' or msg.type == 'note_off':
                 # if we made it this far then the message must be note_on/off type
                 # adjust octave will also check for on/off commands - if none are present the file is un-playable
                 self.adjust_octave(msg, notes)
@@ -122,25 +121,30 @@ class PlayerThread(QtCore.QThread):
             self.emit(QtCore.SIGNAL("playerNextFile()"))
             return
         
-        # WHAT IS ADJUST VALUE - UNDERSTAND BETTER
         # testing note range of each MIDI file
-        min_value = min([int(i) for i in notes]) # the min and max values are strings from the midi file and need to be converted to ints
-        max_value = max([int(i) for i in notes])
-        range_notes = max_value - min_value
+        min_note = min([int(i) for i in notes]) # the min and max values are strings from the midi file and need to be converted to ints
+        max_note = max([int(i) for i in notes])
+        range_notes = max_note - min_note
         
-        if range_notes <= 25:
-            adjust_value = min_value - 1
+        #~ if range_notes <= 25:
+            #~ adjust_value = min_value - 1
+        #~ else:
+            #~ adjust_value = 83 # 59, 71, 83
+            
+        if not is_custom and range_notes <= 25:
+            adjust_value = min_note - 1 # adjust the lowest note in the song to the first note on the piano
         else:
-            adjust_value = 83 # 59, 71, 83
+            adjust_value = 59 # adjust to play middle C plus 2 octaves on the piano 
         
-        adjust_value = min_value - 1 # the number that needs to be subtracted from every note to make it playable
         #~ print("All Notes: {}".format(notes))
-        print("Min Note: {} Max Note: {}".format(min_value, max_value))
+        print("Min Note: {} Max Note: {}".format(min_note, max_note))
         print("Range:", range_notes)
         
+        # get the length of MIDI file in seconds
+        file_length = (round(mid.length, 2))
+        
         # enable skip & back btns after song processing completes
-        self.emit(QtCore.SIGNAL("playerNextEnabled(bool)"), True)
-        self.emit(QtCore.SIGNAL("playerBackEnabled(bool)"), True)
+        self.emit(QtCore.SIGNAL("playerBtnsEnabled(bool)"), True)
         
         # go through midi file and actually play notes          
         for msg in mid:
@@ -204,11 +208,9 @@ class PlayerThread(QtCore.QThread):
                 
                 # if we made it this far then the message must be note_on/off type
                 
-                time.sleep(msg.time) # MUST GO BERFORE PLAY_NOTE FUNCTION
-                self.play_note(msg, notes, adjust_value)
-                
-                # SLEEPING AFTER IS WOKRING FOR CUSTOM SONGS???
-                #~ time.sleep(msg.time) # MUST GO BERFORE PLAY_NOTE FUNCTION
+                # msg.time = elapsed (delta) time from previous event to this event
+                time.sleep(msg.time) 
+                self.play_note(msg, adjust_value)
 
                     
                 # song progress
@@ -219,11 +221,11 @@ class PlayerThread(QtCore.QThread):
                     self.emit(QtCore.SIGNAL("updatePlayerProgress(int)"), progress)
                         
         # this runs after each file naturally reaches the end (next btn was NOT pressed)
-        print("HERE")
         self.emit(QtCore.SIGNAL("playerNextFile()"))
         self.current_song += 1
     
-    # NEED TO WRAP MY HEAD AROUND OCTAVE ADJUST - WHY IS THERE ANOTHER -24 WHILE NOTE>24 IN PLAY_NOTE???
+    
+    # CHANGE NAME
     def adjust_octave(self, msg, notes):
         
         # extract the note from the message
@@ -244,7 +246,7 @@ class PlayerThread(QtCore.QThread):
             
         return
     
-    def play_note(self, msg, notes, adjust_value):
+    def play_note(self, msg, adjust_value):
         
         self.solenoid2key = {'1': 'z', '2': 's', '3': 'x', '4': 'd', '5': 'c', '6': 'v',
                              '7': 'g', '8': 'b', '9': 'h', '10': 'n', '11': 'j', '12': 'm',
@@ -271,9 +273,10 @@ class PlayerThread(QtCore.QThread):
                 print("Note {} {}".format(note, status))
             
             # turn solenoids on or off based on status variable
-            if GPIO_ENABLED:
-                if status == 'on':
-                    self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'player', key, 'on') 
+            # and show indicators
+            if status == 'on':
+                self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'player', key, 'on')
+                if GPIO_ENABLED:
                     if note < 17:
                         self.bus1.write_pin(note, 1)
                         pass
@@ -281,8 +284,9 @@ class PlayerThread(QtCore.QThread):
                         note -= 16
                         self.bus2.write_pin(note, 1)
                         pass
-                elif status == 'off': 
-                    self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'player', key, 'off')
+            elif status == 'off': 
+                self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'player', key, 'off')
+                if GPIO_ENABLED:
                     if note < 17:
                         self.bus1.write_pin(note, 0)
                         pass
@@ -296,7 +300,8 @@ class PlayerThread(QtCore.QThread):
         
                 
         return
-            
+    
+    # function that sets all i2c pins to 0         
     def clear_outputs(self):
         if GPIO_ENABLED:
             logging.info('CLEARING OUTPUTS')
@@ -304,5 +309,3 @@ class PlayerThread(QtCore.QThread):
             self.bus1.write_port(1, 0x00)
             self.bus2.write_port(0, 0x00)
             self.bus2.write_port(1, 0x00)
-    
-    

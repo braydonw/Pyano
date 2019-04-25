@@ -319,7 +319,7 @@ color: rgb(193, 193, 193);</string>
               <string>Exit</string>
              </property>
              <property name="shortcut">
-              <string>Esc, E</string>
+              <string>E</string>
              </property>
             </widget>
            </item>
@@ -509,7 +509,7 @@ color: rgb(193, 193, 193);</string>
             <enum>Qt::NoFocus</enum>
            </property>
            <property name="toolTip">
-            <string>Stop (Esc)</string>
+            <string>Stop (Backspace)</string>
            </property>
            <property name="styleSheet">
             <string notr="true"/>
@@ -528,7 +528,7 @@ color: rgb(193, 193, 193);</string>
             </size>
            </property>
            <property name="shortcut">
-            <string>Esc</string>
+            <string>Backspace</string>
            </property>
           </widget>
          </item>
@@ -771,6 +771,9 @@ color: rgb(193, 193, 193);</string>
            <property name="focusPolicy">
             <enum>Qt::NoFocus</enum>
            </property>
+           <property name="toolTip">
+            <string>\</string>
+           </property>
            <property name="text">
             <string/>
            </property>
@@ -783,6 +786,9 @@ color: rgb(193, 193, 193);</string>
              <width>50</width>
              <height>50</height>
             </size>
+           </property>
+           <property name="shortcut">
+            <string>\</string>
            </property>
           </widget>
          </item>
@@ -1434,6 +1440,7 @@ background-color: rgba(255, 255, 0, 200);</string>
          <string/>
         </property>
        </widget>
+       <zorder>kb_piano_img_3</zorder>
        <zorder>layoutWidget</zorder>
        <zorder>listWidget_player_files</zorder>
        <zorder>layoutWidget_4</zorder>
@@ -1443,7 +1450,6 @@ background-color: rgba(255, 255, 0, 200);</string>
        <zorder>btn_player_shuffle</zorder>
        <zorder>label_player</zorder>
        <zorder>progressBar_player</zorder>
-       <zorder>kb_piano_img_3</zorder>
        <zorder>ind_p1</zorder>
        <zorder>ind_p2</zorder>
        <zorder>ind_p3</zorder>
@@ -1470,22 +1476,6 @@ background-color: rgba(255, 255, 0, 200);</string>
        <zorder>ind_p11</zorder>
       </widget>
       <widget class="QWidget" name="page_maker">
-       <widget class="QLabel" name="label_maker_recording_indicator">
-        <property name="geometry">
-         <rect>
-          <x>902</x>
-          <y>16</y>
-          <width>81</width>
-          <height>81</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/newPrefix/maker-recording.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
        <widget class="QLabel" name="kb_piano_img">
         <property name="geometry">
          <rect>
@@ -1505,7 +1495,7 @@ background-color: rgba(255, 255, 0, 200);</string>
          <enum>QFrame::NoFrame</enum>
         </property>
         <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/newPrefix/kb_full_55.jpg&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/newPrefix/kb_full.jpg&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
        <widget class="QWidget" name="layoutWidget">
@@ -1545,7 +1535,7 @@ background-color: rgba(255, 255, 0, 200);</string>
             <enum>Qt::NoFocus</enum>
            </property>
            <property name="toolTip">
-            <string>Space</string>
+            <string>Spacebar</string>
            </property>
            <property name="text">
             <string>Start</string>
@@ -1573,7 +1563,7 @@ background-color: rgba(255, 255, 0, 200);</string>
             <enum>Qt::NoFocus</enum>
            </property>
            <property name="toolTip">
-            <string>Esc</string>
+            <string>Backspace</string>
            </property>
            <property name="text">
             <string>Cancel</string>
@@ -1626,7 +1616,7 @@ background-color: rgba(255, 255, 0, 200);</string>
          <enum>Qt::ClickFocus</enum>
         </property>
         <property name="verticalScrollBarPolicy">
-         <enum>Qt::ScrollBarAsNeeded</enum>
+         <enum>Qt::ScrollBarAlwaysOn</enum>
         </property>
         <property name="html">
          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -1705,6 +1695,9 @@ p, li { white-space: pre-wrap; }
            <property name="focusPolicy">
             <enum>Qt::NoFocus</enum>
            </property>
+           <property name="toolTip">
+            <string>\</string>
+           </property>
            <property name="text">
             <string/>
            </property>
@@ -1717,6 +1710,9 @@ p, li { white-space: pre-wrap; }
              <width>50</width>
              <height>50</height>
             </size>
+           </property>
+           <property name="shortcut">
+            <string>\</string>
            </property>
           </widget>
          </item>
@@ -2392,7 +2388,6 @@ background-color: rgba(255, 255, 0, 100);</string>
        <zorder>label_maker</zorder>
        <zorder>layoutWidget</zorder>
        <zorder>kb_piano_img</zorder>
-       <zorder>label_maker_recording_indicator</zorder>
        <zorder>layoutWidget_2</zorder>
        <zorder>ind_mn</zorder>
        <zorder>ind_mb</zorder>
@@ -2440,7 +2435,7 @@ background-color: rgba(255, 255, 0, 100);</string>
          <enum>Qt::ClickFocus</enum>
         </property>
         <property name="verticalScrollBarPolicy">
-         <enum>Qt::ScrollBarAsNeeded</enum>
+         <enum>Qt::ScrollBarAlwaysOn</enum>
         </property>
         <property name="html">
          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -2489,6 +2484,9 @@ p, li { white-space: pre-wrap; }
            <property name="focusPolicy">
             <enum>Qt::NoFocus</enum>
            </property>
+           <property name="toolTip">
+            <string>\</string>
+           </property>
            <property name="text">
             <string/>
            </property>
@@ -2501,6 +2499,9 @@ p, li { white-space: pre-wrap; }
              <width>50</width>
              <height>50</height>
             </size>
+           </property>
+           <property name="shortcut">
+            <string>\</string>
            </property>
           </widget>
          </item>
@@ -2543,7 +2544,7 @@ p, li { white-space: pre-wrap; }
             <enum>Qt::NoFocus</enum>
            </property>
            <property name="toolTip">
-            <string>Space</string>
+            <string>Spacebar</string>
            </property>
            <property name="text">
             <string>Start</string>
@@ -2554,7 +2555,7 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="btn_live_done">
+          <widget class="QPushButton" name="btn_live_stop">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
              <horstretch>0</horstretch>
@@ -2571,10 +2572,10 @@ p, li { white-space: pre-wrap; }
             <enum>Qt::NoFocus</enum>
            </property>
            <property name="toolTip">
-            <string>Esc</string>
+            <string>Backspace</string>
            </property>
            <property name="text">
-            <string>Done</string>
+            <string>Stop</string>
            </property>
           </widget>
          </item>
@@ -2629,7 +2630,7 @@ p, li { white-space: pre-wrap; }
          <enum>QFrame::NoFrame</enum>
         </property>
         <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/newPrefix/kb_full_55.jpg&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/newPrefix/kb_full.jpg&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
        <widget class="QLabel" name="ind_lx">
@@ -3256,6 +3257,32 @@ background-color: rgba(255, 255, 0, 100);</string>
          <string/>
         </property>
        </widget>
+       <widget class="QLabel" name="ind_li">
+        <property name="geometry">
+         <rect>
+          <x>441</x>
+          <y>106</y>
+          <width>46</width>
+          <height>62</height>
+         </rect>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 0);
+background-color: rgba(255, 255, 0, 100);</string>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::Box</enum>
+        </property>
+        <property name="lineWidth">
+         <number>3</number>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
        <zorder>kb_piano_img_2</zorder>
        <zorder>textEdit_live</zorder>
        <zorder>layoutWidget_6</zorder>
@@ -3285,6 +3312,7 @@ background-color: rgba(255, 255, 0, 100);</string>
        <zorder>ind_l6</zorder>
        <zorder>ind_lu</zorder>
        <zorder>ind_lr</zorder>
+       <zorder>ind_li</zorder>
       </widget>
       <widget class="QWidget" name="page_guide">
        <widget class="QWidget" name="layoutWidget_7">
@@ -3323,6 +3351,9 @@ background-color: rgba(255, 255, 0, 100);</string>
            <property name="focusPolicy">
             <enum>Qt::NoFocus</enum>
            </property>
+           <property name="toolTip">
+            <string>\</string>
+           </property>
            <property name="text">
             <string/>
            </property>
@@ -3335,6 +3366,9 @@ background-color: rgba(255, 255, 0, 100);</string>
              <width>50</width>
              <height>50</height>
             </size>
+           </property>
+           <property name="shortcut">
+            <string>\</string>
            </property>
           </widget>
          </item>
@@ -3368,6 +3402,12 @@ background-color: rgba(255, 255, 0, 100);</string>
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'PibotoLt'; font-size:18pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Hover over any key to see its keyboard shortcut.&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;\ = Home&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Spacebar = Start&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Backspace = Stop or Cancel&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Enter = Done&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Player Mode&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;* back/restart and next are disabled during file processing and re-enabled once solenoid ouput begins&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;* pressing back while a song is at &amp;gt;5% playback restarts the current song; &amp;lt;5% goes to previous song;&lt;/p&gt;
@@ -3498,6 +3538,9 @@ p, li { white-space: pre-wrap; }
            <property name="focusPolicy">
             <enum>Qt::NoFocus</enum>
            </property>
+           <property name="toolTip">
+            <string>\</string>
+           </property>
            <property name="text">
             <string/>
            </property>
@@ -3510,6 +3553,9 @@ p, li { white-space: pre-wrap; }
              <width>50</width>
              <height>50</height>
             </size>
+           </property>
+           <property name="shortcut">
+            <string>\</string>
            </property>
           </widget>
          </item>
@@ -3554,7 +3600,7 @@ p, li { white-space: pre-wrap; }
             <enum>Qt::NoFocus</enum>
            </property>
            <property name="toolTip">
-            <string>Space</string>
+            <string>Spacebar</string>
            </property>
            <property name="text">
             <string>Start</string>
@@ -3582,7 +3628,7 @@ p, li { white-space: pre-wrap; }
             <enum>Qt::NoFocus</enum>
            </property>
            <property name="toolTip">
-            <string>Esc</string>
+            <string>Backspace</string>
            </property>
            <property name="text">
             <string>Stop</string>
@@ -3627,6 +3673,9 @@ p, li { white-space: pre-wrap; }
            <property name="focusPolicy">
             <enum>Qt::NoFocus</enum>
            </property>
+           <property name="toolTip">
+            <string>\</string>
+           </property>
            <property name="text">
             <string/>
            </property>
@@ -3639,6 +3688,9 @@ p, li { white-space: pre-wrap; }
              <width>50</width>
              <height>50</height>
             </size>
+           </property>
+           <property name="shortcut">
+            <string>\</string>
            </property>
           </widget>
          </item>
@@ -3690,7 +3742,7 @@ p, li { white-space: pre-wrap; }
               </font>
              </property>
              <property name="focusPolicy">
-              <enum>Qt::StrongFocus</enum>
+              <enum>Qt::TabFocus</enum>
              </property>
              <property name="text">
               <string/>
@@ -3723,7 +3775,7 @@ p, li { white-space: pre-wrap; }
               </font>
              </property>
              <property name="focusPolicy">
-              <enum>Qt::NoFocus</enum>
+              <enum>Qt::TabFocus</enum>
              </property>
              <property name="currentIndex">
               <number>0</number>
@@ -3731,11 +3783,6 @@ p, li { white-space: pre-wrap; }
              <item>
               <property name="text">
                <string>Random</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Other</string>
               </property>
              </item>
             </widget>
@@ -3760,7 +3807,7 @@ p, li { white-space: pre-wrap; }
               </font>
              </property>
              <property name="focusPolicy">
-              <enum>Qt::NoFocus</enum>
+              <enum>Qt::TabFocus</enum>
              </property>
              <property name="currentIndex">
               <number>0</number>
@@ -3915,7 +3962,7 @@ p, li { white-space: pre-wrap; }
            <enum>QFrame::NoFrame</enum>
           </property>
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/newPrefix/kb_half_55.jpg&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/newPrefix/kb_half.jpg&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
          </widget>
          <zorder>img_hero_kb</zorder>
@@ -3926,78 +3973,6 @@ p, li { white-space: pre-wrap; }
          <zorder>textEdit_hero_leader2</zorder>
         </widget>
         <widget class="QWidget" name="page_hero_song">
-         <widget class="QLabel" name="label_hero_song">
-          <property name="geometry">
-           <rect>
-            <x>185</x>
-            <y>0</y>
-            <width>631</width>
-            <height>59</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>20</pointsize>
-           </font>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">color: rgb(40, 40, 40);</string>
-          </property>
-          <property name="text">
-           <string>Playing: custom_song_01.mid</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label_hero_health">
-          <property name="geometry">
-           <rect>
-            <x>330</x>
-            <y>47</y>
-            <width>171</width>
-            <height>59</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>20</pointsize>
-           </font>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">color: rgb(40, 40, 40);</string>
-          </property>
-          <property name="text">
-           <string>Health: 100%</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label_hero_score">
-          <property name="geometry">
-           <rect>
-            <x>500</x>
-            <y>47</y>
-            <width>171</width>
-            <height>59</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>20</pointsize>
-           </font>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">color: rgb(40, 40, 40);</string>
-          </property>
-          <property name="text">
-           <string>Score: 0</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
          <widget class="QLabel" name="kb_piano_img_4">
           <property name="geometry">
            <rect>
@@ -4643,6 +4618,118 @@ background-color: rgba(165, 165, 165, 165);</string>
           <property name="text">
            <string/>
           </property>
+         </widget>
+         <widget class="QWidget" name="layoutWidget">
+          <property name="geometry">
+           <rect>
+            <x>230</x>
+            <y>0</y>
+            <width>541</width>
+            <height>101</height>
+           </rect>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <widget class="QLabel" name="label_hero_song">
+             <property name="font">
+              <font>
+               <pointsize>20</pointsize>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">color: rgb(40, 40, 40);</string>
+             </property>
+             <property name="text">
+              <string>Playing: custom_song_01.mid</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <item>
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_hero_health">
+               <property name="font">
+                <font>
+                 <pointsize>20</pointsize>
+                </font>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">color: rgb(40, 40, 40);</string>
+               </property>
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Health: 100%&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_3">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_hero_score">
+               <property name="font">
+                <font>
+                 <pointsize>20</pointsize>
+                </font>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">color: rgb(40, 40, 40);</string>
+               </property>
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Score: 0&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+          </layout>
          </widget>
         </widget>
        </widget>

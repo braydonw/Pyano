@@ -1,14 +1,22 @@
-import logging, time
-from PyQt4 import QtCore
-from pyano.IOPi import IOPi
+'''
+ADD FULL DESCRIPTION HERE
+
+TODO: Balance difficulties
+
+'''
+
+# imports
+import logging, time, os
+from PyQt4 import QtCore, QtGui
 from pynput import keyboard
-from pynput.keyboard import Key, Controller
+#~ from pynput.keyboard import Key, Controller
 from mido import MidiFile, MidiTrack, Message
+from pyano.IOPi import IOPi
 
+# globals
+PROJ_PATH = os.getcwd()
 GPIO_ENABLED = True
-PRINT_NOTES = False
-
-# TODO: add a point multiplier for when the user gets on a hit streak
+PRINT_NOTES = True
 
 
 #---WORKER THREAD: MIDI HERO--------------------------------------------
@@ -51,8 +59,8 @@ class HeroThread(QtCore.QThread):
         # setup solenoid output using i2c
         if GPIO_ENABLED:
             # get busses from i2c addresses
-            self.bus1 = IOPi(0x20)
-            self.bus2 = IOPi(0x21)
+            self.bus1 = IOPi(0x21)
+            self.bus2 = IOPi(0x20)
             # set all 4 port directions to output (0x00)
             self.bus1.set_port_direction(0, 0x00)
             self.bus1.set_port_direction(1, 0x00)
@@ -65,8 +73,11 @@ class HeroThread(QtCore.QThread):
     def run(self):
         # this is ran when on_hero_start_click is ran in gui thread
         
+        # disable btn_hero_stop until processing is finished
+        self.emit(QtCore.SIGNAL("heroStopEnabled(bool)"), False)
+        
         # small pause for files that immediatly play notes
-        time.sleep(2)
+        #~ time.sleep(2)
         
         # log username and song
         # different from csv (log shows in terminal & in log file)
@@ -85,23 +96,23 @@ class HeroThread(QtCore.QThread):
         if self.difficulty == 'E': # easy
             self.delay_multiplier = 1.5
             self.score_increment = 2
-            self.health_increment = 2
-            self.health_decrement = 2
+            self.health_increment = 4
+            self.health_decrement = 8
         elif self.difficulty == 'N': # normal
             self.delay_multiplier = 1
             self.score_increment = 5
-            self.health_increment= 1
-            self.health_decrement = 5
+            self.health_increment= 2
+            self.health_decrement = 10
         elif self.difficulty == 'H': # hard
             self.delay_multiplier = 0.75
-            self.score_increment = 10
+            self.score_increment = 7
             self.health_increment = 3
-            self.health_decrement = 5
+            self.health_decrement = 20
         elif self.difficulty == 'L': # legendary
             self.delay_multiplier = 0.6
             self.score_increment = 20
             self.health_increment = 3
-            self.health_decrement = 10
+            self.health_decrement = 30
         
         # flags get set true when a key is waiting for the user keypress
         # if flag is true & that key is pressed the score increases
@@ -288,9 +299,9 @@ class HeroThread(QtCore.QThread):
         def on_release(key):
             
             # esc key stops the game
-            # btn_hero_stop in gui thread simulates esc keypress
+            # on_hero_stop_click in gui thread simulates esc keypress
             # set health to 0 and return to play_file while health >= 1
-            if key == keyboard.Key.esc:
+            if key == keyboard.Key.backspace:
                 self.hero_health = 0
                 return 
                 
@@ -344,6 +355,9 @@ class HeroThread(QtCore.QThread):
         
         # play the midi file until health reaches zero
         while self.hero_health >= 1:
+            # disable btn_hero_stop until processing is finished
+            self.emit(QtCore.SIGNAL("heroStopEnabled(bool)"), False)
+            # start processing and playing file
             self.play_file()
             
         # hide indicators & reset gui thread hero page
@@ -356,7 +370,7 @@ class HeroThread(QtCore.QThread):
         self.clear_outputs()
         
         # add username, score, song, & difficulty to leaderboard file
-        with open('/home/pi/pyano-git/pyano/leaderboard.csv', 'a') as csv_file:
+        with open(PROJ_PATH + '/pyano/leaderboard.csv', 'a') as csv_file:
             csv_file.write(str(self.hero_score) + ',' + 
                            self.hero_username + ',' + self.hero_song + 
                            ',' + self.difficulty + '\n')
@@ -364,105 +378,92 @@ class HeroThread(QtCore.QThread):
         # log final score
         logging.info('Final Score: ' + str(self.hero_score))
         
-    
-    #################### FINISH ADDING COMMENTS FROM HERE DOWN & IN ALL OTHER FILES #################### 
-    
         
     def play_file(self):
+        # simplified version of the same function from player mode
+        # see player.py for additional comments 
+        # any important differences will be mentioned below
         
-        mid = MidiFile(self.hero_song)
-        
-        # dont play non type 1 files (ADD POPUP WINDOW)
+        mid = MidiFile(PROJ_PATH + '/midi-files/' + self.hero_song)
+
         if mid.type != 1:
-            return
-        
-        # get set of unique notes & check for off commands
-        self.note_set = set()
-        self.off_check = False
-        for msg in mid:
-            if not msg.is_meta and msg.type != 'program_change' and msg.type != 'control_change':
-                self.add_to_note_set(msg)
-        
-        # don't play songs without off commands
-        if not self.off_check:
-            logging.error("ERROR: file does not contain any off commands")
             self.hero_health = 0
             return
             
-        # TEMP: NOTES BEFORE OCTAVE ADJUST
-        #~ print(self.note_set)
+        note_set = set()
+        has_off_cmds = False
+        is_custom = False
+        
+        for msg in mid:
+            if msg.type == 'text' and msg.text == 'custom pyano file':
+                logging.info('Custom pyano file')
+                is_custom = True
+                break
+                    
+        for msg in mid:    
+            if msg.type == 'note_on' or msg.type == 'note_off':
+                note_set.add(msg.note)
+                
+                if not has_off_cmds and msg.type == 'note_off':
+                    has_off_cmds = True
+                    
+        if not has_off_cmds:
+            logging.error("ERROR: file does not have any off commands")
+            self.hero_health = 0
+            return
             
-        min_note = min([int(i) for i in self.note_set])
-        max_note = max([int(i) for i in self.note_set])
+        min_note = min([int(i) for i in note_set])
+        max_note = max([int(i) for i in note_set])
+        range_notes = max_note - min_note
         
-        # set the adjust value based on the range of the song
-        if max_note - min_note <= 25: 
-            adjust_value = min_note - 1 # adjust the lowest note in the song to the first note on the piano
+        if not is_custom and range_notes <= 25: # why 25?
+            # adjust lowest note in the song to first note on piano
+            adjust_value = min_note - 1 
         else:
-            adjust_value = 59 # adjust to play middle C plus 2 octaves on the piano 
-        
-        # go through midi file and actually play notes
-        while self.hero_health > 0:          
-            for msg in mid:
-                    
-                if self.hero_health < 1:
-                    self.clear_outputs()
-                    return
-                    
-                if not msg.is_meta and msg.type != 'program_change' and msg.type != 'control_change':
-                    time.sleep(msg.time * self.delay_multiplier)
-                    self.play_note(msg, adjust_value)
-        
+            # custom files use midi number 60 (C4) as first key
+            # midi number - adjust value = solenoid pin (ex: 60-59=1)
+            adjust_value = 59
+            
+        # re-enable btn_hero_stop
+        self.emit(QtCore.SIGNAL("heroStopEnabled(bool)"), True)
+            
+        for msg in mid:
+            
+            # break for loop when health reaches 0
+            # cleans up i2c, hides indicators, then returns to playing 
+            if self.hero_health < 1:
+                break
+            
+            if msg.type == 'note_on' or msg.type == 'note_off':
+                time.sleep(msg.time * self.delay_multiplier)
+                self.play_note(msg, adjust_value)
+
         self.clear_outputs()
         self.emit(QtCore.SIGNAL("hideAllIndicators()"))
-                        
-    def add_to_note_set(self, msg):
         
-        # extract the note from the message
-        msg_data = str(msg)
-        temp1 = msg_data.find('note_')
-        temp2 = msg_data.find('channel')
-        status = msg_data[temp1 + 5:temp2]  # status = on or off
-        temp1 = msg_data.find('note=')
-        temp2 = msg_data.find('velocity=')
-        note = msg_data[temp1 + 5:temp2]  # note represented as midi
-        
-        # add note to set of notes (for checking note range of each midi file)
-        self.note_set.add(note)
-        
-        # check if the midi file has on/off commands
-        if status == 'off ':
-            self.off_check = True
-        return
     
     def play_note(self, msg, adjust_value):
-            
-        # extract note and status from message
-        status = msg.type[len('note_'):]
-        msg_data = str(msg)
-        temp1 = msg_data.find('note=')
-        temp2 = msg_data.find('velocity=')
-        note = msg_data[temp1 + 5:temp2]  # note represented as MIDI #
+
+        note = int(msg.note) - adjust_value
         
-        # adjust octave by adjust_value
-        note = int(note) - adjust_value # adjust notes to playable range
-        
-        # DO WE EVEN TO THE OCTAVE ADJUST AND ADJ_VALUE WITH THIS IN HERE????
-        # adjust for notes that are still outside the range of the piano
         #~ while note > 24:
-            #~ note = note - 24
+            #~ note = note - 12
         #~ while note < 1:
-            #~ note = note + 8
-        
-        # ignore negative notes from octave adjustment
-        if note <= 0 or note > 24:
+            #~ note = note + 12
+
+        if note < 1 or note > 24:
+            if PRINT_NOTES: print("Ignoring note " + str(note))
             return
             
         # if the note is in the 1st octave, have the user play it
-        if note in range (1, 13, 1): # can just replace this with a try and else with except since next line checks dict???
+        try:
             key = self.solenoid2key[str(note)]
-            if status == 'on':
+            
+            if msg.type == 'note_on':
                 self.emit(QtCore.SIGNAL("updateHeroIndicator(QString, QString)"), key, "yellow")
+                
+                # set flags indicating that a key needs to be hit
+                # if key is hit when flag is true then points are added
                 if key == 'z':
                     self.z_flag = True
                 elif key == 'x':
@@ -488,10 +489,12 @@ class HeroThread(QtCore.QThread):
                 elif key == 'j':
                     self.j_flag = True
                 
-            elif status == 'off':
+            elif msg.type == 'note_off':
                 self.emit(QtCore.SIGNAL("updateHeroIndicator(QString, QString)"), key, "hide")
+                
                 if key == 'z':
-                    # if the user missed the key (never pressed in time), then subtract from health
+                    # if the user missed the key (never pressed in time)
+                    # then subtract from health
                     if self.z_hit == False:
                         self.hero_health -= self.health_decrement
                         self.emit(QtCore.SIGNAL("updateHeroHealth(int)"), self.hero_health)
@@ -553,31 +556,32 @@ class HeroThread(QtCore.QThread):
                     self.j_hit, self.j_flag = False, False
         
         # otherwise play it on the physical piano
-        else: 
-            if PRINT_NOTES:
-                print("Note {} {}".format(note, status))
-            if GPIO_ENABLED:
-                if status == 'on':
-                    self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'hero', str(note), 'on') 
-                    if note < 17:
-                        self.bus1.write_pin(note, 1)
-                        pass
-                    else:
-                        note -= 16
-                        self.bus2.write_pin(note, 1)
-                        pass
-                elif status == 'off': 
-                    self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'hero', str(note), 'off') 
-                    if note < 17:
-                        self.bus1.write_pin(note, 0)
-                        pass
-                    else:
-                        note -= 16
-                        self.bus2.write_pin(note, 0)
-                        pass
+        except: 
+            
+            if PRINT_NOTES: print("Note {} {}".format(note, msg.type[5:]))
+            
+            if msg.type == 'note_on':
+                self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'hero', str(note), 'on') 
+                if note < 17:
+                    if GPIO_ENABLED: self.bus1.write_pin(note, 1)
+                    pass
+                else:
+                    note -= 16
+                    if GPIO_ENABLED: self.bus2.write_pin(note, 1)
+                    pass
+            elif msg.type == 'note_off':
+                self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'hero', str(note), 'off') 
+                if note < 17:
+                    if GPIO_ENABLED: self.bus1.write_pin(note, 0)
+                    pass
+                else:
+                    note -= 16
+                    if GPIO_ENABLED: self.bus2.write_pin(note, 0)
+                    pass
                     
         return
-        
+    
+    # function that sets all i2c pins to 0 
     def clear_outputs(self):
         if GPIO_ENABLED:
             logging.info('CLEARING OUTPUTS')
