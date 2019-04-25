@@ -149,4 +149,4 @@ For more git information such as branching and merging watch [this video](https:
 <a name="6"></a>
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](docs/LICENSE) file for details.
