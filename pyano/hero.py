@@ -15,7 +15,7 @@ from pyano.IOPi import IOPi
 
 # globals
 PROJ_PATH = os.getcwd()
-GPIO_ENABLED = True
+GPIO_ENABLED = False
 PRINT_NOTES = True
 
 

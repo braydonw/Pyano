@@ -10,7 +10,7 @@ from pynput import keyboard
 from pyano.IOPi import IOPi
 
 # globals
-GPIO_ENABLED = True
+GPIO_ENABLED = False
 
 
 #---WORKER THREAD: MIDI LIVE--------------------------------------------

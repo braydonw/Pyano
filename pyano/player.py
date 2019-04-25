@@ -11,7 +11,7 @@ from mido import second2tick, bpm2tempo, tempo2bpm
 from pyano.IOPi import IOPi
 
 # globals
-GPIO_ENABLED = True
+GPIO_ENABLED = False
 PRINT_NOTES = True
 
 
