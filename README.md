@@ -8,7 +8,7 @@ The Pyano is a 25-key self-playing piano powered by a Raspberry Pi using python 
 > Project Lab II <br />
 > Spring 2019 <br />
 
-![Pyano GUI Main Menu](docs/for-readme/main-menu.png?raw=true "Pyano GUI Main Menu")
+![Pyano GUI Main Menu](docs/main-menu.png?raw=true "Pyano GUI Main Menu")
 
 ## Table of Contents
 - [Built With](#1)
@@ -90,7 +90,7 @@ Run project from pyano-git directory:
 python -m pyano
 ```
 
-End with an example (gifs) of getting some data out of the system or using it for a little demo
+Add an example (gif) of getting some data out of the system or using it for a little demo
 
 <a name="3"></a>
 ## Contributing
@@ -142,9 +142,7 @@ For more git information such as branching and merging watch [this video](https:
 <a name="5"></a>
 ## GANNT Chart
 
-### Week 7 of 13
-
-![GANNT Chart](docs/for-readme/gannt7.jpg?raw=true "Week 7 GANNT Chart")
+![GANNT Chart](docs/gannt.jpg?raw=true "Week 7 GANNT Chart")
 
 <a name="6"></a>
 ## License
