@@ -90,8 +90,6 @@ Run project from pyano-git directory:
 python -m pyano
 ```
 
-Add an example (gif) of getting some data out of the system or using it for a little demo
-
 <a name="3"></a>
 ## Contributing
 
