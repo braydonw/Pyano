@@ -37,6 +37,7 @@ The Pyano is a 25-key self-playing piano powered by a Raspberry Pi using python 
 * [Pynput](https://pynput.readthedocs.io/en/latest/) - For simulating keyboard inputs in the GUI
 * [IO Pi](https://www.abelectronics.co.uk/kb/article/23/python-library-and-demos) - Library for Raspberry Pi third party i2c expansion board
 
+<br \>
 <a name="2"></a>
 ## Getting Started
 
@@ -90,6 +91,7 @@ Run project from pyano-git directory:
 python -m pyano
 ```
 
+<br \>
 <a name="3"></a>
 ## Contributing
 
@@ -129,6 +131,7 @@ rm -rf pyano-git
 
 For more git information such as branching and merging watch [this video](https://www.youtube.com/watch?v=HVsySz-h9r4&frags=pl%2Cwn).
 
+<br \>
 <a name="4"></a>
 ## Project Team
 
@@ -137,11 +140,13 @@ For more git information such as branching and merging watch [this video](https:
 * **Camilo Rincon** - *Hardware*
 * **Braydon Westmoreland** - *Software*
 
+<br \>
 <a name="5"></a>
 ## GANNT Chart
 
 ![GANNT Chart](docs/gannt.jpg?raw=true "Week 7 GANNT Chart")
 
+<br \>
 <a name="6"></a>
 ## License
 
