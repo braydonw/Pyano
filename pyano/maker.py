@@ -1,9 +1,3 @@
-'''
-ADD FULL DESCRIPTION HERE
-
-'''
-
-# imports
 import time, logging, os
 from PyQt4 import QtGui, QtCore, uic
 from pynput import keyboard
@@ -112,22 +106,9 @@ class MakerThread(QtCore.QThread):
         self.u_flag = False
         
         
-        
-        
         # method call from key listener
         def on_press(key):
-            '''
-            IDEA: figure out a way to only save the time of the 1st on message and the 1st corresponding
-            off message - then discard all duplicate on messages in-between - or add all repeating on delays
-            to the Off message?
             
-            on_press needs to add all intermidate timings to a list
-            on_release needs to add all those times to the Off message then clear the list
-            
-            will this work if holding one key and you press another? or does that mess up the hold_times[]
-            
-            probably need to change adj_time (time_since_prev) and prev_time... rethink logic completely
-            '''
             try:
                 # see if the key pressed is in dictionary of valid keys
                 kb_note = key2note[key.char]
@@ -144,19 +125,7 @@ class MakerThread(QtCore.QThread):
                 self.prev_time = time_since_start
                 
                 # convert time since last valid keypress to ticks (PPQN)
-                ticks = second2tick(time_since_prev, ticks_per_beat, tempo) # RENAME TO delta_time
-                
-                # for testing
-                #~ logging.info('time_since_prev: {}'.format(round(time_since_prev, 3)))
-                #~ logging.info('ticks: {}'.format(int(ticks)))
-                
-                # add the note on/off data to the midi file
-                # only add first on message to track - add rest of on delays to first off of same key type
-                #~ track.append(Message('note_on', note=int(midi_note), time=int(ticks)))                
-                
-                # build and emit gui text output
-                #~ gui_output = (" " + key.char.upper() + "    " + kb_note + "   " + str((round(time_since_prev, 3))))
-                #~ gui_output = (" " + key.char.upper() + "    " + kb_note + "   " + str((round(time_since_prev))))
+                ticks = second2tick(time_since_prev, ticks_per_beat, tempo)
                 
                 # build and send output string to gui thread
                 if solenoid < 10: 
@@ -164,12 +133,8 @@ class MakerThread(QtCore.QThread):
                 else:
                     str_solenoid = str(solenoid)
                 gui_output = key.char.upper() + "     " + kb_note + "    " + str_solenoid
-                #~ self.emit(QtCore.SIGNAL("updateMakerText(QString)"), gui_output)
                 logging.info('ON  ' + gui_output)
-                
-                
-                # NEEDS TO BE KEY SPECIFIC SO MULTIPLE KEY PRESSES BEFORE RELEASING 1 STILL WORKS
-                
+                                
                 # append to hold times until key is released
                 # then remove 1st one and add the rest to the off delay
                 # for that key, then clear hold_times
@@ -297,6 +262,7 @@ class MakerThread(QtCore.QThread):
             except (KeyError, AttributeError) as e:
                 logging.debug('invalid key {}'.format(e))
                 
+                
         # method call from key listener
         def on_release(key):
 
@@ -334,9 +300,6 @@ class MakerThread(QtCore.QThread):
                 self.prev_time = time_since_start # ignore the time of any invalid keys
 
                 ticks = second2tick(time_since_prev, ticks_per_beat, tempo)
-                
-                #~ print(len(self.z_hold_times))
-                #~ print(self.z_hold_times)
                 
                 if key.char == 'z':
                     # remove first element in hold_time list since it is already saved with the On Message
@@ -441,11 +404,6 @@ class MakerThread(QtCore.QThread):
                     ticks = ticks + sum(self.u_hold_times[1:])
                     self.u_hold_times = []
                     self.u_flag = False
-                    
-                
-                # for testing
-                #~ logging.info('time_since_prev: {}'.format(round(time_since_prev, 3)))
-                #~ logging.info('ticks: {}'.format(int(ticks)))
 
                 # add the note on/off data to the midi file
                 track.append(Message('note_off', note=int(midi_note), time=int(ticks)))
@@ -456,11 +414,8 @@ class MakerThread(QtCore.QThread):
                 else:
                     str_solenoid = str(solenoid)
                 gui_output = key.char.upper() + "     " + kb_note + "    " + str_solenoid
-                #~ gui_output = (" " + key.char.upper() + "    " + kb_note + "   " + str((round(time_since_prev, 3))))
-                #~ gui_output = (" " + key.char.upper() + "    " + kb_note + "   " + str((round(ticks))))
                 self.emit(QtCore.SIGNAL("updateMakerText(QString)"), gui_output)
                 logging.info('OFF ' + gui_output)
-                
                 
             except (KeyError, AttributeError):
                 pass

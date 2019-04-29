@@ -1,15 +1,8 @@
-'''
-ADD FULL DESCRIPTION HERE
-
-'''
-
-# imports
 import time, logging
 from PyQt4 import QtCore
 from pynput import keyboard
 from pyano.IOPi import IOPi
 
-# globals
 GPIO_ENABLED = False
 
 

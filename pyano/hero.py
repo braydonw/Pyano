@@ -1,19 +1,9 @@
-'''
-ADD FULL DESCRIPTION HERE
-
-TODO: Balance difficulties
-
-'''
-
-# imports
 import logging, time, os
 from PyQt4 import QtCore, QtGui
 from pynput import keyboard
-#~ from pynput.keyboard import Key, Controller
 from mido import MidiFile, MidiTrack, Message
 from pyano.IOPi import IOPi
 
-# globals
 PROJ_PATH = os.getcwd()
 GPIO_ENABLED = False
 PRINT_NOTES = True
@@ -380,9 +370,8 @@ class HeroThread(QtCore.QThread):
         
         
     def play_file(self):
-        # simplified version of the same function from player mode
-        # see player.py for additional comments 
-        # any important differences will be mentioned below
+        # simplified version of the functions in player mode
+        # player mode should be updated with this simpler logic flow
         
         mid = MidiFile(PROJ_PATH + '/midi-files/' + self.hero_song)
 
@@ -564,20 +553,16 @@ class HeroThread(QtCore.QThread):
                 self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'hero', str(note), 'on') 
                 if note < 17:
                     if GPIO_ENABLED: self.bus1.write_pin(note, 1)
-                    pass
                 else:
                     note -= 16
                     if GPIO_ENABLED: self.bus2.write_pin(note, 1)
-                    pass
             elif msg.type == 'note_off':
                 self.emit(QtCore.SIGNAL("showIndicator(QString, QString, QString)"), 'hero', str(note), 'off') 
                 if note < 17:
                     if GPIO_ENABLED: self.bus1.write_pin(note, 0)
-                    pass
                 else:
                     note -= 16
                     if GPIO_ENABLED: self.bus2.write_pin(note, 0)
-                    pass
                     
         return
     
@@ -589,4 +574,3 @@ class HeroThread(QtCore.QThread):
             self.bus1.write_port(1, 0x00)
             self.bus2.write_port(0, 0x00)
             self.bus2.write_port(1, 0x00)
-        pass

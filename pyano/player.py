@@ -1,18 +1,13 @@
-'''
-ADD FULL DESCRIPTION HERE
-
-'''
-
-# imports
 import time, logging, os
 from PyQt4 import QtCore
 from mido import MidiFile, MidiTrack, Message, MetaMessage
 from mido import second2tick, bpm2tempo, tempo2bpm
 from pyano.IOPi import IOPi
 
-# globals
 GPIO_ENABLED = False
 PRINT_NOTES = True
+
+# TODO: update play_file, octave_adjust, and play_note to be more like hero mode
 
 
 #---WORKER THREAD: MIDI PLAYER------------------------------------------
@@ -34,7 +29,6 @@ class PlayerThread(QtCore.QThread):
         
         # IO setup
         if GPIO_ENABLED:
-            print("!")
             # get busses from i2c addresses
             self.bus1 = IOPi(0x21)
             self.bus2 = IOPi(0x20)
@@ -42,7 +36,7 @@ class PlayerThread(QtCore.QThread):
             self.bus1.set_port_direction(0, 0x00)
             self.bus1.set_port_direction(1, 0x00)
             self.bus2.set_port_direction(0, 0x00)
-            self.bus2.set_port_direction(1, 0x00) # THIS WAS 0xC0 ???? 
+            self.bus2.set_port_direction(1, 0x00)
             # initialize all outputs to 0
             self.clear_outputs()
     
@@ -224,7 +218,6 @@ class PlayerThread(QtCore.QThread):
         self.emit(QtCore.SIGNAL("playerNextFile()"))
         self.current_song += 1
     
-    
     # CHANGE NAME
     def adjust_octave(self, msg, notes):
         
@@ -296,8 +289,6 @@ class PlayerThread(QtCore.QThread):
                         pass
         except:
             pass
-        
-        
                 
         return
     
