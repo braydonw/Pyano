@@ -1,0 +1,9 @@
+Step 1: install the official image of raspbian.
+       1)download the newest Raspbian image from official website: https://www.raspberrypi.org/downloads/
+       2)use SDFormatter formatted TFT card
+       3)use Win32DiskImager to burn the official image to TF card
+
+Step 2: modify the "config" configuration file
+        after burnning, open the TF card root directory, copy the "config-7-1024x600.txt", " LCD configuration.bat" and " restore default configuration.bat" to TF card root directory. Double-click to excute the batch file "LCD configuration.bat", then safely remove TF card (you can recover to intial configuration by running " restore default configuation. bat" batch file).
+
+Step 3: insert the SD card into Raspberry Pi, use HDMI cable to connect Raspberry pi and LCD, power the LCD display, then power Raspberry pi. Please use 2A power supply.
