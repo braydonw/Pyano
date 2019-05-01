@@ -40,7 +40,7 @@ The Pyano is a 25-key self-playing piano powered by a Raspberry Pi using python 
 * [Python 3.5](https://docs.python.org/3.5/)
 * [Mido](https://mido.readthedocs.io/en/latest/) - Library for working with MIDI messages and ports
 * [PyQt4](http://pyqt.sourceforge.net/Docs/PyQt4/) - GUI Framework
-* [Pynput](https://pynput.readthedocs.io/en/latest/) - For simulating keyboard inputs in the GUI
+* [Pynput](https://pynput.readthedocs.io/en/latest/) - Used to simulate and listen for keyboard inputs
 * [IO Pi](https://www.abelectronics.co.uk/kb/article/23/python-library-and-demos) - Library for Raspberry Pi third party i2c expansion board
 
 <br />
