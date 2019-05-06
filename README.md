@@ -12,9 +12,9 @@ The Pyano is a 25-key self-playing piano powered by a Raspberry Pi using python 
 
 ![Pyano GUI Main Menu](docs/gui-tour.gif?raw=true "Pyano GUI Main Menu")
 
-[Click here for a short video demonstration](https://youtu.be/wNDljW7Iz3w)
-
 <br />
+
+[Click here for a short video demonstration](https://youtu.be/wNDljW7Iz3w)
 
 <br />
 
