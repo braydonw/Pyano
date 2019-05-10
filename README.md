@@ -109,6 +109,8 @@ python -m pyano
 
 **Step 1.** Navigate to local project folder:
 
+This was for my group members when the project was still ongoing.
+
 ```
 cd /home/pi/pyano-git
 ```
