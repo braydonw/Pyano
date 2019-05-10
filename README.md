@@ -105,11 +105,11 @@ python -m pyano
 <br />
 
 <a name="3"></a>
-## Contributing
+## Contributing 
+
+**This was for group members when the project was still ongoing.**
 
 **Step 1.** Navigate to local project folder:
-
-This was for my group members when the project was still ongoing.
 
 ```
 cd /home/pi/pyano-git
